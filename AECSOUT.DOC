@@ -1,0 +1,134 @@
+1*AECS* GENERAL ECS PROGRAM                                                                                 PAGE        1
+     1  CASE PERFOR                                                                          DATE 10/ 5/2018  12: 4:10.61
+ TIME M       0.00 SEC.
+1*AECS* EXAMPLE CASE FOR COMPRESSOR WITH ROOTS POCKET OPTION, 01/04/05                                      PAGE        2
+     1  CASE PERFOR                                                                          DATE 10/ 5/2018  12: 4:10.61
+ TIME Z       0.00
+0     EXAMPLE CASE FOR COMPRESSOR WITH ROOTS POCKET OPTION, 01/04/05            
+1*AECS* EXAMPLE CASE FOR COMPRESSOR WITH ROOTS POCKET OPTION, 01/04/05                                      PAGE        3
+     1  CASE VCOMP                                                                           DATE 10/ 5/2018  12: 4:10.61
+0          CASE VCOMP                3 LEG(S)             4 STATION(S)
+0ATM P     0.00
+0ATM T     0.00
+0ATM H  0.00000
+0ALTITUDE         0.
+1*AECS* EXAMPLE CASE FOR COMPRESSOR WITH ROOTS POCKET OPTION, 01/04/05                                      PAGE        4
+     1  CASE VCOMP                                                                           DATE 10/ 5/2018  12: 4:10.61
+ PARAMETER TABLE        15 VALUE(S)
+ 
+ (   1)     1.00000000 (   2)   158.56739807 (   3)   595.45001221 (   4)   122.02600098 (   5)  1140.00000000 (   6)     1.74000001
+ (   7)     0.85000002 (   8)     0.00036900 (   9)     0.89999998 (  10)     0.00000000 (  11)     0.04000000 (  12)   200.00000000
+ (  13)   600.00000000 (  14)   121.09999847 (  15)     0.00000000
+1*AECS* EXAMPLE CASE FOR COMPRESSOR WITH ROOTS POCKET OPTION, 01/04/05                                      PAGE        5
+     1  CASE VCOMP                                                                           DATE 10/ 5/2018  12: 4:10.61
+ COMPONENT(S)
+0    1    6  8   12   16   20   24   28   32   36   40  44   48   52   56   60   64   68   72   76   80/ 
+     RINLET      20    1    3  100    1    2    3    4    3  -22    0    0    0    0    0    0    0    0
+                                                                                                        SV N   1  T   2
+     RINLET      22    3    5    0   11   12   13   14    3  -22    0    0    0    0    0    0    0    0
+     SHAFT       30    1    0    5    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+     VCOMP       40    1    3    9    1    0    6   71   72    7    2    8    5    3    2    9    0    0
+                                                                                                        EV N   1  T   2
+     ROUTLT      70    2    9    0    1    2    3    4    0    0    0    0    0    0    0    0    0    0
+0    STATE/ERROR VARIABLE(S)     1
+1*AECS* EXAMPLE CASE FOR COMPRESSOR WITH ROOTS POCKET OPTION, 01/04/05                                      PAGE        6
+     1  CASE VCOMP                                                                           DATE 10/ 5/2018  12: 4:10.61
+ TABLES             3 REQUIRED
+ PERMANENT TABLE    22    10
+ TABLE LISTED BELOW IS NOT REQUIRED
+     *TABID     71   4  33   0   0  28 101   2   0 101 101   2   0   0   0   0   0   0*
+     *TABT      VCOMP: PRESSURE RATIO = F(FLOW RATE,SHAFT SPEED)                      *
+     *TABV      0.0       1.0                                                         *
+     *TABV      0.0        11.0                                                       *
+     *TABV      1000.     11000.                                                      *
+     *TABV      2.0       1.0       20.0       1.0                                    *
+ TABLE     72     6
+     TITLE/    VCOMP: EFFICIENCY = F(FLOW RATE,SHAFT SPEED)                          
+     NDIM    33     IST     0
+     ARGUMENT 1     TYPE    0     RELN   28     EXTRAP    1     INTERP    1     NPTS    2
+     ARGUMENT 2     TYPE    0     RELN  101     EXTRAP    1     INTERP    1     NPTS    2
+              0.00000E+00    1.00000E+00
+              0.00000E+00    1.10000E+01
+              1.00000E+03    1.10000E+04
+              8.50000E-01    8.50000E-01    8.50000E-01    8.50000E-01
+ TABLE      1     0
+     PTAB      1     0
+1*AECS* EXAMPLE CASE FOR COMPRESSOR WITH ROOTS POCKET OPTION, 01/04/05                                      PAGE        7
+     1  CASE VCOMP                                                                           DATE 10/ 5/2018  12: 4:10.61
+ TIME P       0.00
+SVSCLE
+      0.00000000E+00      0.00000000E+00      0.00000000E+00      0.00000000E+00  0.0000  0.0000
+      0.00000000E+00      0.00000000E+00      0.00000000E+00      0.00000000E+00  0.0000  0.0000
+      0.00000000E+00      0.00000000E+00      0.00000000E+00      0.00000000E+00  0.0000  0.0000
+      0.00000000E+00      0.00000000E+00      0.00000000E+00      0.00000000E+00
+ *** W =    1.040 P =  275.907 T =  665.363 H =  131.792
+0SVT
+ (   1)    2
+0EVT
+ (   1)    2
+0PASS      1
+0S.V.
+ (   1)   158.56739807
+0E.V.
+ (   1)   -24.84799194
+0W
+ (   1)       1.00000 (   3)       0.04000 (   2)       1.04000
+0P
+ (   3)     158.56740 (   5)     200.00000 (   9)     275.90729 (   0)       0.00000
+0T
+ (   3)     595.44885 (   5)     599.62299 (   9)     665.36255 (   0)       0.00000
+0H
+ (   3)     122.02600 (   5)     121.10000 (   9)     131.79225 (   0)       0.00000
+ *** W =    1.040 P =  275.907 T =  665.363 H =  131.792
+ *** W =    1.040 P =  276.183 T =  665.355 H =  131.782
+ *** W =    1.040 P =  276.513 T =  665.347 H =  131.769
+ *** W =    1.040 P =  276.513 T =  665.347 H =  131.769
+ *** W =    1.040 P =  276.790 T =  665.341 H =  131.759
+ *** W =    1.040 P =  277.664 T =  665.320 H =  131.726
+ *** W =    1.040 P =  277.664 T =  665.320 H =  131.726
+ *** W =    1.040 P =  277.942 T =  665.314 H =  131.716
+ *** W =    1.040 P =  279.722 T =  665.277 H =  131.650
+ *** W =    1.040 P =  279.722 T =  665.277 H =  131.650
+ *** W =    1.040 P =  280.002 T =  665.271 H =  131.640
+ *** W =    1.040 P =  283.770 T =  665.208 H =  131.503
+ *** W =    1.040 P =  283.770 T =  665.208 H =  131.503
+ *** W =    1.040 P =  284.054 T =  665.204 H =  131.493
+ *** W =    1.040 P =  287.671 T =  665.163 H =  131.365
+ *** W =    1.040 P =  287.671 T =  665.163 H =  131.365
+ *** W =    1.040 P =  287.958 T =  665.165 H =  131.356
+ *** W =    1.040 P =  287.677 T =  665.163 H =  131.365
+0COMPONENT SHAFT      0
+0     SHAFT    1   N    1140.
+0COMPONENT VCOMP      0
+0     NL       1   NSI      3   NSO      9   FT       3   FN     -22
+0     W     1.00   PI  165.33   PO  287.68   TI  596.89   TO  665.16   HI122.0260   HO131.3652
+0     NL       3   NSI      5   NSO      9   FT       3   FN     -22
+0     W     0.04   PI  200.00   PO  287.68   TI  599.62   TO  665.16   HI121.1000   HO131.3652
+0     SHAFT    1   PR  1.7400   EFF 0.8500   HP   -0.27   HGI  0.000000E+00
+ *** W =    1.040 P =  287.677 T =  665.163 H =  131.365
+1*AECS* EXAMPLE CASE FOR COMPRESSOR WITH ROOTS POCKET OPTION, 01/04/05                                      PAGE        8
+     1  CASE VCOMP                                                                           DATE 10/ 5/2018  12: 4:10.67
+ TIME E       0.00
+0FLOW RATE(S)-LB/MIN
+ (   1)    1.000(   2)    1.040(   3)    0.040(
+0PRESSURE(S)-PSI
+ (   3)  165.332(   5)  200.000(   9)  287.677(   0)    0.000(
+0TEMPERATURE(S)-DEG R
+ (   3)  596.893(   5)  599.623(   9)  665.163(   0)    0.000(
+0HUMIDITY(S)/ENTHALPY(S)-LBW/LBA / BTU/LB
+ (   3) 122.0260(   5) 121.1000(   9) 131.3652(   0)   0.0000(
+0WALL TEMP(S)- DEGREES RANKINE
+ (   3)    0.000(   5)    0.000(   9)    0.000(   0)    0.000(
+0STATE VARIABLE TYPE(S)
+ (   1)    2
+0STATE VARIABLE(S)
+ (   1)   165.33174133
+0ERROR VARIABLE TYPE(S)
+ (   1)    2
+0ERROR VARIABLE(S)
+ (   1)     0.00000000
+0SOLUTION CONVERGED IN      6 TRY(S)
+0     0 ERROR(S) DETECTED
+0CASE END
+1
+0                    END OF JOB

@@ -1,0 +1,1152 @@
+******  THIS IS 'TX58273.DATA(FR22)'                                                                                                 
+******COPIED FROM QQ042090.DATA(FR22)       ON 4/30/90                                                                               
+******                                                                                                                               
+******RUN WITH AECSTAB.DATA AND FTBQ.LOAD ON 3/28/90                                                                                 
+******     - (SEE OUTPUT AT BOTTOM)                                                                                                  
+******     - FIXED FREON FLOW AND VARIED LOAD AIR FLOW (CONTROL                                                                      
+******       AIR OUT TEMP TO 55 DEG F)    "PTAB 1 0 2 0" =1   6 ITER'S                                                               
+******NOW TRY USING EVAP OUT SUPERHEAT INSTEAD OF PRESSURE                                                                           
+******     - 1020 =1.0 GAVE SINGULAR MATRIX                                                                                          
+******     - CHANGE TO "PTAB 1 0 2 0" =0.01 INCREASING TOOK 32 ITER'S                                                                
+******     - LOOP START PRESSURE DID INCREASE FROM 300 EVEN TO 305 PSI                                                               
+******   CONCLUSION: USE EVAP OUTLET PRESSURE WHEN POSSIBLE                                                                          
+******NOW TRY USING SOLN WITH EVAP OUT SUPERHEAT INSTEAD OF PRESSURE                                                                 
+******     - STEPSIZ=0.01 AND STEPRATIO=1.25 LOOKED GOOD,GOT WORSE                                                                   
+******     - STEPSIZ=0.02 AND STEPRATIO=1.05 EV3=-65 AND HUNG UP                                                                     
+******     - STEPSIZ=0.002    STEPRATIO=1.05 EV3 GREW WITH EVERY STEP                                                                
+******   CONCLUSION: SOLN TO BE USED AS A LAST RESORT                                                                                
+******                                                                                                                               
+******   MODS TO GO WITH RUNNING FTB1VTS.LOAD:                                                                                       
+******       ADD SV FOR COMPRESSOR PR, GET RID OF EVAP OUT SUPERHEAT                                                                 
+******                  TO BALANCE SV/EV 5/5.                                                                                        
+COMMON  CI   76   10                                                                                                                 
+DUMP          3                                                                                                                      
+PERFORM                                                                                                                              
+TITLE   FR22.DATA      HOME A/C MODEL      TOUT = 55F          03/22/90                                                              
+CASEA           0000  15  31   0                                                                                                     
+CASEB     -2  -2   1  -1  -2                                                                                                         
+CASEC        10000.0              569.67                                                                                             
+CASED         0.5000                                                                                                                 
+PARAM   72                                                                                                                           
+****************************************************************                                                                     
+****** INLET FLOW   PRESS    TEMP       HUMD                                                                                         
+VALUES  01 80.0     14.7      530.      0.0000                                                                                       
+****** INLET FLOW   PRESS    TEMP       HUMD      EVAP OUT                                                                           
+VALUES  05 80.0     14.7      537.5     0.0000    100.                                                                               
+******  COLD AIR OUT TEMP                                                                                                            
+VALUE   10 515.00                                                                                                                    
+****** REFRIG W     PCONDIN   TIN       HIN                                                                                          
+VALUES  11 008.00   204.843   660.      132.876   23300.                                                                             
+****** VCOMP PR     VCOMP ME  DSH       COND FLOW A                                                                                  
+VALUES  16 3.0000   0.95      18.618    0.2000                                                                                       
+******     INDATA   PI        TI        HI                                                                                           
+VALUES  31 035.00   13.21     493.52    74.8907                                                                                      
+******     CVALMIN  CVALVE    EVAP                                                                                                   
+VALUES  35 0.1      2.13496   0.200                                                                                                  
+******   ARFRGEVP   SUPERHT   STEPSIZ   STEPRATIO                                                                                    
+VALUES  45 .2       5.        0.002     1.05                                                                                         
+******    BTU/MIN-KWSUPERHEAT                                                                                                        
+VALUES  49 56.869   5.                                                                                                               
+******    PJK=START PRESS       DP= PRESS INCREMENT  N=NUMBR OF PSTEPS                                                               
+******    TJK=START TEMP        DT= TEMP INCREMENT   M=NUMBR OF TSTEPS                                                               
+******    HUM=FEED TO SHP       DSH=GOES NOWHERE                                                                                     
+******     PJK      DP        N         TJK       DT                                                                                 
+VALUES  61 40.      20.       15.       300.      20.                                                                                
+******     M        HUM       DSH                                                                                                    
+VALUES  66 20.      1.        1.                                                                                                     
+********************************************************************                                                                 
+******              START R502 LOOP                                                                                                  
+********************************************************************                                                                 
+******$F 021   1    RAM INLET                                                                                                        
+******$S 022   2    CONDENSER RAM FACE                                                                                               
+INLET    015 151 1020000   1   2   3   4   2  -1                                                                                     
+******$C            COMMENT                                                                                                          
+LOOPS    030  51   4  51  96   3 -220101  11  12  13  14                                                                             
+******$L 031   1    CONDENSER                                                                                                        
+******$F 032   1    FREON INTO COND                                                                                                  
+******$S 033   2    FREON OUT OF COND                                                                                                
+COND     035  51   4   8 151 102 106   1   2   2   3  19                                                                             
+CVALVE   075  51   8  12   0  35  36                                                                                                 
+INLET    015 221 2021000   5   6   7   8   2  -1                                                                                     
+******                                                         EV                                                                    
+******$L 020        EVAPORATOR                                                                                                       
+EVAP     085  51  12  16 221 202 206   0   4   5  46   6  45   0                                                                     
+SENSOR   105  51  16   5  50                                                                                                         
+SENSOR   106 221 206   3  10                                                                                                         
+SHAFT    165   1   0  15                                                                                                             
+******         OLD VCOMPP SEEMS TO BE IN FTBQ.LOAD                                                                                   
+******                       IOPT                                                                                                    
+VCOMP    265  51  16  96   1   0  16 921  17                                                                                         
+LOOPE    345  51   4  51  960101                                                                                                     
+******     #EVAP #CMP ESTA CSTA                                                                                                      
+COP      350   1   1  12  16                                                                                                         
+******      MRD# SVSCL EV STP SRTIO                                                                                                  
+******SOLN     360   2   1   1  47  48                                                                                               
+******    PJK=START PRESS       DP= PRESS INCREMENT    N=PRESSURE STEPS                                                              
+******    TJK=START TEMP        DT= TEMP INCREMENT     M=PRESSURE STEPS                                                              
+******    HUM=FEED TO SHP       DSH=GOES NOWHERE                                                                                     
+******       LEG PJK  DP   N TJK  DT   M HUM DSH                                                                                     
+******FLUP     355 999  61  62  63  64  65  66  67   3 -13                                                                           
+REFP     355 999  61  62  63  65  66   2  67   3 -22                                                                                 
+**************************END OF MODEL**********************************                                                             
+TABID      3   1   2   0   0  410000   2                                                                                             
+TABT   SIGMA DELTA PRESSURE FAN EXIT TO EXHAUST FLIGHT                                                                               
+****** LOG SDP VS MASS FLOW E2C JLD 22 JUN 84                                                                                        
+TABV      220.0     0.0036128 900.0     0.063224                                                                                     
+TABID     14   1   1                                                                                                                 
+TABT   SIGMA DELTA P                                                                                                                 
+TABV      0.50                                                                                                                       
+TABID     30   1   1                                                                                                                 
+TABT   EVAP SIGMA DELTA P                                                                                                            
+TABV      0.50                                                                                                                       
+TABID     56   1   1                                                                                                                 
+TABT   QLOAD PRESSURE DROP                                                                                                           
+TABV      0.50                                                                                                                       
+TABID     57   1   1                                                                                                                 
+TABT   QLOAD PRESSURE DROP                                                                                                           
+TABV      0.00                                                                                                                       
+TABID      1   1   2   0   0  410000   2                                                                                             
+TABT   SIGMA DELTA PRESSURE INLET TO CONDENSER  FLIGHT                                                                               
+****** LOG SDP VS MASS FLOW E2C JLD 22 JUN 84                                                                                        
+TABV      150.0     0.0036128 900.0     0.1119968                                                                                    
+TABID      2   1   2   0   0  410000   3                                                                                             
+TABT   SIGMA DELTA PRESSURE CONDENSER  FLIGHT                                                                                        
+****** LOG SDP VS MASS FLOW E2C JLD 22 JUN 84                                                                                        
+TABV      50.0      0.0099352 100.0     0.0220281                                                                                    
+TABV      600.0     0.36128                                                                                                          
+TABID     51   5   3   0   0  410102  05   0  420102   9                                                                             
+TABT  LCS HX EFF - LCS SIDE                                                                                                          
+TABV            7.36      14.7      22.1      29.5                                                                                   
+TABV            36.9                                                                                                                 
+TABV             0.0      20.0      40.0      60.0                                                                                   
+TABV            80.0     100.0     120.0     140.0                                                                                   
+TABV           160.0                                                                                                                 
+TABV             0.0       0.0       0.0       0.0                                                                                   
+TABV             0.0      0.82      0.57      0.41                                                                                   
+TABV            0.32      0.26      0.93      0.77                                                                                   
+TABV            0.62      0.52      0.44      0.96                                                                                   
+TABV            0.84      0.72     0.625      0.55                                                                                   
+TABV            0.97     0.875     0.775      0.69                                                                                   
+TABV            0.62     0.975      0.90      0.81                                                                                   
+TABV            0.73      0.66      0.98      0.92                                                                                   
+TABV            0.84      0.76      0.70     0.985                                                                                   
+TABV            0.93      0.85      0.79     0.725                                                                                   
+TABV            0.99      0.94      0.86      0.80                                                                                   
+TABV            0.74                                                                                                                 
+TABID    151   5   3   0   0  410102  06   0  420102   8                                                                             
+TABT  LCS HX EFF - LCS SIDE                                                                                                          
+TABV            44.2      51.6      59.0      66.4                                                                                   
+TABV            73.6      88.5                                                                                                       
+TABV             0.0      60.0      80.0     100.0                                                                                   
+TABV           120.0     140.0     160.0     180.0                                                                                   
+TABV             0.0       0.0       0.0       0.0                                                                                   
+TABV             0.0       0.0      0.48      0.44                                                                                   
+TABV            0.40      0.36      0.33      0.28                                                                                   
+TABV            0.55      0.50      0.46     0.425                                                                                   
+TABV            0.39      0.34      0.60     0.555                                                                                   
+TABV            0.51     0.475      0.44     0.388                                                                                   
+TABV            0.64     0.595      0.55      0.51                                                                                   
+TABV           0.475     0.425      0.67     0.625                                                                                   
+TABV            0.58      0.55      0.51     0.455                                                                                   
+TABV            0.69      0.65      0.60     0.575                                                                                   
+TABV           0.535      0.48      0.71     0.656                                                                                   
+TABV            0.64      0.60      0.55      0.50                                                                                   
+TABID     51   1   2   0   0  41 0 1   6                                                                                             
+TABT  LCS HX DP - C-25 SIDE                                                                                                          
+TABV            10.0      0.11      30.0      0.30                                                                                   
+TABV            50.0      0.65      60.0      0.84                                                                                   
+TABV            70.0      1.10     100.0      2.00                                                                                   
+TABID     52   1   2   0   0  42 0 1   4                                                                                             
+TABT  DMS HX SDP AIR SIDE                                                                                                            
+TABV           60.00      0.10    100.00      0.22                                                                                   
+TABV           150.0      0.42    200.00      0.70                                                                                   
+TABID      2   5   2   0   0  410001   2                                                                                             
+TABT      AIR SIDE EFFECTIVENESS FOR REFRIG COND. (LB/MIN)                                                                           
+****** BASED ON E2C DATA                                                                                                             
+TABV      0.0       1.0        322.0    0.865                                                                                        
+TABID      3   1   1                                                                                                                 
+TABT      REFRIG SIDE PRESS DROP FOR REFRIG COND. (CFM OF VAPOR)                                                                     
+TABV      0.0                                                                                                                        
+TABID      4   1   2   0   0  410001   4                                                                                             
+TABT      AIR SIDE PRESS DROP FOR REFRIG EVAP (LB/MIN)                                                                               
+TABV      0.0       0.0        400.0    0.005                                                                                        
+TABV      800.0     0.02       1600.0   0.08                                                                                         
+TABID      5   5   2   0   0  410001   2                                                                                             
+TABT      AIR SIDE BYPSS FACTOR FOR REFRIG EVAP (LB/MIN)                                                                             
+****** BASED ON E2C DATA                                                                                                             
+TABV      0.0       0.0        89.5     0.105                                                                                        
+TABID     66   2   2   0   0  420001   2                                                                                             
+TABT      REFRIG SIDE PRESS DROP FOR REFRIG EVAP (CFM OF VAPOR)                                                                      
+TABV      0.0       0.0       100.0     0.50                                                                                         
+TABID      6   2   1                                                                                                                 
+TABT      REFRIG SIDE PRESS DROP FOR REFRIG EVAP (CFM OF VAPOR)                                                                      
+TABV      0.0                                                                                                                        
+TABID      1  61   2   0   0 1020101   2                                                                                             
+TABT      NRCL PRESSURE DROP COLD SIDE                                                                                               
+TABV      0.0       0.0       300.0     1.00                                                                                         
+TABID      1  62   2   0   0 1010101   2                                                                                             
+TABT      NRCL PRESSURE DROP HOT SIDE                                                                                                
+TABV      0.0       0.0       300.0     1.00                                                                                         
+TABID      1  99   2   0   1   10101  10                                                                                             
+TABT      NRCL HOT SIDE NHA                                                                                                          
+TABV      2.0       1.75      3.0       2.58333                                                                                      
+TABV      5.0       3.58333   7.0       4.41667                                                                                      
+TABV      10.0      5.500     15.0      7.250                                                                                        
+TABV      20.0      8.83333   30.0      10.3333                                                                                      
+TABV      40.0      15.3333   43.0      16.6667                                                                                      
+TABID      2  99   2   0   1  110101  11                                                                                             
+TABT      NRCL COLD SIDE NHA                                                                                                         
+TABV      2.0       1.06667   3.0       1.300                                                                                        
+TABV      5.0       1.66667   7.0       2.08333                                                                                      
+TABV      10.0      2.41667   15.0      3.08333                                                                                      
+TABV      20.0      3.66667   25.0      4.2500                                                                                       
+TABV      33.0      5.00      40.0      5.66667                                                                                      
+TABV      50.0      6.16667                                                                                                          
+TABID      1   4   1                                                                                                                 
+TABT   ORIF COEFFICIENT                                                                                                              
+TABV      0.90                                                                                                                       
+TABID      1  13   1                                                                                                                 
+TABT   HEAT LOAD                                                                                                                     
+TABV      2000.00                                                                                                                    
+TABID      2  13   2   0   0 1200101   8                                                                                             
+TABT   FAN HEAT LOAD                                                                                                                 
+TABV      1500.0    597.8     1600.0    603.0                                                                                        
+TABV      1700.0    620.9     1800.0    634.6                                                                                        
+TABV      1900.0    645.1     2000.0    652.9                                                                                        
+TABV      2100.0    658.5     2200.0    662.3                                                                                        
+TABID     33  13   1                                                                                                                 
+TABT   LCS HEAT LOAD KW MAX                                                                                                          
+TABV       5.35                                                                                                                      
+TABID      3  13   1                                                                                                                 
+TABT   LCS HEAT LOAD KW SS                                                                                                           
+TABV       3.60                                                                                                                      
+TABID      1   6   1                                                                                                                 
+TABT   COMP ADIBATIC EFF                                                                                                             
+TABV      0.65                                                                                                                       
+TABID      1  44   1                                                                                                                 
+TABT   COMP ENTHALPY RISE                                                                                                            
+TABV      011.70                                                                                                                     
+TABID    121   6   2   0   0 1050101  10                                                                                             
+TABT   COMP ADIBATIC EFF.                                                                                                            
+TABV      52.50     0.65      56.60     0.66                                                                                         
+TABV      59.40     0.67      62.00     0.68                                                                                         
+TABV      64.20     0.69      65.80     0.70                                                                                         
+TABV      67.20     0.71      69.50     0.71                                                                                         
+TABV      70.80     0.70      72.20     0.69                                                                                         
+TABID    122  99   2   0   0 1050101  10                                                                                             
+TABT   COMP ADIBATIC EFF.                                                                                                            
+TABV      52.50     0.65      56.60     0.66                                                                                         
+TABV      59.40     0.67      62.00     0.68                                                                                         
+TABV      64.20     0.69      65.80     0.70                                                                                         
+TABV      67.20     0.71      69.50     0.71                                                                                         
+TABV      70.80     0.70      72.20     0.69                                                                                         
+TABID     21  44   2   0   0 1050101   6                                                                                             
+TABT   COMP ENTHALPY RISE                                                                                                            
+TABV      52.50     11.85     67.20     11.75                                                                                        
+TABV      69.50     11.70     70.80     11.60                                                                                        
+TABV      71.80     11.25     72.20     9.0                                                                                          
+TABID    123  99   2   0   0 1050101   6                                                                                             
+TABT   COMP ENTHALPY RISE                                                                                                            
+TABV      52.50     11.85     67.20     11.75                                                                                        
+TABV      69.50     11.70     70.80     11.60                                                                                        
+TABV      71.80     11.25     72.20     9.0                                                                                          
+TABID     21  99   2   0   0 1050101   5                                                                                             
+TABT   COMP PRESSURE RISE                                                                                                            
+TABV      52.50     6.75      64.20     6.65                                                                                         
+TABV      69.50     6.55      70.80     6.45                                                                                         
+TABV      72.20     5.70                                                                                                             
+TABID     22  44   2   0   0  280101   6                                                                                             
+TABT   COMP ENTHALPY RISE                                                                                                            
+TABV      120.0     11.85     155.0     11.75                                                                                        
+TABV      157.0     11.70     160.0     11.60                                                                                        
+TABV      162.5     11.25     163.0     9.0                                                                                          
+TABID     23  99   2   0   0  280101   6                                                                                             
+TABT   COMP ENTHALPY RISE                                                                                                            
+TABV      120.0     11.85     155.0     11.75                                                                                        
+TABV      157.0     11.70     160.0     11.60                                                                                        
+TABV      162.5     11.25     163.0     9.0                                                                                          
+TABID     21   6   2   0   0  280101  10                                                                                             
+TABT   COMP ADIBATIC EFF.                                                                                                            
+TABV      120.0     0.65      128.0     0.66                                                                                         
+TABV      133.5     0.67      140.0     0.68                                                                                         
+TABV      145.0     0.69      149.0     0.70                                                                                         
+TABV      152.0     0.71      157.0     0.71                                                                                         
+TABV      160.0     0.70      163.0     0.69                                                                                         
+TABID    921   6   1                                                                                                                 
+TABT   COMP ADIBATIC EFF.                                                                                                            
+TABV      0.8                                                                                                                        
+TABID     22  99   2   0   0  280101  10                                                                                             
+TABT   COMP ADIBATIC EFF.                                                                                                            
+TABV      120.0     0.65      128.0     0.66                                                                                         
+TABV      133.5     0.67      140.0     0.68                                                                                         
+TABV      145.0     0.69      149.0     0.70                                                                                         
+TABV      152.0     0.71      157.0     0.71                                                                                         
+TABV      160.0     0.70      163.0     0.69                                                                                         
+TABID      1   8   2   3   0  590002  13                                                                                             
+TABT   COMP SPECIFIC DIAMETER DIA = F(NS)                                                                                            
+TABV      0.2       17.0      0.3       9.5                                                                                          
+TABV      0.4       7.0       0.5       5.5                                                                                          
+TABV      0.6       4.6       0.7       4.0                                                                                          
+TABV      0.8       3.7       0.9       3.3                                                                                          
+TABV      1.0       3.0       2.0       2.0                                                                                          
+TABV      10.0      1.0       20.0      0.62                                                                                         
+TABV      30.0      0.4                                                                                                              
+TABID      1   0   2   0   0   10000   8                                                                                             
+TABT  WEIGHING FACTOR - REAL SLOW                                       00000900                                                     
+TABV      1.0       0.01      16.0      0.1                             00001000                                                     
+TABV      21.0      0.3       25.0      0.5                             00001100                                                     
+TABV      38.0      0.7       43.0      0.8                             00001200                                                     
+TABV      48.0      0.9       53.0      1.0                             00001200                                                     
+TABID    999   0   2   0   0   10000   6                                                                                             
+TABT  WEIGHING FACTOR - SLOWER                                          00000900                                                     
+TABV      1.0       0.001     06.0      0.005                           00001000                                                     
+TABV      11.0      0.02      15.0      0.05                            00001100                                                     
+TABV      18.0      0.07      23.0      0.10                            00001200                                                     
+TABID    999   0   1                                                                                                                 
+TABT  WEIGHING FACTOR - RELATIVELY FREON FAST                           00000900                                                     
+TABV      1.0                                                           00001000                                                     
+TABID      1  50  -1   0   0   00000   4                                                                                             
+TABT  STATE VARIABLE SCALE                                              00000900                                                     
+TABV      30.         5.      0.1       20.                             00001000                                                     
+TABID      1  51  -1   0   0   00000   4                                                                                             
+TABT  ERROR VARIABLE SCALE                                              00000900                                                     
+TABV      0.5       1.        2.        1.                              00001000                                                     
+******PTAB       1   0  11   0                                                                                                       
+NOGO                                                                                                                                 
+ENDCASE                                                                                                                              
+PCHANGE                                                                                                                              
+TITLE   QQ.DATA(FR22)  HOME A/C MODEL      TOUT = 55F          03/22/90                                                              
+ENDCASE                                                                                                                              
+ENDJOB                                                                                                                               
+************************************************************************                                                             
+************************************************************************                                                             
+************************************************************************                                                             
+************************************************************************                                                             
+QCHANGE                                                                                                                              
+VALUE   21   080.00                                                                                                                  
+ENDCASE                                                                                                                              
+QCHANGE                                                                                                                              
+VALUE   85   47.500                                                                                                                  
+ENDCASE                                                                                                                              
+ENDJOB                                                                                                                               
+************************************************************************                                                             
+************************************************************************                                                             
+************************************************************************                                                             
+************************************************************************                                                             
+************************************************************************                                                             
+************************************************************************                                                             
+1                                                                                                                                    
+ CCN =   CI                                                                                                                          
+ V = COMMON    CI   76   20                                                                                                          
+ *COMMON  CI   76   20                                                            *                                                  
+ *DUMP          3                                                                 *                                                  
+1*AECS* GENERAL ECS PROGRAM                                                                                 PAGE        1            
+     1  CASE PERFOR                                                                                         DATE TODAY               
+                                                                                                                                     
+ TIME M       5.00 SEC.                                                                                                              
+ *** NO GO CASE ***                                                                                                                  
+1                                                                                                                                    
+1*AECS* GENERAL ECS PROGRAM                                                                                 PAGE        1            
+     2  CASE PCHANG                                                                                         DATE TODAY               
+                                                                                                                                     
+ TIME M       5.00 SEC.                                                                                                              
+ CHANGE*PCHANGE                                                                         *                                            
+ CHANGE*TITLE   FR22.DATA      HOME A/C MODEL      TOUT = 55F          03/22/90         *                                            
+ CHANGE*TITEND                                                                          *                                            
+ CHANGE*CASEND                                                                          *                                            
+ CHANGE*PAREND                                                                          *                                            
+ CHANGE*COMEND                                                                          *                                            
+ CHANGE*ENDCASE                                                                         *                                            
+1*AECS*   FR22.DATA      HOME A/C MODEL      TOUT = 55F          03/22/90                                   PAGE        2            
+     2  CASE PCHANG                                                                                         DATE TODAY               
+                                                                                                                                     
+ TIME Z       5.00                                                                                                                   
+0       FR22.DATA      HOME A/C MODEL      TOUT = 55F          03/22/90                                                              
+1*AECS*   FR22.DATA      HOME A/C MODEL      TOUT = 55F          03/22/90                                   PAGE        3            
+     2  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+0          CASE                     15 LEG(S)            31 STATION(S)                                                               
+0ATM P TABLE     -2                                                                                                                  
+0ATM T TABLE     -2                                                                                                                  
+0ATM PROP TABLE     -1                                                                                                               
+0ALTITUDE     10000.                                                                                                                 
+0MACH NUMBER  0.500                                                                                                                  
+0WATER PROP TABLE     -2                                                                                                             
+1*AECS*   FR22.DATA      HOME A/C MODEL      TOUT = 55F          03/22/90                                   PAGE        4            
+     2  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+ PARAMETER TABLE        53 VALUE(S)                                                                                                  
+                                                                                                                                     
+ (   1) 8.00000E+01 (   2) 1.47000E+01 (   3) 5.30000E+02 (   4) 0.0         (   5) 8.00000E+01 (   6) 1.47000E+01                   
+ (   7) 5.37500E+02 (   8) 0.0         (   9) 1.00000E+02 (  10) 5.15000E+02 (  11) 8.00000E+00 (  12) 2.04843E+02                   
+ (  13) 6.60000E+02 (  14) 1.32876E+02 (  15) 2.33000E+04 (  16) 3.00000E+00 (  17) 9.50000E-01 (  18) 1.86180E+01                   
+ (  19) 2.00000E-01 (  20) 0.0         (  21) 1.00000E+75 (  22) 1.00000E+75 (  23) 1.00000E+75 (  24) 1.00000E+75                   
+ (  25) 1.00000E+75 (  26) 1.00000E+75 (  27) 1.00000E+75 (  28) 1.00000E+75 (  29) 1.00000E+75 (  30) 1.00000E+75                   
+ (  31) 3.50000E+01 (  32) 1.32100E+01 (  33) 4.93520E+02 (  34) 7.48907E+01 (  35) 1.00000E-01 (  36) 2.13496E+00                   
+ (  37) 2.00000E-01 (  38) 0.0         (  39) 0.0         (  40) 1.00000E+75 (  41) 1.00000E+75 (  42) 1.00000E+75                   
+ (  43) 1.00000E+75 (  44) 1.00000E+75 (  45) 2.00000E-01 (  46) 5.00000E+00 (  47) 1.00000E-02 (  48) 1.25000E+00                   
+ (  49) 5.68690E+01 (  50) 0.0         (  51) 0.0         (  52) 0.0         (  53) 0.0                                              
+1*AECS*   FR22.DATA      HOME A/C MODEL      TOUT = 55F          03/22/90                                   PAGE        5            
+     2  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+ COMPONENT(S)                                                                                                                        
+0    1    6  8   12   16   20   24   28   32   36   40   44   48   52   56   60   64   68   72   76   80                             
+                                                                                                                                     
+     INLET       15  151  102    0    1    2    3    4    2   -1    0    0    0    0    0    0    0    0                             
+     LOOPS       30   51    4   51   96    3  -22  101   11   12   13   14    0    0    0    0    0    0                             
+                                                                                                        SV N   1  T   2              
+                                                                                                        SV N   2  T  10              
+     COND        35   51    4    8  151  102  106    1    2    2    3   19    0    0    0    0    0    0                             
+     CVALVE      75   51    8   12    0   35   36    0    0    0    0    0    0    0    0    0    0    0                             
+                                                                                                        SV N   3  T   6              
+     INLET       15  221  202 1000    5    6    7    8    2   -1    0    0    0    0    0    0    0    0                             
+                                                                                                        SV N   4  T   1              
+     EVAP        85   51   12   16  221  202  206    0    4    5   46    6   45    0    0    0    0    0                             
+     SENSOR     105   51   16    2    9    0    0    0    0    0    0    0    0    0    0    0    0    0                             
+                                                                                                        EV N   1  T   2              
+     SENSOR     106  221  206    3   10    0    0    0    0    0    0    0    0    0    0    0    0    0                             
+                                                                                                        EV N   2  T   3              
+     SHAFT      165    1    0   15    0    0    0    0    0    0    0    0    0    0    0    0    0    0                             
+     VCOMP      265   51   16   96    1    0   16  921   17    0    0    0    0    0    0    0    0    0                             
+     LOOPE      345   51    4   51   96  101    0    0    0    0    0    0    0    0    0    0    0    0                             
+                                                                                                        EV N   3  T   2              
+                                                                                                        EV N   4  T   4              
+     COP        350    1    1   12   16    0    0    0    0    0    0    0    0    0    0    0    0    0                             
+0* NOTE - CARD NUMBERS NOT IN ASCENDING ORDER                                                                                        
+          MAY PRODUCE INVALID CHANGE CASE                                                                                            
+0    STATE/ERROR VARIABLE(S)     4                                                                                                   
+1*AECS*   FR22.DATA      HOME A/C MODEL      TOUT = 55F          03/22/90                                   PAGE        6            
+     2  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+ TABLES            12 REQUIRED                                                                                                       
+0PERMANENT TABLE     1    10                                                                                                         
+0PERMANENT TABLE     2    14                                                                                                         
+0PERMANENT TABLE     2    15                                                                                                         
+0PERMANENT TABLE    22    10                                                                                                         
+0TABLE      3     1                                                                                                                  
+     TITLE/ SIGMA DELTA PRESSURE FAN EXIT TO EXHAUST FLIGHT                                                                          
+0    NDIM     2     IST     0                                                                                                        
+     ARGUMENT 1     TYPE    0     RELN   41     EXTRAP    0     INTERP    0     NPTS    2                                            
+                                                                                                                                     
+              2.20000E+02    3.61280E-03    9.00000E+02    6.32240E-02                                                               
+0TABLE LISTED BELOW IS NOT REQUIRED                                                                                                  
+     *TABID     14   1   1   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0*                                              
+     *TABT   SIGMA DELTA P                                                            *                                              
+     *TABV      0.50                                                                  *                                              
+0TABLE LISTED BELOW IS NOT REQUIRED                                                                                                  
+     *TABID     30   1   1   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0*                                              
+     *TABT   EVAP SIGMA DELTA P                                                       *                                              
+     *TABV      0.50                                                                  *                                              
+0TABLE LISTED BELOW IS NOT REQUIRED                                                                                                  
+     *TABID     56   1   1   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0*                                              
+     *TABT   QLOAD PRESSURE DROP                                                      *                                              
+     *TABV      0.50                                                                  *                                              
+0TABLE LISTED BELOW IS NOT REQUIRED                                                                                                  
+     *TABID     57   1   1   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0*                                              
+     *TABT   QLOAD PRESSURE DROP                                                      *                                              
+     *TABV      0.00                                                                  *                                              
+0TABLE LISTED BELOW IS NOT REQUIRED                                                                                                  
+     *TABID      1   1   2   0   0  41   0   2   0   0   0   0   0   0   0   0   0   0*                                              
+     *TABT   SIGMA DELTA PRESSURE INLET TO CONDENSER  FLIGHT                          *                                              
+     *TABV      150.0     0.0036128 900.0     0.1119968                               *                                              
+0TABLE      2     1                                                                                                                  
+     TITLE/ SIGMA DELTA PRESSURE CONDENSER  FLIGHT                                                                                   
+0    NDIM     2     IST     0                                                                                                        
+     ARGUMENT 1     TYPE    0     RELN   41     EXTRAP    0     INTERP    0     NPTS    3                                            
+                                                                                                                                     
+              5.00000E+01    9.93520E-03    1.00000E+02    2.20281E-02                                                               
+              6.00000E+02    3.61280E-01                                                                                             
+0TABLE LISTED BELOW IS NOT REQUIRED                                                                                                  
+     *TABID     51   5   3   0   0  41 102   5   0  42 102   9   0   0   0   0   0   0*                                              
+     *TABT  LCS HX EFF - LCS SIDE                                                     *                                              
+1*AECS*   FR22.DATA      HOME A/C MODEL      TOUT = 55F          03/22/90                                   PAGE        7            
+     2  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+     *TABV            7.36      14.7      22.1      29.5                              *                                              
+     *TABV            36.9                                                            *                                              
+     *TABV             0.0      20.0      40.0      60.0                              *                                              
+     *TABV            80.0     100.0     120.0     140.0                              *                                              
+     *TABV           160.0                                                            *                                              
+     *TABV             0.0       0.0       0.0       0.0                              *                                              
+     *TABV             0.0      0.82      0.57      0.41                              *                                              
+     *TABV            0.32      0.26      0.93      0.77                              *                                              
+     *TABV            0.62      0.52      0.44      0.96                              *                                              
+     *TABV            0.84      0.72     0.625      0.55                              *                                              
+     *TABV            0.97     0.875     0.775      0.69                              *                                              
+     *TABV            0.62     0.975      0.90      0.81                              *                                              
+     *TABV            0.73      0.66      0.98      0.92                              *                                              
+     *TABV            0.84      0.76      0.70     0.985                              *                                              
+     *TABV            0.93      0.85      0.79     0.725                              *                                              
+     *TABV            0.99      0.94      0.86      0.80                              *                                              
+     *TABV            0.74                                                            *                                              
+0TABLE LISTED BELOW IS NOT REQUIRED                                                                                                  
+     *TABID    151   5   3   0   0  41 102   6   0  42 102   8   0   0   0   0   0   0*                                              
+     *TABT  LCS HX EFF - LCS SIDE                                                     *                                              
+     *TABV            44.2      51.6      59.0      66.4                              *                                              
+     *TABV            73.6      88.5                                                  *                                              
+     *TABV             0.0      60.0      80.0     100.0                              *                                              
+     *TABV           120.0     140.0     160.0     180.0                              *                                              
+     *TABV             0.0       0.0       0.0       0.0                              *                                              
+     *TABV             0.0       0.0      0.48      0.44                              *                                              
+     *TABV            0.40      0.36      0.33      0.28                              *                                              
+     *TABV            0.55      0.50      0.46     0.425                              *                                              
+     *TABV            0.39      0.34      0.60     0.555                              *                                              
+     *TABV            0.51     0.475      0.44     0.388                              *                                              
+     *TABV            0.64     0.595      0.55      0.51                              *                                              
+     *TABV           0.475     0.425      0.67     0.625                              *                                              
+     *TABV            0.58      0.55      0.51     0.455                              *                                              
+     *TABV            0.69      0.65      0.60     0.575                              *                                              
+     *TABV           0.535      0.48      0.71     0.656                              *                                              
+     *TABV            0.64      0.60      0.55      0.50                              *                                              
+0TABLE LISTED BELOW IS NOT REQUIRED                                                                                                  
+     *TABID     51   1   2   0   0  41   1   6   0   0   0   0   0   0   0   0   0   0*                                              
+     *TABT  LCS HX DP - C-25 SIDE                                                     *                                              
+     *TABV            10.0      0.11      30.0      0.30                              *                                              
+     *TABV            50.0      0.65      60.0      0.84                              *                                              
+     *TABV            70.0      1.10     100.0      2.00                              *                                              
+0TABLE LISTED BELOW IS NOT REQUIRED                                                                                                  
+     *TABID     52   1   2   0   0  42   1   4   0   0   0   0   0   0   0   0   0   0*                                              
+     *TABT  DMS HX SDP AIR SIDE                                                       *                                              
+     *TABV           60.00      0.10    100.00      0.22                              *                                              
+     *TABV           150.0      0.42    200.00      0.70                              *                                              
+0TABLE      2     5                                                                                                                  
+     TITLE/    AIR SIDE EFFECTIVENESS FOR REFRIG COND. (LB/MIN)                                                                      
+0    NDIM     2     IST     0                                                                                                        
+     ARGUMENT 1     TYPE    0     RELN   41     EXTRAP    0     INTERP    1     NPTS    2                                            
+1*AECS*   FR22.DATA      HOME A/C MODEL      TOUT = 55F          03/22/90                                   PAGE        8            
+     2  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+                                                                                                                                     
+              0.0            1.00000E+00    3.22000E+02    8.65000E-01                                                               
+0TABLE      4     1                                                                                                                  
+     TITLE/    AIR SIDE PRESS DROP FOR REFRIG EVAP (LB/MIN)                                                                          
+0    NDIM     2     IST     0                                                                                                        
+     ARGUMENT 1     TYPE    0     RELN   41     EXTRAP    0     INTERP    1     NPTS    4                                            
+                                                                                                                                     
+              0.0            0.0            4.00000E+02    5.00000E-03                                                               
+              8.00000E+02    2.00000E-02    1.60000E+03    8.00000E-02                                                               
+0TABLE      5     5                                                                                                                  
+     TITLE/    AIR SIDE BYPSS FACTOR FOR REFRIG EVAP (LB/MIN)                                                                        
+0    NDIM     2     IST     0                                                                                                        
+     ARGUMENT 1     TYPE    0     RELN   41     EXTRAP    0     INTERP    1     NPTS    2                                            
+                                                                                                                                     
+              0.0            0.0            8.95000E+01    1.05000E-01                                                               
+0TABLE LISTED BELOW IS NOT REQUIRED                                                                                                  
+     *TABID     66   2   2   0   0  42   1   2   0   0   0   0   0   0   0   0   0   0*                                              
+     *TABT      REFRIG SIDE PRESS DROP FOR REFRIG EVAP (CFM OF VAPOR)                 *                                              
+     *TABV      0.0       0.0       100.0     0.50                                    *                                              
+0TABLE      6     2                                                                                                                  
+     TITLE/    REFRIG SIDE PRESS DROP FOR REFRIG EVAP (CFM OF VAPOR)                                                                 
+0    NDIM     1                                                                                                                      
+     VALUE =  0.0                                                                                                                    
+0TABLE LISTED BELOW IS NOT REQUIRED                                                                                                  
+     *TABID      1  61   2   0   0 102 101   2   0   0   0   0   0   0   0   0   0   0*                                              
+     *TABT      NRCL PRESSURE DROP COLD SIDE                                          *                                              
+     *TABV      0.0       0.0       300.0     1.00                                    *                                              
+0TABLE LISTED BELOW IS NOT REQUIRED                                                                                                  
+     *TABID      1  62   2   0   0 101 101   2   0   0   0   0   0   0   0   0   0   0*                                              
+     *TABT      NRCL PRESSURE DROP HOT SIDE                                           *                                              
+     *TABV      0.0       0.0       300.0     1.00                                    *                                              
+0TABLE LISTED BELOW IS NOT REQUIRED                                                                                                  
+     *TABID      1  99   2   0   1   1 101  10   0   0   0   0   0   0   0   0   0   0*                                              
+     *TABT      NRCL HOT SIDE NHA                                                     *                                              
+     *TABV      2.0       1.75      3.0       2.58333                                 *                                              
+     *TABV      5.0       3.58333   7.0       4.41667                                 *                                              
+     *TABV      10.0      5.500     15.0      7.250                                   *                                              
+     *TABV      20.0      8.83333   30.0      10.3333                                 *                                              
+     *TABV      40.0      15.3333   43.0      16.6667                                 *                                              
+0TABLE LISTED BELOW IS NOT REQUIRED                                                                                                  
+     *TABID      2  99   2   0   1  11 101  11   0   0   0   0   0   0   0   0   0   0*                                              
+     *TABT      NRCL COLD SIDE NHA                                                    *                                              
+     *TABV      2.0       1.06667   3.0       1.300                                   *                                              
+     *TABV      5.0       1.66667   7.0       2.08333                                 *                                              
+     *TABV      10.0      2.41667   15.0      3.08333                                 *                                              
+1*AECS*   FR22.DATA      HOME A/C MODEL      TOUT = 55F          03/22/90                                   PAGE        9            
+     2  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+     *TABV      20.0      3.66667   25.0      4.2500                                  *                                              
+     *TABV      33.0      5.00      40.0      5.66667                                 *                                              
+     *TABV      50.0      6.16667                                                     *                                              
+0TABLE LISTED BELOW IS NOT REQUIRED                                                                                                  
+     *TABID      1   4   1   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0*                                              
+     *TABT   ORIF COEFFICIENT                                                         *                                              
+     *TABV      0.90                                                                  *                                              
+0TABLE LISTED BELOW IS NOT REQUIRED                                                                                                  
+     *TABID      1  13   1   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0*                                              
+     *TABT   HEAT LOAD                                                                *                                              
+     *TABV      2000.00                                                               *                                              
+0TABLE LISTED BELOW IS NOT REQUIRED                                                                                                  
+     *TABID      2  13   2   0   0 120 101   8   0   0   0   0   0   0   0   0   0   0*                                              
+     *TABT   FAN HEAT LOAD                                                            *                                              
+     *TABV      1500.0    597.8     1600.0    603.0                                   *                                              
+     *TABV      1700.0    620.9     1800.0    634.6                                   *                                              
+     *TABV      1900.0    645.1     2000.0    652.9                                   *                                              
+     *TABV      2100.0    658.5     2200.0    662.3                                   *                                              
+0TABLE LISTED BELOW IS NOT REQUIRED                                                                                                  
+     *TABID     33  13   1   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0*                                              
+     *TABT   LCS HEAT LOAD KW MAX                                                     *                                              
+     *TABV       5.35                                                                 *                                              
+0TABLE LISTED BELOW IS NOT REQUIRED                                                                                                  
+     *TABID      3  13   1   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0*                                              
+     *TABT   LCS HEAT LOAD KW SS                                                      *                                              
+     *TABV       3.60                                                                 *                                              
+0TABLE LISTED BELOW IS NOT REQUIRED                                                                                                  
+     *TABID      1   6   1   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0*                                              
+     *TABT   COMP ADIBATIC EFF                                                        *                                              
+     *TABV      0.65                                                                  *                                              
+0TABLE LISTED BELOW IS NOT REQUIRED                                                                                                  
+     *TABID      1  44   1   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0*                                              
+     *TABT   COMP ENTHALPY RISE                                                       *                                              
+     *TABV      011.70                                                                *                                              
+0TABLE LISTED BELOW IS NOT REQUIRED                                                                                                  
+     *TABID    121   6   2   0   0 105 101  10   0   0   0   0   0   0   0   0   0   0*                                              
+     *TABT   COMP ADIBATIC EFF.                                                       *                                              
+     *TABV      52.50     0.65      56.60     0.66                                    *                                              
+     *TABV      59.40     0.67      62.00     0.68                                    *                                              
+     *TABV      64.20     0.69      65.80     0.70                                    *                                              
+     *TABV      67.20     0.71      69.50     0.71                                    *                                              
+     *TABV      70.80     0.70      72.20     0.69                                    *                                              
+0TABLE LISTED BELOW IS NOT REQUIRED                                                                                                  
+     *TABID    122  99   2   0   0 105 101  10   0   0   0   0   0   0   0   0   0   0*                                              
+     *TABT   COMP ADIBATIC EFF.                                                       *                                              
+     *TABV      52.50     0.65      56.60     0.66                                    *                                              
+     *TABV      59.40     0.67      62.00     0.68                                    *                                              
+1*AECS*   FR22.DATA      HOME A/C MODEL      TOUT = 55F          03/22/90                                   PAGE       10            
+     2  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+     *TABV      64.20     0.69      65.80     0.70                                    *                                              
+     *TABV      67.20     0.71      69.50     0.71                                    *                                              
+     *TABV      70.80     0.70      72.20     0.69                                    *                                              
+0TABLE LISTED BELOW IS NOT REQUIRED                                                                                                  
+     *TABID     21  44   2   0   0 105 101   6   0   0   0   0   0   0   0   0   0   0*                                              
+     *TABT   COMP ENTHALPY RISE                                                       *                                              
+     *TABV      52.50     11.85     67.20     11.75                                   *                                              
+     *TABV      69.50     11.70     70.80     11.60                                   *                                              
+     *TABV      71.80     11.25     72.20     9.0                                     *                                              
+0TABLE LISTED BELOW IS NOT REQUIRED                                                                                                  
+     *TABID    123  99   2   0   0 105 101   6   0   0   0   0   0   0   0   0   0   0*                                              
+     *TABT   COMP ENTHALPY RISE                                                       *                                              
+     *TABV      52.50     11.85     67.20     11.75                                   *                                              
+     *TABV      69.50     11.70     70.80     11.60                                   *                                              
+     *TABV      71.80     11.25     72.20     9.0                                     *                                              
+0TABLE LISTED BELOW IS NOT REQUIRED                                                                                                  
+     *TABID     21  99   2   0   0 105 101   5   0   0   0   0   0   0   0   0   0   0*                                              
+     *TABT   COMP PRESSURE RISE                                                       *                                              
+     *TABV      52.50     6.75      64.20     6.65                                    *                                              
+     *TABV      69.50     6.55      70.80     6.45                                    *                                              
+     *TABV      72.20     5.70                                                        *                                              
+0TABLE LISTED BELOW IS NOT REQUIRED                                                                                                  
+     *TABID     22  44   2   0   0  28 101   6   0   0   0   0   0   0   0   0   0   0*                                              
+     *TABT   COMP ENTHALPY RISE                                                       *                                              
+     *TABV      120.0     11.85     155.0     11.75                                   *                                              
+     *TABV      157.0     11.70     160.0     11.60                                   *                                              
+     *TABV      162.5     11.25     163.0     9.0                                     *                                              
+0TABLE LISTED BELOW IS NOT REQUIRED                                                                                                  
+     *TABID     23  99   2   0   0  28 101   6   0   0   0   0   0   0   0   0   0   0*                                              
+     *TABT   COMP ENTHALPY RISE                                                       *                                              
+     *TABV      120.0     11.85     155.0     11.75                                   *                                              
+     *TABV      157.0     11.70     160.0     11.60                                   *                                              
+     *TABV      162.5     11.25     163.0     9.0                                     *                                              
+0TABLE LISTED BELOW IS NOT REQUIRED                                                                                                  
+     *TABID     21   6   2   0   0  28 101  10   0   0   0   0   0   0   0   0   0   0*                                              
+     *TABT   COMP ADIBATIC EFF.                                                       *                                              
+     *TABV      120.0     0.65      128.0     0.66                                    *                                              
+     *TABV      133.5     0.67      140.0     0.68                                    *                                              
+     *TABV      145.0     0.69      149.0     0.70                                    *                                              
+     *TABV      152.0     0.71      157.0     0.71                                    *                                              
+     *TABV      160.0     0.70      163.0     0.69                                    *                                              
+0TABLE    921     6                                                                                                                  
+     TITLE/ COMP ADIBATIC EFF.                                                                                                       
+0    NDIM     1                                                                                                                      
+     VALUE =  8.00000E-01                                                                                                            
+0TABLE LISTED BELOW IS NOT REQUIRED                                                                                                  
+     *TABID     22  99   2   0   0  28 101  10   0   0   0   0   0   0   0   0   0   0*                                              
+1*AECS*   FR22.DATA      HOME A/C MODEL      TOUT = 55F          03/22/90                                   PAGE       11            
+     2  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+     *TABT   COMP ADIBATIC EFF.                                                       *                                              
+     *TABV      120.0     0.65      128.0     0.66                                    *                                              
+     *TABV      133.5     0.67      140.0     0.68                                    *                                              
+     *TABV      145.0     0.69      149.0     0.70                                    *                                              
+     *TABV      152.0     0.71      157.0     0.71                                    *                                              
+     *TABV      160.0     0.70      163.0     0.69                                    *                                              
+0TABLE LISTED BELOW IS NOT REQUIRED                                                                                                  
+     *TABID      1   8   2   3   0  59   2  13   0   0   0   0   0   0   0   0   0   0*                                              
+     *TABT   COMP SPECIFIC DIAMETER DIA = F(NS)                                       *                                              
+     *TABV      0.2       17.0      0.3       9.5                                     *                                              
+     *TABV      0.4       7.0       0.5       5.5                                     *                                              
+     *TABV      0.6       4.6       0.7       4.0                                     *                                              
+     *TABV      0.8       3.7       0.9       3.3                                     *                                              
+     *TABV      1.0       3.0       2.0       2.0                                     *                                              
+     *TABV      10.0      1.0       20.0      0.62                                    *                                              
+     *TABV      30.0      0.4                                                         *                                              
+0TABLE LISTED BELOW IS NOT REQUIRED                                                                                                  
+     *TABID    999   0   2   0   0   1   0   8   0   0   0   0   0   0   0   0   0   0*                                              
+     *TABT  WEIGHING FACTOR - REAL SLOW                                       00000900*                                              
+     *TABV      1.0       0.01      16.0      0.1                             00001000*                                              
+     *TABV      21.0      0.3       25.0      0.5                             00001100*                                              
+     *TABV      38.0      0.7       43.0      0.8                             00001200*                                              
+     *TABV      48.0      0.9       53.0      1.0                             00001200*                                              
+0TABLE LISTED BELOW IS NOT REQUIRED                                                                                                  
+     *TABID    999   0   2   0   0   1   0   6   0   0   0   0   0   0   0   0   0   0*                                              
+     *TABT  WEIGHING FACTOR - SLOWER                                          00000900*                                              
+     *TABV      1.0       0.001     06.0      0.005                           00001000*                                              
+     *TABV      11.0      0.02      15.0      0.05                            00001100*                                              
+     *TABV      18.0      0.07      23.0      0.10                            00001200*                                              
+0TABLE      1     0                                                                                                                  
+     TITLE/WEIGHING FACTOR - RELATIVELY FREON FAST                           00000900                                                
+0    NDIM     1                                                                                                                      
+     VALUE =  1.00000E+00                                                                                                            
+0TABLE LISTED BELOW IS NOT REQUIRED                                                                                                  
+     *TABID      1  50  -1   0   0   0   0   4   0   0   0   0   0   0   0   0   0   0*                                              
+     *TABT  STATE VARIABLE SCALE                                              00000900*                                              
+     *TABV      8.        100.      40.       1.                              00001000*                                              
+0TABLE LISTED BELOW IS NOT REQUIRED                                                                                                  
+     *TABID      1  51  -1   0   0   0   0   4   0   0   0   0   0   0   0   0   0   0*                                              
+     *TABT  ERROR VARIABLE SCALE                                              00000900*                                              
+     *TABV      1.        1.        2.        0.5                             00001000*                                              
+1*AECS*   FR22.DATA      HOME A/C MODEL      TOUT = 55F          03/22/90                                   PAGE       12            
+     2  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+ TIME P       5.00                                                                                                                   
+0SVT                                                                                                                                 
+ (   1)    2 (   2)   10 (   3)    6 (   4)    1                                                                                     
+0EVT                                                                                                                                 
+ (   1)    2 (   2)    3 (   3)    2 (   4)    4                                                                                     
+0PASS      1                                                                                                                         
+0S.V.                                                                                                                                
+ (   1) 2.04843E+02 (   2) 1.32876E+02 (   3) 2.13496E+00 (   4) 8.00000E+01                                                         
+0E.V.                                                                                                                                
+ (   1)-3.17974E+01 (   2) 2.73633E+00 (   3) 2.35229E-01 (   4)-1.40656E-01                                                         
+0W                                                                                                                                   
+ ( 151) 8.00000E+01 (  51) 8.00000E+00 ( 221) 8.00000E+01 (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+ (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+ (   0) 0.0         (   0) 0.0         (   0) 0.0                                                                                    
+0P                                                                                                                                   
+ ( 102) 1.47000E+01 (   4) 2.04843E+02 (  96) 2.04608E+02 (   8) 2.04840E+02 ( 106) 1.46896E+01 (  12) 6.82026E+01                   
+ ( 202) 1.47000E+01 (  16) 6.82026E+01 ( 206) 1.46990E+01 (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+ (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+ (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+ (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+ (   0) 0.0                                                                                                                          
+0T                                                                                                                                   
+ ( 102) 5.30000E+02 (   4) 5.57679E+02 (  96) 6.60318E+02 (   8) 5.57679E+02 ( 106) 5.56750E+02 (  12) 4.88589E+02                   
+ ( 202) 5.37500E+02 (  16) 5.40995E+02 ( 206) 5.17736E+02 (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+ (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+ (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+ (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+ (   0) 0.0                                                                                                                          
+0H                                                                                                                                   
+ ( 102) 0.0         (   4) 1.32876E+02 (  96) 1.33017E+02 (   8) 6.86527E+01 ( 106) 0.0         (  12) 6.86527E+01                   
+ ( 202) 0.0         (  16) 1.16116E+02 ( 206) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+ (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+ (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+ (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+ (   0) 0.0                                                                                                                          
+0MATRIX                                                                                                                              
+0EQ.    1                                                                                                                            
+  0.10000E+01 0.0        -0.64000E+02 0.0         0.31797E+02                                                                        
+0EQ.    2                                                                                                                            
+ -0.30975E+00 0.41143E+00-0.17151E+01 0.24099E+00-0.27363E+01                                                                        
+0EQ.    3                                                                                                                            
+ -0.20000E+01 0.0         0.19200E+03 0.0        -0.23523E+00                                                                        
+1*AECS*   FR22.DATA      HOME A/C MODEL      TOUT = 55F          03/22/90                                   PAGE       13            
+     2  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+0EQ.    4                                                                                                                            
+  0.10596E+00 0.98726E+00-0.58741E+01-0.16587E-01 0.14066E+00                                                                        
+0ALTERS                                                                                                                              
+ (   1) 9.51569E+01 (   2)-2.13605E+00 (   3) 9.89993E-01 (   4) 1.21646E+02                                                         
+0PASS      7                                                                                                                         
+0S.V.                                                                                                                                
+ (   1) 3.00000E+02 (   2) 1.29895E+02 (   3) 3.12496E+00 (   4) 1.21333E+02                                                         
+0E.V.                                                                                                                                
+ (   1)-1.22070E-04 (   2) 0.0         (   3) 2.44141E-04 (   4)-4.42505E-04                                                         
+1*AECS*   FR22.DATA      HOME A/C MODEL      TOUT = 55F          03/22/90                                   PAGE       18            
+     2  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+0W                                                                                                                                   
+ ( 151) 8.00000E+01 (  51) 8.00000E+00 ( 221) 1.21333E+02 (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+ (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+ (   0) 0.0         (   0) 0.0         (   0) 0.0                                                                                    
+0P                                                                                                                                   
+ ( 102) 1.47000E+01 (   4) 3.00000E+02 (  96) 3.00000E+02 (   8) 2.99997E+02 ( 106) 1.46895E+01 (  12) 9.99999E+01                   
+ ( 202) 1.47000E+01 (  16) 9.99999E+01 ( 206) 1.46985E+01 (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+ (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+ (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+ (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+ (   0) 0.0                                                                                                                          
+0T                                                                                                                                   
+ ( 102) 5.30000E+02 (   4) 5.86674E+02 (  96) 6.60211E+02 (   8) 5.34739E+02 ( 106) 5.70776E+02 (  12) 5.10457E+02                   
+ ( 202) 5.37500E+02 (  16) 5.37643E+02 ( 206) 5.15000E+02 (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+ (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+ (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+ (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+ (   0) 0.0                                                                                                                          
+0H                                                                                                                                   
+ ( 102) 0.0         (   4) 1.29895E+02 (  96) 1.29896E+02 (   8) 3.19982E+01 ( 106) 0.0         (  12) 3.19982E+01                   
+ ( 202) 0.0         (  16) 1.13950E+02 ( 206) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+ (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+ (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+ (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+ (   0) 0.0                                                                                                                          
+1*AECS*   FR22.DATA      HOME A/C MODEL      TOUT = 55F          03/22/90                                   PAGE       19            
+     2  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+0COMPONENT ATM                 TABLE     -2   -14 VALUE =  1.01040E+01 ARGUMENT(S)  1.00000E+04                                      
+0COMPONENT ATM                 TABLE     -2   -15 VALUE =  5.25436E+02 ARGUMENT(S)  1.00000E+04                                      
+0COMPONENT COND                TABLE      2     5 VALUE =  9.66460E-01 ARGUMENT(S)  8.00000E+01                                      
+0COMPONENT COND   EXTRAPOLATED TABLE      3     1 VALUE =  3.61280E-03 ARGUMENT(S)  8.00000E+01                                      
+0COMPONENT COND                TABLE      2     1 VALUE =  9.93520E-03 ARGUMENT(S)  8.00000E+01                                      
+0COMPONENT COND                                                                                                                      
+0     NL      51   NSI      4   NSO      8   FT       3   FN     -22                                                                 
+0     W     8.00   PI  300.00   PO  300.00   TI  586.67   TO  534.74   HI129.8952   HO 31.9982                                       
+ *-* SATURATED REFRIGERANT LIQUID OUTLET ENTHALPY =  48.0359                                                                         
+0     NL     151   NSI    102   NSO    106   FT       2   FN      -1                                                                 
+0     W    80.00   PI   14.70   PO   14.69   TI  530.00   TO  570.78   HI  0.0      HO  0.0                                          
+0     EFF 0.7195   Q   783.18                                                                                                        
+0COMPONENT CVALVE                                                                                                                    
+0     NL      51   NSI      8   NSO     12   FT       3   FN     -22                                                                 
+0     W     8.00   PI  300.00   PO  100.00   TI  534.74   TO  510.46   HI 31.9982   HO 31.9982                                       
+0     K   3.124959E+00                                                                                                               
+0COMPONENT EVAP   EXTRAPOLATED TABLE      5     5 VALUE =  1.42346E-01 ARGUMENT(S)  1.21333E+02                                      
+0COMPONENT EVAP                TABLE      4     1 VALUE =  1.51667E-03 ARGUMENT(S)  1.21333E+02                                      
+0COMPONENT EVAP                                                                                                                      
+0     NL      51   NSI     12   NSO     16   FT       3   FN     -22                                                                 
+0     W     8.00   PI  100.00   PO  100.00   TI  510.46   TO  537.64   HI 31.9982   HO113.9503                                       
+0     NL     221   NSI    202   NSO    206   FT       2   FN      -1                                                                 
+0     W   121.33   PI   14.70   PO   14.70   TI  537.50   TO  515.00   HI  0.0      HO  0.0                                          
+0      BYPASS FACTOR 0.1680   Q   655.62                                                                                             
+0COMPONENT SHAFT                                                                                                                     
+0     SHAFT    1   N   23300.                                                                                                        
+0COMPONENT VCOMP                                                                                                                     
+0     NL      51   NSI     16   NSO     96   FT       3   FN     -22                                                                 
+1*AECS*   FR22.DATA      HOME A/C MODEL      TOUT = 55F          03/22/90                                   PAGE       20            
+     2  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+0     W     8.00   PI  100.00   PO  300.00   TI  537.64   TO  660.21   HI113.9503   HO129.8956                                       
+0     SHAFT    1   PR  3.0000   EFF 0.8000   HP   -3.01   HGI 109.01   QUALIN 1.06                                                   
+0COEFFICIENT OF PERFORMANCE = 5.140                                                                                                  
+ EVAPORATOR STATIONS          12                                                                                                     
+ VAPOR COMPRESSOR STATIONS  16                                                                                                       
+1*AECS*   FR22.DATA      HOME A/C MODEL      TOUT = 55F          03/22/90                                   PAGE       21            
+     2  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+ TIME E       5.00                                                                                                                   
+0FLOW RATE(S)-LB/MIN                                                                                                                 
+                                                                                                                                     
+ (  51)    8.00 ( 151)   80.00 ( 221)  121.33 (   0)    0.0  (   0)    0.0  (   0)    0.0                                            
+ (   0)    0.0  (   0)    0.0  (   0)    0.0  (   0)    0.0  (   0)    0.0  (   0)    0.0                                            
+ (   0)    0.0  (   0)    0.0  (   0)    0.0                                                                                         
+0PRESSURE(S)-PSI                                                                                                                     
+                                                                                                                                     
+ (   4)  300.00 (   8)  300.00 (  12)  100.00 (  16)  100.00 (  96)  300.00 ( 102)   14.70                                           
+ ( 106)   14.69 ( 202)   14.70 ( 206)   14.70 (   0)    0.0  (   0)    0.0  (   0)    0.0                                            
+ (   0)    0.0  (   0)    0.0  (   0)    0.0  (   0)    0.0  (   0)    0.0  (   0)    0.0                                            
+ (   0)    0.0  (   0)    0.0  (   0)    0.0  (   0)    0.0  (   0)    0.0  (   0)    0.0                                            
+ (   0)    0.0  (   0)    0.0  (   0)    0.0  (   0)    0.0  (   0)    0.0  (   0)    0.0                                            
+ (   0)    0.0                                                                                                                       
+0TEMPERATURE(S)-DEG R                                                                                                                
+                                                                                                                                     
+ (   4)  586.67 (   8)  534.74 (  12)  510.46 (  16)  537.64 (  96)  660.21 ( 102)  530.00                                           
+ ( 106)  570.78 ( 202)  537.50 ( 206)  515.00 (   0)    0.0  (   0)    0.0  (   0)    0.0                                            
+ (   0)    0.0  (   0)    0.0  (   0)    0.0  (   0)    0.0  (   0)    0.0  (   0)    0.0                                            
+ (   0)    0.0  (   0)    0.0  (   0)    0.0  (   0)    0.0  (   0)    0.0  (   0)    0.0                                            
+ (   0)    0.0  (   0)    0.0  (   0)    0.0  (   0)    0.0  (   0)    0.0  (   0)    0.0                                            
+ (   0)    0.0                                                                                                                       
+0HUMIDITY(S)/ENTHALPY(S)-LBW/LBA / BTU/LB                                                                                            
+                                                                                                                                     
+ (   4)129.8952 (   8) 31.9982 (  12) 31.9982 (  16)113.9503 (  96)129.8956 ( 102)  0.0                                              
+ ( 106)  0.0    ( 202)  0.0    ( 206)  0.0    (   0)  0.0    (   0)  0.0    (   0)  0.0                                              
+ (   0)  0.0    (   0)  0.0    (   0)  0.0    (   0)  0.0    (   0)  0.0    (   0)  0.0                                              
+ (   0)  0.0    (   0)  0.0    (   0)  0.0    (   0)  0.0    (   0)  0.0    (   0)  0.0                                              
+ (   0)  0.0    (   0)  0.0    (   0)  0.0    (   0)  0.0    (   0)  0.0    (   0)  0.0                                              
+ (   0)  0.0                                                                                                                         
+0STATE VARIABLE TYPE(S)                                                                                                              
+ (   1)    2 (   2)   10 (   3)    6 (   4)    1                                                                                     
+0STATE VARIABLE(S)                                                                                                                   
+ (   1) 3.00000E+02 (   2) 1.29895E+02 (   3) 3.12496E+00 (   4) 1.21333E+02                                                         
+0ERROR VARIABLE TYPE(S)                                                                                                              
+ (   1)    2 (   2)    3 (   3)    2 (   4)    4                                                                                     
+0ERROR VARIABLE(S)                                                                                                                   
+ (   1)-1.22070E-04 (   2) 0.0         (   3) 2.44141E-04 (   4)-4.42505E-04                                                         
+0SOLUTION CONVERGED IN      6 TRY(S)                                                                                                 
+0     0 ERROR(S) DETECTED                                                                                                            
+0CASE END                                                                                                                            
+1                                                                                                                                    
+1                                                                                                                                    
+0                                                                                                                                    
+0                                                                                                                                    
+0                    END OF JOB                                                                                                      
+C$$$  SUPERHEAT CASE                                                                                                                 
+1                                                                                                                                    
+ CCN =   CI                                                                                                                          
+ V = COMMON    CI   76   40                                                                                                          
+ *COMMON  CI   76   40                                                            *                                                  
+ *DUMP          3                                                                 *                                                  
+1*AECS* GENERAL ECS PROGRAM                                                                                 PAGE        1            
+     1  CASE PERFOR                                                                                         DATE TODAY               
+                                                                                                                                     
+ TIME M       5.00 SEC.                                                                                                              
+ *** NO GO CASE ***                                                                                                                  
+1                                                                                                                                    
+1*AECS* GENERAL ECS PROGRAM                                                                                 PAGE        1            
+     2  CASE PCHANG                                                                                         DATE TODAY               
+                                                                                                                                     
+ TIME M       5.00 SEC.                                                                                                              
+ CHANGE*PCHANGE                                                                         *                                            
+ CHANGE*TITLE   FR22.DATA      HOME A/C MODEL      TOUT = 55F          03/22/90         *                                            
+ CHANGE*TITEND                                                                          *                                            
+ CHANGE*CASEND                                                                          *                                            
+ CHANGE*PAREND                                                                          *                                            
+ CHANGE*COMEND                                                                          *                                            
+ CHANGE*ENDCASE                                                                         *                                            
+1*AECS*   FR22.DATA      HOME A/C MODEL      TOUT = 55F          03/22/90                                   PAGE        2            
+     2  CASE PCHANG                                                                                         DATE TODAY               
+                                                                                                                                     
+ TIME Z       5.00                                                                                                                   
+0       FR22.DATA      HOME A/C MODEL      TOUT = 55F          03/22/90                                                              
+1*AECS*   FR22.DATA      HOME A/C MODEL      TOUT = 55F          03/22/90                                   PAGE        3            
+     2  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+0          CASE                     15 LEG(S)            31 STATION(S)                                                               
+0ATM P TABLE     -2                                                                                                                  
+0ATM T TABLE     -2                                                                                                                  
+0ATM PROP TABLE     -1                                                                                                               
+0ALTITUDE     10000.                                                                                                                 
+0MACH NUMBER  0.500                                                                                                                  
+0WATER PROP TABLE     -2                                                                                                             
+1*AECS*   FR22.DATA      HOME A/C MODEL      TOUT = 55F          03/22/90                                   PAGE        4            
+     2  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+ PARAMETER TABLE        53 VALUE(S)                                                                                                  
+                                                                                                                                     
+ (   1) 8.00000E+01 (   2) 1.47000E+01 (   3) 5.30000E+02 (   4) 0.0         (   5) 8.00000E+01 (   6) 1.47000E+01                   
+ (   7) 5.37500E+02 (   8) 0.0         (   9) 1.00000E+02 (  10) 5.15000E+02 (  11) 8.00000E+00 (  12) 2.04843E+02                   
+ (  13) 6.60000E+02 (  14) 1.32876E+02 (  15) 2.33000E+04 (  16) 3.00000E+00 (  17) 9.50000E-01 (  18) 1.86180E+01                   
+ (  19) 2.00000E-01 (  20) 0.0         (  21) 1.00000E+75 (  22) 1.00000E+75 (  23) 1.00000E+75 (  24) 1.00000E+75                   
+ (  25) 1.00000E+75 (  26) 1.00000E+75 (  27) 1.00000E+75 (  28) 1.00000E+75 (  29) 1.00000E+75 (  30) 1.00000E+75                   
+ (  31) 3.50000E+01 (  32) 1.32100E+01 (  33) 4.93520E+02 (  34) 7.48907E+01 (  35) 1.00000E-01 (  36) 2.13496E+00                   
+ (  37) 2.00000E-01 (  38) 0.0         (  39) 0.0         (  40) 1.00000E+75 (  41) 1.00000E+75 (  42) 1.00000E+75                   
+ (  43) 1.00000E+75 (  44) 1.00000E+75 (  45) 2.00000E-01 (  46) 5.00000E+00 (  47) 1.00000E-02 (  48) 1.25000E+00                   
+ (  49) 5.68690E+01 (  50) 5.00000E+00 (  51) 0.0         (  52) 0.0         (  53) 0.0                                              
+1*AECS*   FR22.DATA      HOME A/C MODEL      TOUT = 55F          03/22/90                                   PAGE        5            
+     2  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+ COMPONENT(S)                                                                                                                        
+0    1    6  8   12   16   20   24   28   32   36   40   44   48   52   56   60   64   68   72   76   80                             
+                                                                                                                                     
+     INLET       15  151  102    0    1    2    3    4    2   -1    0    0    0    0    0    0    0    0                             
+     LOOPS       30   51    4   51   96    3  -22  101   11   12   13   14    0    0    0    0    0    0                             
+                                                                                                        SV N   1  T   2              
+                                                                                                        SV N   2  T  10              
+     COND        35   51    4    8  151  102  106    1    2    2    3   19    0    0    0    0    0    0                             
+     CVALVE      75   51    8   12    0   35   36    0    0    0    0    0    0    0    0    0    0    0                             
+                                                                                                        SV N   3  T   6              
+     INLET       15  221  202 1000    5    6    7    8    2   -1    0    0    0    0    0    0    0    0                             
+                                                                                                        SV N   4  T   1              
+     EVAP        85   51   12   16  221  202  206    0    4    5   46    6   45    0    0    0    0    0                             
+     SENSOR     105   51   16    5   50    0    0    0    0    0    0    0    0    0    0    0    0    0                             
+                                                                                                        EV N   1  T   5              
+     SENSOR     106  221  206    3   10    0    0    0    0    0    0    0    0    0    0    0    0    0                             
+                                                                                                        EV N   2  T   3              
+     SHAFT      165    1    0   15    0    0    0    0    0    0    0    0    0    0    0    0    0    0                             
+     VCOMP      265   51   16   96    1    0   16  921   17    0    0    0    0    0    0    0    0    0                             
+     LOOPE      345   51    4   51   96  101    0    0    0    0    0    0    0    0    0    0    0    0                             
+                                                                                                        EV N   3  T   2              
+                                                                                                        EV N   4  T   4              
+     COP        350    1    1   12   16    0    0    0    0    0    0    0    0    0    0    0    0    0                             
+0* NOTE - CARD NUMBERS NOT IN ASCENDING ORDER                                                                                        
+          MAY PRODUCE INVALID CHANGE CASE                                                                                            
+0    STATE/ERROR VARIABLE(S)     4                                                                                                   
+1*AECS*   FR22.DATA      HOME A/C MODEL      TOUT = 55F          03/22/90                                   PAGE        6            
+     2  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+0TABLE      1     0                                                                                                                  
+     TITLE/WEIGHING FACTOR - REAL SLOW                                       00000900                                                
+0    NDIM     2     IST     0                                                                                                        
+     ARGUMENT 1     TYPE    0     RELN    1     EXTRAP    0     INTERP    0     NPTS    8                                            
+                                                                                                                                     
+              1.00000E+00    1.00000E-02    1.60000E+01    1.00000E-01                                                               
+              2.10000E+01    3.00000E-01    2.50000E+01    5.00000E-01                                                               
+              3.80000E+01    7.00000E-01    4.30000E+01    8.00000E-01                                                               
+              4.80000E+01    9.00000E-01    5.30000E+01    1.00000E+00                                                               
+0TABLE LISTED BELOW IS NOT REQUIRED                                                                                                  
+     *TABID    999   0   1   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0*                                              
+     *TABT  WEIGHING FACTOR - RELATIVELY FREON FAST                           00000900*                                              
+     *TABV      1.0                                                           00001000*                                              
+                                                                                                                                     
+ TIME P       5.00                                                                                                                   
+0SVT                                                                                                                                 
+ (   1)    2 (   2)   10 (   3)    6 (   4)    1                                                                                     
+0EVT                                                                                                                                 
+ (   1)    5 (   2)    3 (   3)    2 (   4)    4                                                                                     
+0PASS      1                                                                                                                         
+0S.V.                                                                                                                                
+ (   1) 2.04843E+02 (   2) 1.32876E+02 (   3) 2.13496E+00 (   4) 8.00000E+01                                                         
+0E.V.                                                                                                                                
+ (   1) 4.72608E+01 (   2) 2.73633E+00 (   3) 2.35229E-01 (   4)-1.40656E-01                                                         
+0W                                                                                                                                   
+ ( 151) 8.00000E+01 (  51) 8.00000E+00 ( 221) 8.00000E+01 (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+ (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+ (   0) 0.0         (   0) 0.0         (   0) 0.0                                                                                    
+0P                                                                                                                                   
+ ( 102) 1.47000E+01 (   4) 2.04843E+02 (  96) 2.04608E+02 (   8) 2.04840E+02 ( 106) 1.46896E+01 (  12) 6.82026E+01                   
+ ( 202) 1.47000E+01 (  16) 6.82026E+01 ( 206) 1.46990E+01 (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+ (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+ (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+ (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+ (   0) 0.0                                                                                                                          
+0T                                                                                                                                   
+ ( 102) 5.30000E+02 (   4) 5.57679E+02 (  96) 6.60318E+02 (   8) 5.57679E+02 ( 106) 5.56750E+02 (  12) 4.88589E+02                   
+ ( 202) 5.37500E+02 (  16) 5.40995E+02 ( 206) 5.17736E+02 (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+ (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+ (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+ (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+ (   0) 0.0                                                                                                                          
+0H                                                                                                                                   
+ ( 102) 0.0         (   4) 1.32876E+02 (  96) 1.33017E+02 (   8) 6.86527E+01 ( 106) 0.0         (  12) 6.86527E+01                   
+ ( 202) 0.0         (  16) 1.16116E+02 ( 206) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+ (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+ (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+ (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+ (   0) 0.0                                                                                                                          
+0MATRIX                                                                                                                              
+0EQ.    1                                                                                                                            
+ -0.10073E+01 0.69223E-01 0.50315E+02 0.80458E-01-0.47261E+02                                                                        
+0EQ.    2                                                                                                                            
+ -0.30975E+00 0.41143E+00-0.17151E+01 0.24099E+00-0.27363E+01                                                                        
+0EQ.    3                                                                                                                            
+ -0.20000E+01 0.0         0.19200E+03 0.0        -0.23523E+00                                                                        
+1*AECS*   FR22.DATA      HOME A/C MODEL      TOUT = 55F          03/22/90                                   PAGE       13            
+     2  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+0EQ.    4                                                                                                                            
+  0.10596E+00 0.98726E+00-0.58741E+01-0.16587E-01 0.14066E+00                                                                        
+0ALTERS                                                                                                                              
+ (   1) 1.24328E+02 (   2)-2.77427E+00 (   3) 1.29386E+00 (   4) 1.62393E+02                                                         
+C$     PASSES DELETED                                                                                                                
+C$     PASSES DELETED                                                                                                                
+C$     PASSES DELETED                                                                                                                
+C$     PASSES DELETED                                                                                                                
+0PASS     33                                                                                                                         
+0S.V.                                                                                                                                
+ (   1) 3.05243E+02 (   2) 1.24928E+02 (   3) 3.17958E+00 (   4) 1.14939E+02                                                         
+0E.V.                                                                                                                                
+ (   1)-4.98581E-03 (   2) 3.17383E-03 (   3) 0.0         (   4) 7.50732E-03                                                         
+0W                                                                                                                                   
+ ( 151) 8.00000E+01 (  51) 8.00000E+00 ( 221) 1.14939E+02 (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+ (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+ (   0) 0.0         (   0) 0.0         (   0) 0.0                                                                                    
+1*AECS*   FR22.DATA      HOME A/C MODEL      TOUT = 55F          03/22/90                                   PAGE       43            
+     2  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+0P                                                                                                                                   
+ ( 102) 1.47000E+01 (   4) 3.05243E+02 (  96) 3.05243E+02 (   8) 3.05241E+02 ( 106) 1.46895E+01 (  12) 1.01748E+02                   
+ ( 202) 1.47000E+01 (  16) 1.01748E+02 ( 206) 1.46986E+01 (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+ (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+ (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+ (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+ (   0) 0.0                                                                                                                          
+0T                                                                                                                                   
+ ( 102) 5.30000E+02 (   4) 5.88059E+02 (  96) 6.38315E+02 (   8) 5.36021E+02 ( 106) 5.68545E+02 (  12) 5.11497E+02                   
+ ( 202) 5.37500E+02 (  16) 5.16491E+02 ( 206) 5.15003E+02 (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+ (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+ (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+ (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+ (   0) 0.0                                                                                                                          
+0H                                                                                                                                   
+ ( 102) 0.0         (   4) 1.24928E+02 (  96) 1.24921E+02 (   8) 3.23889E+01 ( 106) 0.0         (  12) 3.23889E+01                   
+ ( 202) 0.0         (  16) 1.10011E+02 ( 206) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+ (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+ (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+ (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+ (   0) 0.0                                                                                                                          
+1*AECS*   FR22.DATA      HOME A/C MODEL      TOUT = 55F          03/22/90                                   PAGE       44            
+     2  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+0COMPONENT ATM                 TABLE     -2   -14 VALUE =  1.01040E+01 ARGUMENT(S)  1.00000E+04                                      
+0COMPONENT ATM                 TABLE     -2   -15 VALUE =  5.25436E+02 ARGUMENT(S)  1.00000E+04                                      
+0COMPONENT COND                TABLE      2     5 VALUE =  9.66460E-01 ARGUMENT(S)  8.00000E+01                                      
+0COMPONENT COND   EXTRAPOLATED TABLE      3     1 VALUE =  3.61280E-03 ARGUMENT(S)  8.00000E+01                                      
+0COMPONENT COND                TABLE      2     1 VALUE =  9.93520E-03 ARGUMENT(S)  8.00000E+01                                      
+0COMPONENT COND                                                                                                                      
+0     NL      51   NSI      4   NSO      8   FT       3   FN     -22                                                                 
+0     W     8.00   PI  305.24   PO  305.24   TI  588.06   TO  536.02   HI124.9281   HO 32.3889                                       
+ *-* SATURATED REFRIGERANT LIQUID OUTLET ENTHALPY =  48.5047                                                                         
+0     NL     151   NSI    102   NSO    106   FT       2   FN      -1                                                                 
+0     W    80.00   PI   14.70   PO   14.69   TI  530.00   TO  568.54   HI  0.0      HO  0.0                                          
+0     EFF 0.6639   Q   740.31                                                                                                        
+0COMPONENT CVALVE                                                                                                                    
+0     NL      51   NSI      8   NSO     12   FT       3   FN     -22                                                                 
+0     W     8.00   PI  305.24   PO  101.75   TI  536.02   TO  511.50   HI 32.3889   HO 32.3889                                       
+0     K   3.179577E+00                                                                                                               
+0COMPONENT EVAP   EXTRAPOLATED TABLE      5     5 VALUE =  1.34844E-01 ARGUMENT(S)  1.14939E+02                                      
+0COMPONENT EVAP                TABLE      4     1 VALUE =  1.43674E-03 ARGUMENT(S)  1.14939E+02                                      
+0COMPONENT EVAP                                                                                                                      
+0     NL      51   NSI     12   NSO     16   FT       3   FN     -22                                                                 
+0     W     8.00   PI  101.75   PO  101.75   TI  511.50   TO  516.49   HI 32.3889   HO110.0110                                       
+0     NL     221   NSI    202   NSO    206   FT       2   FN      -1                                                                 
+0     W   114.94   PI   14.70   PO   14.70   TI  537.50   TO  515.00   HI  0.0      HO  0.0                                          
+0      BYPASS FACTOR 0.1348   Q   620.98                                                                                             
+0COMPONENT SHAFT                                                                                                                     
+0     SHAFT    1   N   23300.                                                                                                        
+0COMPONENT VCOMP                                                                                                                     
+0     NL      51   NSI     16   NSO     96   FT       3   FN     -22                                                                 
+1*AECS*   FR22.DATA      HOME A/C MODEL      TOUT = 55F          03/22/90                                   PAGE       45            
+     2  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+0     W     8.00   PI  101.75   PO  305.24   TI  516.49   TO  638.32   HI110.0110   HO124.9206                                       
+0     SHAFT    1   PR  3.0000   EFF 0.8000   HP   -2.81   HGI 109.09   QUALIN 1.01                                                   
+0COEFFICIENT OF PERFORMANCE = 5.206                                                                                                  
+ EVAPORATOR STATIONS          12                                                                                                     
+ VAPOR COMPRESSOR STATIONS  16                                                                                                       
+1*AECS*   FR22.DATA      HOME A/C MODEL      TOUT = 55F          03/22/90                                   PAGE       46            
+     2  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+ TIME E       5.00                                                                                                                   
+0FLOW RATE(S)-LB/MIN                                                                                                                 
+                                                                                                                                     
+ (  51)    8.00 ( 151)   80.00 ( 221)  114.94 (   0)    0.0  (   0)    0.0  (   0)    0.0                                            
+ (   0)    0.0  (   0)    0.0  (   0)    0.0  (   0)    0.0  (   0)    0.0  (   0)    0.0                                            
+ (   0)    0.0  (   0)    0.0  (   0)    0.0                                                                                         
+0PRESSURE(S)-PSI                                                                                                                     
+                                                                                                                                     
+ (   4)  305.24 (   8)  305.24 (  12)  101.75 (  16)  101.75 (  96)  305.24 ( 102)   14.70                                           
+ ( 106)   14.69 ( 202)   14.70 ( 206)   14.70 (   0)    0.0  (   0)    0.0  (   0)    0.0                                            
+ (   0)    0.0  (   0)    0.0  (   0)    0.0  (   0)    0.0  (   0)    0.0  (   0)    0.0                                            
+ (   0)    0.0  (   0)    0.0  (   0)    0.0  (   0)    0.0  (   0)    0.0  (   0)    0.0                                            
+ (   0)    0.0  (   0)    0.0  (   0)    0.0  (   0)    0.0  (   0)    0.0  (   0)    0.0                                            
+ (   0)    0.0                                                                                                                       
+0TEMPERATURE(S)-DEG R                                                                                                                
+                                                                                                                                     
+ (   4)  588.06 (   8)  536.02 (  12)  511.50 (  16)  516.49 (  96)  638.32 ( 102)  530.00                                           
+ ( 106)  568.54 ( 202)  537.50 ( 206)  515.00 (   0)    0.0  (   0)    0.0  (   0)    0.0                                            
+ (   0)    0.0  (   0)    0.0  (   0)    0.0  (   0)    0.0  (   0)    0.0  (   0)    0.0                                            
+ (   0)    0.0  (   0)    0.0  (   0)    0.0  (   0)    0.0  (   0)    0.0  (   0)    0.0                                            
+ (   0)    0.0  (   0)    0.0  (   0)    0.0  (   0)    0.0  (   0)    0.0  (   0)    0.0                                            
+ (   0)    0.0                                                                                                                       
+0HUMIDITY(S)/ENTHALPY(S)-LBW/LBA / BTU/LB                                                                                            
+                                                                                                                                     
+ (   4)124.9281 (   8) 32.3889 (  12) 32.3889 (  16)110.0110 (  96)124.9206 ( 102)  0.0                                              
+ ( 106)  0.0    ( 202)  0.0    ( 206)  0.0    (   0)  0.0    (   0)  0.0    (   0)  0.0                                              
+ (   0)  0.0    (   0)  0.0    (   0)  0.0    (   0)  0.0    (   0)  0.0    (   0)  0.0                                              
+ (   0)  0.0    (   0)  0.0    (   0)  0.0    (   0)  0.0    (   0)  0.0    (   0)  0.0                                              
+ (   0)  0.0    (   0)  0.0    (   0)  0.0    (   0)  0.0    (   0)  0.0    (   0)  0.0                                              
+ (   0)  0.0                                                                                                                         
+0STATE VARIABLE TYPE(S)                                                                                                              
+ (   1)    2 (   2)   10 (   3)    6 (   4)    1                                                                                     
+0STATE VARIABLE(S)                                                                                                                   
+ (   1) 3.05243E+02 (   2) 1.24928E+02 (   3) 3.17958E+00 (   4) 1.14939E+02                                                         
+0ERROR VARIABLE TYPE(S)                                                                                                              
+ (   1)    5 (   2)    3 (   3)    2 (   4)    4                                                                                     
+0ERROR VARIABLE(S)                                                                                                                   
+ (   1)-4.98581E-03 (   2) 3.17383E-03 (   3) 0.0         (   4) 7.50732E-03                                                         
+0SOLUTION CONVERGED IN     32 TRY(S)                                                                                                 
+0     0 ERROR(S) DETECTED                                                                                                            
+0CASE END                                                                                                                            
+1                                                                                                                                    
+1                                                                                                                                    
+0                                                                                                                                    
+0                                                                                                                                    
+0                    END OF JOB                                                                                                      

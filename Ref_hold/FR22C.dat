@@ -1,0 +1,906 @@
+******  THIS IS 'TX58273.DATA(FR22C)'                                                                                                
+******  RUNS FINE ON "FTB1VTS.LOAD(TEMPNAME)" 6/8/92 SFW                                                                             
+******                                                                                                                               
+******                                                                                                                               
+******COPIED FROM DATA(FR22)       11/90                                                                                             
+******                                                                                                                               
+******  -ELIM VCOMP PR AS SV, ADD R22 FLOW VARIATION.                                                                                
+******                                                                                                                               
+******  -PUT LOOPS AT EXP VALVE LOCATION!                                                                                            
+******   ELIMINATE LOOP PRESSURE MATCH!  ADD DUPLICATE SENSOR FOR                                                                    
+******        SUPERHEAT TO BALANCE THE # OF SV/EV'S.                                                                                 
+                                                                                                                                     
+****** 12/11/90                                                                                                                      
+******  -GET RID OF DUPLICATE SUPERHEAT ("SENSOR" SUPERHEAT AND "EVAP"                                                               
+******        SUPERHEAT ("SENSOR" SUPERHEAT AND "EVAP" SUPERHEAT                                                                     
+******        ROUTINES DIFFER SLIGHTLY; CONVERGENCE CRITERIA WOULD                                                                   
+******        HAVE TO BE LOOSENED).                                                                                                  
+******      TO REPLACE THE LOST "E.V.", ADD MISC ROUTINE TO RESET                                                                    
+******        PRESSURE OUT OF CNNCT CARD (AFTER EACH PASS) TO THE                                                                    
+******        PRESSURE INTO THE EVAP.  AS THE CHANGES IN THE FLOATING                                                                
+******        EVAP INLET PRESSURE AT THE BEGINNING OF THE LOOP GET                                                                   
+******        SMALLER, THE "E.V." BETWEEN THE RESET CNNCT OUTLET                                                                     
+******        PRESSURE AND THE EVAP INLET PRESSURE WILL BE 0.                                                                        
+******      CNNCT OUTLET CONDITIONS (AND EVAP INLET CONDITIONS)                                                                      
+******        REPRESENT THE EXPANSION VALVE OUTLET CONDITIONS.                                                                       
+******                                                                                                                               
+******                                                                                                                               
+COMMON  CI   76  050                                                                                                                 
+DUMP          3                                                                                                                      
+PERFORM                                                                                                                              
+TITLE   DATA(FR22C)        HOME A/C MODEL   TOUT=55F        11/90                                                                    
+****** 0 = PRINT   1 = DON'T PRINT                                                                                                   
+****** COL17-CASE DATA  COL18-VALUES  COL19-COMPONENT  COL20-TABLE DATA                                                              
+****** COL24-NLEGS      COL28-NSTA    COL32-COMPONENT PERFORMANCE                                                                    
+CASEA           1001   6  12   0                                                                                                     
+CASEB     -2  -2   1  -1  -2                                                                                                         
+CASEC        10000.0              569.67                                                                                             
+CASED         0.5000                                                                                                                 
+PARAM   72                                                                                                                           
+****************************************************************                                                                     
+****** COND AIR W   PRESS    TEMP       HUMD                                                                                         
+VALUES  01 100.     14.7      550.      0.0000                                                                                       
+****** EVAP AIR W   PRESS    TEMP       HUMD                                                                                         
+VALUES  05 110.     14.7      540.      0.0000                                                                                       
+******  COLD AIR OUT TEMP                                                                                                            
+VALUE   10 515.00                                                                                                                    
+****** R22 FLOW     PEVAPIN   TIN       HIN                                                                                          
+VALUES  11 08.0     90.       570.      43.       3450.                                                                              
+****** VCOMP PR     VCOMP ME  DSH       COND FLOW A                                                                                  
+VALUES  16 3.5      0.98      777.      0.2000                                                                                       
+******   ARFRGEVP   SUPERHT   STEPSIZ   STEPRATIO                                                                                    
+VALUES  45 .2       5.        0.002     1.05                                                                                         
+******    BTU/MIN-KW          PREGK     PREG SET                                                                                     
+VALUES  49 56.869   777.      0.001     90.                                                                                          
+******    PJK=START PRESS       DP= PRESS INCREMENT  N=NUMBR OF PSTEPS                                                               
+******    TJK=START TEMP        DT= TEMP INCREMENT   M=NUMBR OF TSTEPS                                                               
+******    HUM=FEED TO SHP       DSH=GOES NOWHERE                                                                                     
+******     PJK      DP        N         TJK       DT                                                                                 
+VALUES  61 40.      20.       15.       300.      20.                                                                                
+******     M        HUM       DSH                                                                                                    
+VALUES  66 20.      1.        1.                                                                                                     
+********************************************************************                                                                 
+********************************************************************                                                                 
+****** R22 LOOP          START LOOPS AT EVAP INLET (EXP VALVE LOCATION)                                                              
+LOOPS    030 101 104 101 116   3 -221101  11  12  13  14                                                                             
+******PREG          51   8  12   0   2  51      52                                                                                   
+******      RETURN AIR START                                                                                                         
+INLET    015 201 2040000   5   6   7   8   2  -1                                                                                     
+******NEW    NLR NSI NSO NLS SIS SOS DLP PDT BYPT DSH RPDT AR SHEV                                                                   
+EVAP     085 101 104 108 201 204 208   0 932 932  46   6  45   1                                                                     
+******SENSOR   105 101 108   5  46                                                                                                   
+SHAFT    165   1   0  15                                                                                                             
+******                      0=FIX                                                                                                    
+******      NEW             1=SV                                                                                                     
+******      NEW             2=TBL                                                                                                    
+******      NEW        SHFT IOPT PR PRTB EFTB MECH COMPTYPE                                                                          
+VCOMP    265 101 108 112   1   2  16 921 921  17   0                                                                                 
+******      CONDENSER OUTISDE AIR START                                                                                              
+INLET    015 501 5040000   1   2   3   4   2  -1                                                                                     
+******NEW    NLR NSI NSO NLS SIS SOS DLP PDT EFFT RPDTB AR                                                                           
+COND     035 101 112 116 501 504 508   1 922 922   3  19                                                                             
+CNNCT        101 116 101 120                                                                                                         
+******       RSLT      P  STA                                                                                                        
+MISC           2 120  -1  12                                                                                                         
+LOOPE    345 101 104 101 1160001                                                                                                     
+******    EV RSLT      P  STA  "-" P STA   1="GEN & INITIALIZE NEW E.V."                                                             
+MISC          -4       2 104   2  -1  12   1                                                                                         
+******       RSLT      P  STA                                                                                                        
+MISC          -1  12   2 104                                                                                                         
+******     #EVAP #CMP ESTA CSTA                                                                                                      
+COP      350   1   1 104 108                                                                                                         
+********************************************************************                                                                 
+******      MRD# SVSCL EV STP SRTIO                                                                                                  
+******SOLN     360   2   1   1  47  48                                                                                               
+******    PJK=START PRESS       DP= PRESS INCREMENT    N=PRESSURE STEPS                                                              
+******    TJK=START TEMP        DT= TEMP INCREMENT     M=PRESSURE STEPS                                                              
+******    HUM=FEED TO SHP       DSH=GOES NOWHERE                                                                                     
+******       LEG PJK  DP   N TJK  DT   M HUM DSH                                                                                     
+******FLUP     355 999  61  62  63  64  65  66  67   3 -13                                                                           
+******REFP     355 999  61  62  63  65  66   2  67   3 -22                                                                           
+**************************END OF MODEL**********************************                                                             
+TABID    922   1   2   0   0  410001   2                                                                                             
+TABT   CONDENSER SINK SIDE SIGMA DELTA PRESSURE                                                                                      
+TABV      1.        0.1       100.      0.2                                                                                          
+TABID    922   5   3   0   0  410001   2   0  420001   3                                                                             
+TABT   CONDENSER SINK SIDE EFFECTIVENESS VS SINK FLOW AND CFM VAPOR                                                                  
+TABV      0.        100.                                                                                                             
+TABV      0.        1.        4.                                                                                                     
+TABV      0.        0.        1.        0.80                                                                                         
+TABV      1.        0.95                                                                                                             
+TABID      3   1   1                                                                                                                 
+TABT   CONDENSOR REFRIG SIDE PRESS DROP (100% VAPOR FLOWING)                                                                         
+TABV      2.0                                                                                                                        
+TABID      6   2   2   0   0  420001   2                                                                                             
+TABT   EVAP REFRIG DELTA PRESSURE                                                                                                    
+TABV      1.        0.5       100.0     10.                                                                                          
+TABID    932   1   1                                                                                                                 
+TABT   EVAP AIR SIDE PRESS DROP                                                                                                      
+TABV      0.1                                                                                                                        
+TABID    932   5   2   0   0  420001   3                                                                                             
+TABT   EVAP AIR SIDE BYPSS FACTOR VS REFRIG (CFM VAPOR)                                                                              
+TABV      0.        1.        5.        0.4                                                                                          
+TABV      10.       0.2                                                                                                              
+TABID   8932   5   3   0   0  410001   2   0  420001   3                                                                             
+TABT   EVAP AIR SIDE BYPSS FACTOR VS AIR (LB/MIN) AND REFRIG (CFM VAPOR)                                                             
+TABV      0.        110.                                                                                                             
+TABV      0.        5.        10.                                                                                                    
+TABV      1.        1.        0.        0.4                                                                                          
+TABV      0.        0.20                                                                                                             
+TABID   9932   5   2   0   0  410001   2                                                                                             
+TABT   EVAP AIR SIDE BYPSS FACTOR                                                                                                    
+TABV      0.0       0.0        110.     0.4                                                                                          
+TABID    921   6   1                                                                                                                 
+TABT   COMP ADIBATIC EFF.                                                                                                            
+TABV      0.7                                                                                                                        
+TABID    921   4   2   0   0  280001   3                                                                                             
+TABT   COMP PRESS RATIO                                                                                                              
+TABV      0.0       4.5       2.        4.0                                                                                          
+TABV      20.       3.0                                                                                                              
+******PTAB       1   0   2   0                                                                                                       
+NOGO                                                                                                                                 
+ENDCASE                                                                                                                              
+PCHANGE                                                                                                                              
+TITLE   DATA(FR22C)        HOME A/C MODEL   TOUT=55F                                                                                 
+****** COL17-CASE DATA  COL18-VALUES  COL19-COMPONENT  COL20-TABLE DATA                                                              
+****** COL24-NLEGS      COL28-NSTA    COL32-COMPONENT PERFORMANCE                                                                    
+CASEA           1000   6  12   0                                                                                                     
+ENDCASE                                                                                                                              
+PCHANGE                                                                                                                              
+****** EVAP AIR TEMP                                                                                                                 
+VALUE   07  530.                                                                                                                     
+ENDCASE                                                                                                                              
+PCHANGE                                                                                                                              
+****** COND AIR TEMP                                                                                                                 
+VALUE   03  560.                                                                                                                     
+ENDCASE                                                                                                                              
+ENDJOB                                                                                                                               
+********************************************************************                                                                 
+********************************************************************                                                                 
+********************************************************************                                                                 
+********************************************************************                                                                 
+********************************************************************                                                                 
+********************************************************************                                                                 
+********************************************************************                                                                 
+********************************************************************                                                                 
+********************************************************************                                                                 
+********************************************************************                                                                 
+1                                                                                                                                    
+ *                                                                                *     INVALID PROGRAM CONTROL CARD                 
+ CCN =   CI                                                                                                                          
+ V = COMMON    CI   76  050                                                                                                          
+ *COMMON  CI   76  050                                                            *                                                  
+ *DUMP          3                                                                 *                                                  
+1*AECS* GENERAL ECS PROGRAM                                                                                 PAGE        1            
+     1  CASE PERFOR                                                                                         DATE TODAY               
+                                                                                                                                     
+ TIME M       5.00 SEC.                                                                                                              
+ *** NO GO CASE ***                                                                                                                  
+1                                                                                                                                    
+1*AECS* GENERAL ECS PROGRAM                                                                                 PAGE        1            
+     2  CASE PCHANG                                                                                         DATE TODAY               
+                                                                                                                                     
+ TIME M       5.00 SEC.                                                                                                              
+ CHANGE*PCHANGE                                                                         *                                            
+ CHANGE*TITLE   DATA(FR22C)        HOME A/C MODEL   TOUT=55F                            *                                            
+ CHANGE*TITEND                                                                          *                                            
+ CHANGE*CASEA           1000   6  12   0                                                *                                            
+ CHANGE*CASEND                                                                          *                                            
+ CHANGE*PAREND                                                                          *                                            
+ CHANGE*COMEND                                                                          *                                            
+ CHANGE*ENDCASE                                                                         *                                            
+1*AECS*   DATA(FR22C)        HOME A/C MODEL   TOUT=55F                                                      PAGE        2            
+     2  CASE PCHANG                                                                                         DATE TODAY               
+                                                                                                                                     
+ TIME Z       5.00                                                                                                                   
+0       DATA(FR22C)        HOME A/C MODEL   TOUT=55F                                                                                 
+1*AECS*   DATA(FR22C)        HOME A/C MODEL   TOUT=55F                                                      PAGE        3            
+     2  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+0          CASE                      6 LEG(S)            12 STATION(S)                                                               
+1*AECS*   DATA(FR22C)        HOME A/C MODEL   TOUT=55F                                                      PAGE        4            
+     2  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+ PARAMETER TABLE        72 VALUE(S)                                                                                                  
+                                                                                                                                     
+ (   1) 1.00000E+02 (   2) 1.47000E+01 (   3) 5.50000E+02 (   4) 0.0         (   5) 1.10000E+02 (   6) 1.47000E+01                   
+ (   7) 5.40000E+02 (   8) 0.0         (   9) 0.0         (  10) 5.15000E+02 (  11) 8.00000E+00 (  12) 9.00000E+01                   
+ (  13) 5.70000E+02 (  14) 4.30000E+01 (  15) 3.45000E+03 (  16) 3.50000E+00 (  17) 9.80000E-01 (  18) 7.77000E+02                   
+ (  19) 2.00000E-01 (  20) 0.0         (  21) 1.00000E+75 (  22) 1.00000E+75 (  23) 1.00000E+75 (  24) 1.00000E+75                   
+ (  25) 1.00000E+75 (  26) 1.00000E+75 (  27) 1.00000E+75 (  28) 1.00000E+75 (  29) 1.00000E+75 (  30) 1.00000E+75                   
+ (  31) 1.00000E+75 (  32) 1.00000E+75 (  33) 1.00000E+75 (  34) 1.00000E+75 (  35) 1.00000E+75 (  36) 1.00000E+75                   
+ (  37) 1.00000E+75 (  38) 1.00000E+75 (  39) 1.00000E+75 (  40) 1.00000E+75 (  41) 1.00000E+75 (  42) 1.00000E+75                   
+ (  43) 1.00000E+75 (  44) 1.00000E+75 (  45) 2.00000E-01 (  46) 5.00000E+00 (  47) 2.00000E-03 (  48) 1.05000E+00                   
+ (  49) 5.68690E+01 (  50) 7.77000E+02 (  51) 1.00000E-03 (  52) 9.00000E+01 (  53) 0.0         (  54) 1.00000E+75                   
+ (  55) 1.00000E+75 (  56) 1.00000E+75 (  57) 1.00000E+75 (  58) 1.00000E+75 (  59) 1.00000E+75 (  60) 1.00000E+75                   
+ (  61) 4.00000E+01 (  62) 2.00000E+01 (  63) 1.50000E+01 (  64) 3.00000E+02 (  65) 2.00000E+01 (  66) 2.00000E+01                   
+ (  67) 1.00000E+00 (  68) 1.00000E+00 (  69) 0.0         (  70) 0.0         (  71) 1.00000E+75 (  72) 1.00000E+75                   
+1*AECS*   DATA(FR22C)        HOME A/C MODEL   TOUT=55F                                                      PAGE        5            
+     2  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+ COMPONENT(S)                                                                                                                        
+0    1    6  8   12   16   20   24   28   32   36   40   44   48   52   56   60   64   68   72   76   80                             
+                                                                                                                                     
+     LOOPS       30  101  104  101  116    3  -22 1101   11   12   13   14    0    0    0    0    0    0                             
+                                                                                                        SV N   1  T   1              
+                                                                                                        SV N   2  T   2              
+                                                                                                        SV N   3  T  10              
+     INLET       15  201  204    0    5    6    7    8    2   -1    0    0    0    0    0    0    0    0                             
+     EVAP        85  101  104  108  201  204  208    0  932  932   46    6   45    1    0    0    0    0                             
+                                                                                                        EV N   1  T   3              
+     SHAFT      165    1    0   15    0    0    0    0    0    0    0    0    0    0    0    0    0    0                             
+     VCOMP      265  101  108  112    1    2   16  921  921   17    0    0    0    0    0    0    0    0                             
+     INLET       15  501  504    0    1    2    3    4    2   -1    0    0    0    0    0    0    0    0                             
+     COND        35  101  112  116  501  504  508    1  922  922    3   19    0    0    0    0    0    0                             
+     CNNCT        0  101  116  101  120    0    0    0    0    0    0    0    0    0    0    0    0    0                             
+     MISC         0    2  120   -1   12    0    0    0    0    0    0    0    0    0    0    0    0    0                             
+     LOOPE      345  101  104  101  116    1    0    0    0    0    0    0    0    0    0    0    0    0                             
+                                                                                                        EV N   2  T   4              
+     MISC         0   -4    0    2  104    2   -1   12    1    0    0    0    0    0    0    0    0    0                             
+                                                                                                        EV N   3  T  10              
+     MISC         0   -1   12    2  104    0    0    0    0    0    0    0    0    0    0    0    0    0                             
+     COP        350    1    1  104  108    0    0    0    0    0    0    0    0    0    0    0    0    0                             
+0* NOTE - CARD NUMBERS NOT IN ASCENDING ORDER                                                                                        
+          MAY PRODUCE INVALID CHANGE CASE                                                                                            
+0    STATE/ERROR VARIABLE(S)     3                                                                                                   
+1*AECS*   DATA(FR22C)        HOME A/C MODEL   TOUT=55F                                                      PAGE        6            
+     2  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+ TABLES            13 REQUIRED                                                                                                       
+0PERMANENT TABLE     1    10                                                                                                         
+0PERMANENT TABLE     2    14                                                                                                         
+0PERMANENT TABLE     2    15                                                                                                         
+0PERMANENT TABLE    22    10                                                                                                         
+0TABLE    922     1                                                                                                                  
+     TITLE/ CONDENSER SINK SIDE SIGMA DELTA PRESSURE                                                                                 
+0    NDIM     2     IST     0                                                                                                        
+     ARGUMENT 1     TYPE    0     RELN   41     EXTRAP    0     INTERP    1     NPTS    2                                            
+                                                                                                                                     
+              1.00000E+00    1.00000E-01    1.00000E+02    2.00000E-01                                                               
+0TABLE    922     5                                                                                                                  
+     TITLE/ CONDENSER SINK SIDE EFFECTIVENESS VS SINK FLOW AND CFM VAPOR                                                             
+0    NDIM     3     IST     0                                                                                                        
+     ARGUMENT 1     TYPE    0     RELN   41     EXTRAP    0     INTERP    1     NPTS    2                                            
+     ARGUMENT 2     TYPE    0     RELN   42     EXTRAP    0     INTERP    1     NPTS    3                                            
+                                                                                                                                     
+              0.0            1.00000E+02                                                                                             
+                                                                                                                                     
+              0.0            1.00000E+00    4.00000E+00                                                                              
+                                                                                                                                     
+              0.0            0.0            1.00000E+00    8.00000E-01                                                               
+              1.00000E+00    9.50000E-01                                                                                             
+0TABLE      3     1                                                                                                                  
+     TITLE/ CONDENSOR REFRIG SIDE PRESS DROP (100% VAPOR FLOWING)                                                                    
+0    NDIM     1                                                                                                                      
+     VALUE =  2.00000E+00                                                                                                            
+0TABLE      6     2                                                                                                                  
+     TITLE/ EVAP REFRIG DELTA PRESSURE                                                                                               
+0    NDIM     2     IST     0                                                                                                        
+     ARGUMENT 1     TYPE    0     RELN   42     EXTRAP    0     INTERP    1     NPTS    2                                            
+                                                                                                                                     
+              1.00000E+00    5.00000E-01    1.00000E+02    1.00000E+01                                                               
+0TABLE    932     1                                                                                                                  
+     TITLE/ EVAP AIR SIDE PRESS DROP                                                                                                 
+0    NDIM     1                                                                                                                      
+     VALUE =  1.00000E-01                                                                                                            
+0TABLE    932     5                                                                                                                  
+     TITLE/ EVAP AIR SIDE BYPSS FACTOR VS REFRIG (CFM VAPOR)                                                                         
+1*AECS*   DATA(FR22C)        HOME A/C MODEL   TOUT=55F                                                      PAGE        7            
+     2  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+0    NDIM     2     IST     0                                                                                                        
+     ARGUMENT 1     TYPE    0     RELN   42     EXTRAP    0     INTERP    1     NPTS    3                                            
+                                                                                                                                     
+              0.0            1.00000E+00    5.00000E+00    4.00000E-01                                                               
+              1.00000E+01    2.00000E-01                                                                                             
+0TABLE LISTED BELOW IS NOT REQUIRED                                                                                                  
+     *TABID   8932   5   3   0   0  41   1   2   0  42   1   3   0   0   0   0   0   0*                                              
+     *TABT   EVAP AIR SIDE BYPSS FACTOR VS AIR (LB/MIN) AND REFRIG (CFM VAPOR)        *                                              
+     *TABV      0.        110.                                                        *                                              
+     *TABV      0.        5.        10.                                               *                                              
+     *TABV      1.        1.        0.        0.4                                     *                                              
+     *TABV      0.        0.20                                                        *                                              
+0TABLE LISTED BELOW IS NOT REQUIRED                                                                                                  
+     *TABID   9932   5   2   0   0  41   1   2   0   0   0   0   0   0   0   0   0   0*                                              
+     *TABT   EVAP AIR SIDE BYPSS FACTOR                                               *                                              
+     *TABV      0.0       0.0        110.     0.4                                     *                                              
+0TABLE    921     6                                                                                                                  
+     TITLE/ COMP ADIBATIC EFF.                                                                                                       
+0    NDIM     1                                                                                                                      
+     VALUE =  7.00000E-01                                                                                                            
+0TABLE    921     4                                                                                                                  
+     TITLE/ COMP PRESS RATIO                                                                                                         
+0    NDIM     2     IST     0                                                                                                        
+     ARGUMENT 1     TYPE    0     RELN   28     EXTRAP    0     INTERP    1     NPTS    3                                            
+                                                                                                                                     
+              0.0            4.50000E+00    2.00000E+00    4.00000E+00                                                               
+              2.00000E+01    3.00000E+00                                                                                             
+1*AECS*   DATA(FR22C)        HOME A/C MODEL   TOUT=55F                                                      PAGE        8            
+     2  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+ TIME P       5.00                                                                                                                   
+SVSCLE                                                                                                                               
+      0.0                 0.0                 0.0                 0.0             0.0     0.0                                        
+      0.0                 0.0                 0.0                 0.0             0.0     0.0                                        
+      0.0                 0.0                 0.0                 0.0             0.0     0.0                                        
+      0.0                 0.0                 0.0                 0.0                                                                
+0SVT                                                                                                                                 
+ (   1)    1 (   2)    2 (   3)   10                                                                                                 
+0EVT                                                                                                                                 
+ (   1)    3 (   2)    4 (   3)   10                                                                                                 
+0PASS      1                                                                                                                         
+0S.V.                                                                                                                                
+ (   1) 8.00000E+00 (   2) 9.00000E+01 (   3) 4.30000E+01                                                                            
+0E.V.                                                                                                                                
+ (   1) 1.46039E+01 (   2) 4.96620E+00 (   3) 0.0                                                                                    
+0W                                                                                                                                   
+ ( 101) 8.00000E+00 ( 201) 1.10000E+02 ( 501) 1.00000E+02 (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+0P                                                                                                                                   
+ ( 104) 9.00000E+01 ( 116) 3.40291E+02 ( 204) 1.47000E+01 ( 108) 8.93892E+01 ( 208) 1.46000E+01 ( 112) 3.41637E+02                   
+ ( 504) 1.47000E+01 ( 508) 1.44807E+01 ( 120) 9.00000E+01 (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+0T                                                                                                                                   
+ ( 104) 5.04224E+02 ( 116) 5.54549E+02 ( 204) 5.40000E+02 ( 108) 5.24139E+02 ( 208) 5.19085E+02 ( 112) 6.86180E+02                   
+ ( 504) 5.50000E+02 ( 508) 5.88244E+02 ( 120) 5.54549E+02 (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+0H                                                                                                                                   
+ ( 104) 4.30000E+01 ( 116) 3.80338E+01 ( 204) 0.0         ( 108) 1.12071E+02 ( 208) 0.0         ( 112) 1.34134E+02                   
+ ( 504) 0.0         ( 508) 0.0         ( 120) 3.80338E+01 (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+ MATRIX EV1    EV2         EV3         EV4         EV5         EV6         EV7         EV8         EV9         EV10                  
+ EQUATION FOR SV NUMBER   1   VALUES ARE:  DEL(EV(COLUMN))/DEL(SV(   1))                                                             
+                                                                                                                                     
+ -0.39275E+00-0.11369E+02 0.55743E+01-0.14604E+02                                                                                    
+ EQUATION FOR SV NUMBER   2   VALUES ARE:  DEL(EV(COLUMN))/DEL(SV(   2))                                                             
+                                                                                                                                     
+ -0.45949E+00 0.10203E+00 0.97765E+00-0.49662E+01                                                                                    
+ EQUATION FOR SV NUMBER   3   VALUES ARE:  DEL(EV(COLUMN))/DEL(SV(   3))                                                             
+                                                                                                                                     
+  0.0         0.10000E+01-0.20929E+01 0.0                                                                                            
+0ALTERS                                                                                                                              
+ (   1) 1.22041E+01 (   2) 1.12698E+00 (   3) 5.38467E-01                                                                            
+0PASS      2                                                                                                                         
+ MATRIX EV1    EV2         EV3         EV4         EV5         EV6         EV7         EV8         EV9         EV10                  
+ EQUATION FOR SV NUMBER   1   VALUES ARE:  DEL(EV(COLUMN))/DEL(SV(   1))                                                             
+                                                                                                                                     
+ -0.25799E+02-0.82990E+01 0.56100E+01-0.99298E-01                                                                                    
+ EQUATION FOR SV NUMBER   2   VALUES ARE:  DEL(EV(COLUMN))/DEL(SV(   2))                                                             
+                                                                                                                                     
+ -0.15017E+01 0.21423E+01 0.18929E+00 0.10590E+00                                                                                    
+ EQUATION FOR SV NUMBER   3   VALUES ARE:  DEL(EV(COLUMN))/DEL(SV(   3))                                                             
+                                                                                                                                     
+  0.0         0.10000E+01-0.20932E+01 0.0                                                                                            
+0ALTERS                                                                                                                              
+ (   1)-5.65265E-03 (   2) 4.36268E-02 (   3) 2.08424E-02                                                                            
+0PASS      7                                                                                                                         
+1*AECS*   DATA(FR22C)        HOME A/C MODEL   TOUT=55F                                                      PAGE       12            
+     2  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+0S.V.                                                                                                                                
+ (   1) 9.30826E+00 (   2) 8.70852E+01 (   3) 4.16076E+01                                                                            
+0E.V.                                                                                                                                
+ (   1)-1.51520E-02 (   2) 3.00598E-03 (   3) 4.36249E-02                                                                            
+0W                                                                                                                                   
+ ( 101) 9.30826E+00 ( 201) 1.10000E+02 ( 501) 1.00000E+02 (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+0P                                                                                                                                   
+ ( 104) 8.70852E+01 ( 116) 3.25040E+02 ( 204) 1.47000E+01 ( 108) 8.64146E+01 ( 208) 1.46000E+01 ( 112) 3.26377E+02                   
+ ( 504) 1.47000E+01 ( 508) 1.44812E+01 ( 120) 8.70416E+01 (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+0T                                                                                                                                   
+ ( 104) 5.02312E+02 ( 116) 5.66273E+02 ( 204) 5.40000E+02 ( 108) 5.08394E+02 ( 208) 5.16100E+02 ( 112) 6.66889E+02                   
+ ( 504) 5.50000E+02 ( 508) 5.85798E+02 ( 120) 5.66273E+02 (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+0H                                                                                                                                   
+ ( 104) 4.16076E+01 ( 116) 4.16046E+01 ( 204) 0.0         ( 108) 1.09443E+02 ( 208) 0.0         ( 112) 1.30432E+02                   
+ ( 504) 0.0         ( 508) 0.0         ( 120) 4.16046E+01 (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+ MATRIX EV1    EV2         EV3         EV4         EV5         EV6         EV7         EV8         EV9         EV10                  
+ EQUATION FOR SV NUMBER   1   VALUES ARE:  DEL(EV(COLUMN))/DEL(SV(   1))                                                             
+                                                                                                                                     
+ -0.25745E+02-0.82647E+01 0.56422E+01 0.15152E-01                                                                                    
+ EQUATION FOR SV NUMBER   2   VALUES ARE:  DEL(EV(COLUMN))/DEL(SV(   2))                                                             
+                                                                                                                                     
+ -0.14715E+01 0.20909E+01 0.20425E+00-0.30060E-02                                                                                    
+ EQUATION FOR SV NUMBER   3   VALUES ARE:  DEL(EV(COLUMN))/DEL(SV(   3))                                                             
+                                                                                                                                     
+  0.0         0.10000E+01-0.20935E+01 0.0                                                                                            
+0ALTERS                                                                                                                              
+ (   1)-2.54387E-04 (   2)-1.54460E-03 (   3)-7.37805E-04                                                                            
+0PASS      8                                                                                                                         
+0S.V.                                                                                                                                
+ (   1) 9.30800E+00 (   2) 8.70837E+01 (   3) 4.16069E+01                                                                            
+0E.V.                                                                                                                                
+ (   1) 7.10487E-03 (   2) 1.54114E-03 (   3)-1.55640E-03                                                                            
+0W                                                                                                                                   
+ ( 101) 9.30800E+00 ( 201) 1.10000E+02 ( 501) 1.00000E+02 (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+0P                                                                                                                                   
+ ( 104) 8.70837E+01 ( 116) 3.25033E+02 ( 204) 1.47000E+01 ( 108) 8.64131E+01 ( 208) 1.46000E+01 ( 112) 3.26370E+02                   
+ ( 504) 1.47000E+01 ( 508) 1.44812E+01 ( 120) 8.70852E+01 (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+0T                                                                                                                                   
+ ( 104) 5.02311E+02 ( 116) 5.66274E+02 ( 204) 5.40000E+02 ( 108) 5.08415E+02 ( 208) 5.16099E+02 ( 112) 6.66912E+02                   
+ ( 504) 5.50000E+02 ( 508) 5.85798E+02 ( 120) 5.66274E+02 (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+0H                                                                                                                                   
+ ( 104) 4.16069E+01 ( 116) 4.16053E+01 ( 204) 0.0         ( 108) 1.09447E+02 ( 208) 0.0         ( 112) 1.30437E+02                   
+ ( 504) 0.0         ( 508) 0.0         ( 120) 4.16053E+01 (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+1*AECS*   DATA(FR22C)        HOME A/C MODEL   TOUT=55F                                                      PAGE       13            
+     2  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+0COMPONENT ATM                 TABLE     -2   -14 VALUE =  1.01040E+01 ARGUMENT(S)  1.00000E+04                                      
+0COMPONENT ATM                 TABLE     -2   -15 VALUE =  5.25436E+02 ARGUMENT(S)  1.00000E+04                                      
+0COMPONENT EVAP                TABLE    932     5 VALUE =  3.65838E-01 ARGUMENT(S)  5.85404E+00                                      
+0COMPONENT EVAP                TABLE      6     2 VALUE =  9.65791E-01 ARGUMENT(S)  5.85404E+00                                      
+0COMPONENT EVAP                                                                                                                      
+0     NL     101   NSI    104   NSO    108   FT       3   FN     -22                                                                 
+0     W     9.31   PI   87.08   PO   86.41   TI  502.31   TO  508.42   HI 41.6069   HO109.4468                                       
+0     NL     201   NSI    204   NSO    208   FT       2   FN      -1                                                                 
+0     W   110.00   PI   14.70   PO   14.60   TI  540.00   TO  516.10   HI  0.0      HO  0.0                                          
+0      BYPASS FACTOR 0.3658   Q   631.45                                                                                             
+0COMPONENT SHAFT                                                                                                                     
+0     SHAFT    1   N    3450.                                                                                                        
+0COMPONENT VCOMP               TABLE    921     4 VALUE =  3.77686E+00 ARGUMENT(S)  6.01651E+00                                      
+0COMPONENT VCOMP                                                                                                                     
+0     NL     101   NSI    108   NSO    112   FT       3   FN     -22                                                                 
+0     W     9.31   PI   86.41   PO  326.37   TI  508.42   TO  666.91   HI109.4468   HO130.4370                                       
+0     SHAFT    1   PR  3.7769   EFF 0.7000   HP   -4.70   HGI  0.108322E+03                                                          
+0COMPONENT COND                TABLE    922     5 VALUE =  8.23422E-01 ARGUMENT(S)  1.00000E+02 1.46845E+00                          
+0COMPONENT COND                TABLE    922     1 VALUE =  2.00000E-01 ARGUMENT(S)  1.00000E+02                                      
+0COMPONENT COND                                                                                                                      
+0     NL     101   NSI    112   NSO    116   FT       3   FN     -22                                                                 
+0     W     9.31   PI  326.37   PO  325.03   TI  666.91   TO  566.27   HI130.4370   HO 41.6053                                       
+0     NL     501   NSI    504   NSO    508   FT       2   FN      -1                                                                 
+0     W   100.00   PI   14.70   PO   14.48   TI  550.00   TO  585.80   HI  0.0      HO  0.0                                          
+0     EFF 0.7915   Q   826.85                                                                                                        
+0COMPONENT MISC                                                                                                                      
+0     VX   8.708368E+01   IVXT     2   IVXN   120   IOPR     0   IOPT     0                                                          
+      V1   8.708368E+01   IV1T    -1   IV1N    12                                                                                    
+0COMPONENT MISC                                                                                                                      
+1*AECS*   DATA(FR22C)        HOME A/C MODEL   TOUT=55F                                                      PAGE       14            
+     2  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+0     VX   0.0            IVXT    -4   IVXN     3   IOPR     2   IOPT     1                                                          
+      V1   8.708368E+01   IV1T     2   IV1N   104                                                                                    
+      V2   8.708368E+01   IV2T    -1   IV2N    12                                                                                    
+0COMPONENT MISC                                                                                                                      
+0     VX   8.708368E+01   IVXT    -1   IVXN    12   IOPR     0   IOPT     0                                                          
+      V1   8.708368E+01   IV1T     2   IV1N   104                                                                                    
+0COEFFICIENT OF PERFORMANCE = 3.232                                                                                                  
+ EVAPORATOR STATIONS         104                                                                                                     
+ VAPOR COMPRESSOR STATIONS 108                                                                                                       
+1*AECS*   DATA(FR22C)        HOME A/C MODEL   TOUT=55F                                                      PAGE       15            
+     2  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+ TIME E       5.00                                                                                                                   
+0FLOW RATE(S)-LB/MIN                                                                                                                 
+                                                                                                                                     
+ ( 101)    9.31 ( 201)  110.00 ( 501)  100.00 (   0)    0.0  (   0)    0.0  (   0)    0.0                                            
+0PRESSURE(S)-PSI                                                                                                                     
+                                                                                                                                     
+ ( 104)   87.08 ( 108)   86.41 ( 112)  326.37 ( 116)  325.03 ( 120)   87.08 ( 204)   14.70                                           
+ ( 208)   14.60 ( 504)   14.70 ( 508)   14.48 (   0)    0.0  (   0)    0.0  (   0)    0.0                                            
+0TEMPERATURE(S)-DEG R                                                                                                                
+                                                                                                                                     
+ ( 104)  502.31 ( 108)  508.42 ( 112)  666.91 ( 116)  566.27 ( 120)  566.27 ( 204)  540.00                                           
+ ( 208)  516.10 ( 504)  550.00 ( 508)  585.80 (   0)    0.0  (   0)    0.0  (   0)    0.0                                            
+0HUMIDITY(S)/ENTHALPY(S)-LBW/LBA / BTU/LB                                                                                            
+                                                                                                                                     
+ ( 104) 41.6069 ( 108)109.4468 ( 112)130.4370 ( 116) 41.6053 ( 120) 41.6053 ( 204)  0.0                                              
+ ( 208)  0.0    ( 504)  0.0    ( 508)  0.0    (   0)  0.0    (   0)  0.0    (   0)  0.0                                              
+0STATE VARIABLE TYPE(S)                                                                                                              
+ (   1)    1 (   2)    2 (   3)   10                                                                                                 
+0STATE VARIABLE(S)                                                                                                                   
+ (   1) 9.30800E+00 (   2) 8.70837E+01 (   3) 4.16069E+01                                                                            
+0ERROR VARIABLE TYPE(S)                                                                                                              
+ (   1)    3 (   2)    4 (   3)   10                                                                                                 
+0ERROR VARIABLE(S)                                                                                                                   
+ (   1) 7.10487E-03 (   2) 1.54114E-03 (   3) 0.0                                                                                    
+0SOLUTION CONVERGED IN      7 TRY(S)                                                                                                 
+0     0 ERROR(S) DETECTED                                                                                                            
+0CASE END                                                                                                                            
+1                                                                                                                                    
+1*AECS* GENERAL ECS PROGRAM                                                                                 PAGE        1            
+     3  CASE PCHANG                                                                                         DATE TODAY               
+                                                                                                                                     
+ TIME M       5.00 SEC.                                                                                                              
+ CHANGE*TITEND                                                                          *                                            
+ CHANGE*CASEND                                                                          *                                            
+ CHANGE*VALUE   07  530.                                                                *                                            
+ CHANGE*PAREND                                                                          *                                            
+ CHANGE*COMEND                                                                          *                                            
+ CHANGE*ENDCASE                                                                         *                                            
+1*AECS*   DATA(FR22C)        HOME A/C MODEL   TOUT=55F        11/90                                         PAGE        2            
+     3  CASE PCHANG                                                                                         DATE TODAY               
+                                                                                                                                     
+ TIME Z       5.00                                                                                                                   
+0       DATA(FR22C)        HOME A/C MODEL   TOUT=55F        11/90                                                                    
+1*AECS*   DATA(FR22C)        HOME A/C MODEL   TOUT=55F        11/90                                         PAGE        3            
+     3  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+0          CASE                      6 LEG(S)            12 STATION(S)                                                               
+1*AECS*   DATA(FR22C)        HOME A/C MODEL   TOUT=55F        11/90                                         PAGE        4            
+     3  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+ PARAMETER TABLE        72 VALUE(S)                                                                                                  
+                                                                                                                                     
+ (   1) 1.00000E+02 (   2) 1.47000E+01 (   3) 5.50000E+02 (   4) 0.0         (   5) 1.10000E+02 (   6) 1.47000E+01                   
+ (   7) 5.30000E+02 (   8) 0.0         (   9) 0.0         (  10) 5.15000E+02 (  11) 8.00000E+00 (  12) 9.00000E+01                   
+ (  13) 5.70000E+02 (  14) 4.30000E+01 (  15) 3.45000E+03 (  16) 3.50000E+00 (  17) 9.80000E-01 (  18) 7.77000E+02                   
+ (  19) 2.00000E-01 (  20) 0.0         (  21) 1.00000E+75 (  22) 1.00000E+75 (  23) 1.00000E+75 (  24) 1.00000E+75                   
+ (  25) 1.00000E+75 (  26) 1.00000E+75 (  27) 1.00000E+75 (  28) 1.00000E+75 (  29) 1.00000E+75 (  30) 1.00000E+75                   
+ (  31) 1.00000E+75 (  32) 1.00000E+75 (  33) 1.00000E+75 (  34) 1.00000E+75 (  35) 1.00000E+75 (  36) 1.00000E+75                   
+ (  37) 1.00000E+75 (  38) 1.00000E+75 (  39) 1.00000E+75 (  40) 1.00000E+75 (  41) 1.00000E+75 (  42) 1.00000E+75                   
+ (  43) 1.00000E+75 (  44) 1.00000E+75 (  45) 2.00000E-01 (  46) 5.00000E+00 (  47) 2.00000E-03 (  48) 1.05000E+00                   
+ (  49) 5.68690E+01 (  50) 7.77000E+02 (  51) 1.00000E-03 (  52) 9.00000E+01 (  53) 0.0         (  54) 1.00000E+75                   
+ (  55) 1.00000E+75 (  56) 1.00000E+75 (  57) 1.00000E+75 (  58) 1.00000E+75 (  59) 1.00000E+75 (  60) 1.00000E+75                   
+ (  61) 4.00000E+01 (  62) 2.00000E+01 (  63) 1.50000E+01 (  64) 3.00000E+02 (  65) 2.00000E+01 (  66) 2.00000E+01                   
+ (  67) 1.00000E+00 (  68) 1.00000E+00 (  69) 0.0         (  70) 0.0         (  71) 1.00000E+75 (  72) 1.00000E+75                   
+1*AECS*   DATA(FR22C)        HOME A/C MODEL   TOUT=55F        11/90                                         PAGE        5            
+     3  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+ COMPONENT(S)                                                                                                                        
+0    1    6  8   12   16   20   24   28   32   36   40   44   48   52   56   60   64   68   72   76   80                             
+                                                                                                                                     
+     LOOPS       30  101  104  101  116    3  -22 1101   11   12   13   14    0    0    0    0    0    0                             
+                                                                                                        SV N   1  T   1              
+                                                                                                        SV N   2  T   2              
+                                                                                                        SV N   3  T  10              
+     INLET       15  201  204    0    5    6    7    8    2   -1    0    0    0    0    0    0    0    0                             
+     EVAP        85  101  104  108  201  204  208    0  932  932   46    6   45    1    0    0    0    0                             
+                                                                                                        EV N   1  T   3              
+     SHAFT      165    1    0   15    0    0    0    0    0    0    0    0    0    0    0    0    0    0                             
+     VCOMP      265  101  108  112    1    2   16  921  921   17    0    0    0    0    0    0    0    0                             
+     INLET       15  501  504    0    1    2    3    4    2   -1    0    0    0    0    0    0    0    0                             
+     COND        35  101  112  116  501  504  508    1  922  922    3   19    0    0    0    0    0    0                             
+     CNNCT        0  101  116  101  120    0    0    0    0    0    0    0    0    0    0    0    0    0                             
+     MISC         0    2  120   -1   12    0    0    0    0    0    0    0    0    0    0    0    0    0                             
+     LOOPE      345  101  104  101  116    1    0    0    0    0    0    0    0    0    0    0    0    0                             
+                                                                                                        EV N   2  T   4              
+     MISC         0   -4    0    2  104    2   -1   12    1    0    0    0    0    0    0    0    0    0                             
+                                                                                                        EV N   3  T  10              
+     MISC         0   -1   12    2  104    0    0    0    0    0    0    0    0    0    0    0    0    0                             
+     COP        350    1    1  104  108    0    0    0    0    0    0    0    0    0    0    0    0    0                             
+0* NOTE - CARD NUMBERS NOT IN ASCENDING ORDER                                                                                        
+          MAY PRODUCE INVALID CHANGE CASE                                                                                            
+0    STATE/ERROR VARIABLE(S)     3                                                                                                   
+1*AECS*   DATA(FR22C)        HOME A/C MODEL   TOUT=55F        11/90                                         PAGE        6            
+     3  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+ TABLES            13 REQUIRED                                                                                                       
+1*AECS*   DATA(FR22C)        HOME A/C MODEL   TOUT=55F        11/90                                         PAGE        7            
+     3  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+ TIME P       5.00                                                                                                                   
+SVSCLE                                                                                                                               
+      0.0                 0.0                 0.0                 0.0             0.0     0.0                                        
+      0.0                 0.0                 0.0                 0.0             0.0     0.0                                        
+      0.0                 0.0                 0.0                 0.0             0.0     0.0                                        
+      0.0                 0.0                 0.0                 0.0                                                                
+0SVT                                                                                                                                 
+ (   1)    1 (   2)    2 (   3)   10                                                                                                 
+0EVT                                                                                                                                 
+ (   1)    3 (   2)    4 (   3)   10                                                                                                 
+0PASS      1                                                                                                                         
+0S.V.                                                                                                                                
+ (   1) 8.00000E+00 (   2) 9.00000E+01 (   3) 4.30000E+01                                                                            
+0E.V.                                                                                                                                
+ (   1)-9.30873E+01 (   2) 4.89206E+00 (   3) 0.0                                                                                    
+0W                                                                                                                                   
+ ( 101) 8.00000E+00 ( 201) 1.10000E+02 ( 501) 1.00000E+02 (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+0P                                                                                                                                   
+ ( 104) 9.00000E+01 ( 116) 3.42016E+02 ( 204) 1.47000E+01 ( 108) 8.94517E+01 ( 208) 1.46000E+01 ( 112) 3.43363E+02                   
+ ( 504) 1.47000E+01 ( 508) 1.44806E+01 ( 120) 9.00000E+01 (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+0T                                                                                                                                   
+ ( 104) 5.04224E+02 ( 116) 5.54780E+02 ( 204) 5.30000E+02 ( 108) 5.04224E+02 ( 208) 5.14931E+02 ( 112) 6.95510E+02                   
+ ( 504) 5.50000E+02 ( 508) 5.88562E+02 ( 120) 5.54780E+02 (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+0H                                                                                                                                   
+ ( 104) 4.30000E+01 ( 116) 3.81079E+01 ( 204) 0.0         ( 108) 9.27450E+01 ( 208) 0.0         ( 112) 1.36100E+02                   
+ ( 504) 0.0         ( 508) 0.0         ( 120) 3.81079E+01 (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+ MATRIX EV1    EV2         EV3         EV4         EV5         EV6         EV7         EV8         EV9         EV10                  
+ EQUATION FOR SV NUMBER   1   VALUES ARE:  DEL(EV(COLUMN))/DEL(SV(   1))                                                             
+                                                                                                                                     
+ -0.17445E+01-0.99602E+01 0.52256E+01 0.93087E+02                                                                                    
+ EQUATION FOR SV NUMBER   2   VALUES ARE:  DEL(EV(COLUMN))/DEL(SV(   2))                                                             
+                                                                                                                                     
+ -0.46711E+00-0.96610E-02 0.10756E+01-0.48921E+01                                                                                    
+ EQUATION FOR SV NUMBER   3   VALUES ARE:  DEL(EV(COLUMN))/DEL(SV(   3))                                                             
+                                                                                                                                     
+  0.0         0.10000E+01-0.20929E+01 0.0                                                                                            
+0ALTERS                                                                                                                              
+ (   1)-2.38823E+00 (   2)-1.19143E+01 (   3)-5.69261E+00                                                                            
+0PASS      2                                                                                                                         
+0ALTERS                                                                                                                              
+ (   1) 1.75467E-03 (   2) 8.56225E-04 (   3) 4.09000E-04                                                                            
+0PASS      9                                                                                                                         
+0S.V.                                                                                                                                
+ (   1) 7.15597E+00 (   2) 7.96182E+01 (   3) 3.80398E+01                                                                            
+0E.V.                                                                                                                                
+ (   1)-2.17533E-03 (   2)-6.10352E-05 (   3) 8.54492E-04                                                                            
+0W                                                                                                                                   
+ ( 101) 7.15597E+00 ( 201) 1.10000E+02 ( 501) 1.00000E+02 (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+0P                                                                                                                                   
+ ( 104) 7.96182E+01 ( 116) 3.01252E+02 ( 204) 1.47000E+01 ( 108) 7.90248E+01 ( 208) 1.46000E+01 ( 112) 3.02575E+02                   
+ ( 504) 1.47000E+01 ( 508) 1.44822E+01 ( 120) 7.96173E+01 (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+0T                                                                                                                                   
+ ( 104) 4.97181E+02 ( 116) 5.54895E+02 ( 204) 5.30000E+02 ( 108) 5.05718E+02 ( 208) 5.10656E+02 ( 112) 6.64855E+02                   
+ ( 504) 5.50000E+02 ( 508) 5.80318E+02 ( 120) 5.54895E+02 (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+0H                                                                                                                                   
+ ( 104) 3.80398E+01 ( 116) 3.80399E+01 ( 204) 0.0         ( 108) 1.09427E+02 ( 208) 0.0         ( 112) 1.30803E+02                   
+ ( 504) 0.0         ( 508) 0.0         ( 120) 3.80399E+01 (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+1*AECS*   DATA(FR22C)        HOME A/C MODEL   TOUT=55F        11/90                                         PAGE       13            
+     3  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+0COMPONENT ATM                 TABLE     -2   -14 VALUE =  1.01040E+01 ARGUMENT(S)  1.00000E+04                                      
+0COMPONENT ATM                 TABLE     -2   -15 VALUE =  5.25436E+02 ARGUMENT(S)  1.00000E+04                                      
+0COMPONENT EVAP                TABLE    932     5 VALUE =  4.10601E-01 ARGUMENT(S)  4.91166E+00                                      
+0COMPONENT EVAP                TABLE      6     2 VALUE =  8.75361E-01 ARGUMENT(S)  4.91166E+00                                      
+0COMPONENT EVAP                                                                                                                      
+0     NL     101   NSI    104   NSO    108   FT       3   FN     -22                                                                 
+0     W     7.16   PI   79.62   PO   79.02   TI  497.18   TO  505.72   HI 38.0398   HO109.4268                                       
+0     NL     201   NSI    204   NSO    208   FT       2   FN      -1                                                                 
+0     W   110.00   PI   14.70   PO   14.60   TI  530.00   TO  510.66   HI  0.0      HO  0.0                                          
+0      BYPASS FACTOR 0.4106   Q   510.84                                                                                             
+0COMPONENT SHAFT                                                                                                                     
+0     SHAFT    1   N    3450.                                                                                                        
+0COMPONENT VCOMP               TABLE    921     4 VALUE =  3.82886E+00 ARGUMENT(S)  5.08050E+00                                      
+0COMPONENT VCOMP                                                                                                                     
+0     NL     101   NSI    108   NSO    112   FT       3   FN     -22                                                                 
+0     W     7.16   PI   79.02   PO  302.57   TI  505.72   TO  664.86   HI109.4268   HO130.8027                                       
+0     SHAFT    1   PR  3.8289   EFF 0.7000   HP   -3.68   HGI  0.107895E+03                                                          
+0COMPONENT COND                TABLE    922     5 VALUE =  8.11647E-01 ARGUMENT(S)  1.00000E+02 1.23295E+00                          
+0COMPONENT COND                TABLE    922     1 VALUE =  2.00000E-01 ARGUMENT(S)  1.00000E+02                                      
+0COMPONENT COND                                                                                                                      
+0     NL     101   NSI    112   NSO    116   FT       3   FN     -22                                                                 
+0     W     7.16   PI  302.57   PO  301.25   TI  664.86   TO  554.90   HI130.8027   HO 38.0399                                       
+0     NL     501   NSI    504   NSO    508   FT       2   FN      -1                                                                 
+0     W   100.00   PI   14.70   PO   14.48   TI  550.00   TO  580.32   HI  0.0      HO  0.0                                          
+0     EFF 0.7396   Q   663.81                                                                                                        
+0COMPONENT MISC                                                                                                                      
+0     VX   7.961818E+01   IVXT     2   IVXN   120   IOPR     0   IOPT     0                                                          
+      V1   7.961818E+01   IV1T    -1   IV1N    12                                                                                    
+0COMPONENT MISC                                                                                                                      
+1*AECS*   DATA(FR22C)        HOME A/C MODEL   TOUT=55F        11/90                                         PAGE       14            
+     3  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+0     VX   0.0            IVXT    -4   IVXN     3   IOPR     2   IOPT     1                                                          
+      V1   7.961818E+01   IV1T     2   IV1N   104                                                                                    
+      V2   7.961818E+01   IV2T    -1   IV2N    12                                                                                    
+0COMPONENT MISC                                                                                                                      
+0     VX   7.961818E+01   IVXT    -1   IVXN    12   IOPR     0   IOPT     0                                                          
+      V1   7.961818E+01   IV1T     2   IV1N   104                                                                                    
+0COEFFICIENT OF PERFORMANCE = 3.340                                                                                                  
+ EVAPORATOR STATIONS         104                                                                                                     
+ VAPOR COMPRESSOR STATIONS 108                                                                                                       
+1*AECS*   DATA(FR22C)        HOME A/C MODEL   TOUT=55F        11/90                                         PAGE       15            
+     3  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+ TIME E       5.00                                                                                                                   
+0FLOW RATE(S)-LB/MIN                                                                                                                 
+                                                                                                                                     
+ ( 101)    7.16 ( 201)  110.00 ( 501)  100.00 (   0)    0.0  (   0)    0.0  (   0)    0.0                                            
+0PRESSURE(S)-PSI                                                                                                                     
+                                                                                                                                     
+ ( 104)   79.62 ( 108)   79.02 ( 112)  302.57 ( 116)  301.25 ( 120)   79.62 ( 204)   14.70                                           
+ ( 208)   14.60 ( 504)   14.70 ( 508)   14.48 (   0)    0.0  (   0)    0.0  (   0)    0.0                                            
+0TEMPERATURE(S)-DEG R                                                                                                                
+                                                                                                                                     
+ ( 104)  497.18 ( 108)  505.72 ( 112)  664.86 ( 116)  554.90 ( 120)  554.90 ( 204)  530.00                                           
+ ( 208)  510.66 ( 504)  550.00 ( 508)  580.32 (   0)    0.0  (   0)    0.0  (   0)    0.0                                            
+0HUMIDITY(S)/ENTHALPY(S)-LBW/LBA / BTU/LB                                                                                            
+                                                                                                                                     
+ ( 104) 38.0398 ( 108)109.4268 ( 112)130.8027 ( 116) 38.0399 ( 120) 38.0399 ( 204)  0.0                                              
+ ( 208)  0.0    ( 504)  0.0    ( 508)  0.0    (   0)  0.0    (   0)  0.0    (   0)  0.0                                              
+0STATE VARIABLE TYPE(S)                                                                                                              
+ (   1)    1 (   2)    2 (   3)   10                                                                                                 
+0STATE VARIABLE(S)                                                                                                                   
+ (   1) 7.15597E+00 (   2) 7.96182E+01 (   3) 3.80398E+01                                                                            
+0ERROR VARIABLE TYPE(S)                                                                                                              
+ (   1)    3 (   2)    4 (   3)   10                                                                                                 
+0ERROR VARIABLE(S)                                                                                                                   
+ (   1)-2.17533E-03 (   2)-6.10352E-05 (   3) 0.0                                                                                    
+0SOLUTION CONVERGED IN      8 TRY(S)                                                                                                 
+0     0 ERROR(S) DETECTED                                                                                                            
+0CASE END                                                                                                                            
+1                                                                                                                                    
+1*AECS* GENERAL ECS PROGRAM                                                                                 PAGE        1            
+     4  CASE PCHANG                                                                                         DATE TODAY               
+                                                                                                                                     
+ TIME M       5.00 SEC.                                                                                                              
+ CHANGE*TITEND                                                                          *                                            
+ CHANGE*CASEND                                                                          *                                            
+ CHANGE*VALUE   03  560.                                                                *                                            
+ CHANGE*PAREND                                                                          *                                            
+ CHANGE*COMEND                                                                          *                                            
+ CHANGE*ENDCASE                                                                         *                                            
+1*AECS*   DATA(FR22C)        HOME A/C MODEL   TOUT=55F        11/90                                         PAGE        2            
+     4  CASE PCHANG                                                                                         DATE TODAY               
+                                                                                                                                     
+ TIME Z       5.00                                                                                                                   
+0       DATA(FR22C)        HOME A/C MODEL   TOUT=55F        11/90                                                                    
+1*AECS*   DATA(FR22C)        HOME A/C MODEL   TOUT=55F        11/90                                         PAGE        3            
+     4  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+0          CASE                      6 LEG(S)            12 STATION(S)                                                               
+1*AECS*   DATA(FR22C)        HOME A/C MODEL   TOUT=55F        11/90                                         PAGE        4            
+     4  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+ PARAMETER TABLE        72 VALUE(S)                                                                                                  
+                                                                                                                                     
+ (   1) 1.00000E+02 (   2) 1.47000E+01 (   3) 5.60000E+02 (   4) 0.0         (   5) 1.10000E+02 (   6) 1.47000E+01                   
+ (   7) 5.40000E+02 (   8) 0.0         (   9) 0.0         (  10) 5.15000E+02 (  11) 8.00000E+00 (  12) 9.00000E+01                   
+ (  13) 5.70000E+02 (  14) 4.30000E+01 (  15) 3.45000E+03 (  16) 3.50000E+00 (  17) 9.80000E-01 (  18) 7.77000E+02                   
+ (  19) 2.00000E-01 (  20) 0.0         (  21) 1.00000E+75 (  22) 1.00000E+75 (  23) 1.00000E+75 (  24) 1.00000E+75                   
+ (  25) 1.00000E+75 (  26) 1.00000E+75 (  27) 1.00000E+75 (  28) 1.00000E+75 (  29) 1.00000E+75 (  30) 1.00000E+75                   
+ (  31) 1.00000E+75 (  32) 1.00000E+75 (  33) 1.00000E+75 (  34) 1.00000E+75 (  35) 1.00000E+75 (  36) 1.00000E+75                   
+ (  37) 1.00000E+75 (  38) 1.00000E+75 (  39) 1.00000E+75 (  40) 1.00000E+75 (  41) 1.00000E+75 (  42) 1.00000E+75                   
+ (  43) 1.00000E+75 (  44) 1.00000E+75 (  45) 2.00000E-01 (  46) 5.00000E+00 (  47) 2.00000E-03 (  48) 1.05000E+00                   
+ (  49) 5.68690E+01 (  50) 7.77000E+02 (  51) 1.00000E-03 (  52) 9.00000E+01 (  53) 0.0         (  54) 1.00000E+75                   
+ (  55) 1.00000E+75 (  56) 1.00000E+75 (  57) 1.00000E+75 (  58) 1.00000E+75 (  59) 1.00000E+75 (  60) 1.00000E+75                   
+ (  61) 4.00000E+01 (  62) 2.00000E+01 (  63) 1.50000E+01 (  64) 3.00000E+02 (  65) 2.00000E+01 (  66) 2.00000E+01                   
+ (  67) 1.00000E+00 (  68) 1.00000E+00 (  69) 0.0         (  70) 0.0         (  71) 1.00000E+75 (  72) 1.00000E+75                   
+1*AECS*   DATA(FR22C)        HOME A/C MODEL   TOUT=55F        11/90                                         PAGE        5            
+     4  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+ COMPONENT(S)                                                                                                                        
+0    1    6  8   12   16   20   24   28   32   36   40   44   48   52   56   60   64   68   72   76   80                             
+                                                                                                                                     
+     LOOPS       30  101  104  101  116    3  -22 1101   11   12   13   14    0    0    0    0    0    0                             
+                                                                                                        SV N   1  T   1              
+                                                                                                        SV N   2  T   2              
+                                                                                                        SV N   3  T  10              
+     INLET       15  201  204    0    5    6    7    8    2   -1    0    0    0    0    0    0    0    0                             
+     EVAP        85  101  104  108  201  204  208    0  932  932   46    6   45    1    0    0    0    0                             
+                                                                                                        EV N   1  T   3              
+     SHAFT      165    1    0   15    0    0    0    0    0    0    0    0    0    0    0    0    0    0                             
+     VCOMP      265  101  108  112    1    2   16  921  921   17    0    0    0    0    0    0    0    0                             
+     INLET       15  501  504    0    1    2    3    4    2   -1    0    0    0    0    0    0    0    0                             
+     COND        35  101  112  116  501  504  508    1  922  922    3   19    0    0    0    0    0    0                             
+     CNNCT        0  101  116  101  120    0    0    0    0    0    0    0    0    0    0    0    0    0                             
+     MISC         0    2  120   -1   12    0    0    0    0    0    0    0    0    0    0    0    0    0                             
+     LOOPE      345  101  104  101  116    1    0    0    0    0    0    0    0    0    0    0    0    0                             
+                                                                                                        EV N   2  T   4              
+     MISC         0   -4    0    2  104    2   -1   12    1    0    0    0    0    0    0    0    0    0                             
+                                                                                                        EV N   3  T  10              
+     MISC         0   -1   12    2  104    0    0    0    0    0    0    0    0    0    0    0    0    0                             
+     COP        350    1    1  104  108    0    0    0    0    0    0    0    0    0    0    0    0    0                             
+0* NOTE - CARD NUMBERS NOT IN ASCENDING ORDER                                                                                        
+          MAY PRODUCE INVALID CHANGE CASE                                                                                            
+0    STATE/ERROR VARIABLE(S)     3                                                                                                   
+1*AECS*   DATA(FR22C)        HOME A/C MODEL   TOUT=55F        11/90                                         PAGE        6            
+     4  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+ TABLES            13 REQUIRED                                                                                                       
+1*AECS*   DATA(FR22C)        HOME A/C MODEL   TOUT=55F        11/90                                         PAGE        7            
+     4  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+ TIME P       5.00                                                                                                                   
+SVSCLE                                                                                                                               
+      0.0                 0.0                 0.0                 0.0             0.0     0.0                                        
+      0.0                 0.0                 0.0                 0.0             0.0     0.0                                        
+      0.0                 0.0                 0.0                 0.0             0.0     0.0                                        
+      0.0                 0.0                 0.0                 0.0                                                                
+0SVT                                                                                                                                 
+ (   1)    1 (   2)    2 (   3)   10                                                                                                 
+0EVT                                                                                                                                 
+ (   1)    3 (   2)    4 (   3)   10                                                                                                 
+0PASS      1                                                                                                                         
+0S.V.                                                                                                                                
+ (   1) 8.00000E+00 (   2) 9.00000E+01 (   3) 4.30000E+01                                                                            
+0E.V.                                                                                                                                
+ (   1) 1.46039E+01 (   2)-2.63658E+00 (   3) 0.0                                                                                    
+0W                                                                                                                                   
+ ( 101) 8.00000E+00 ( 201) 1.10000E+02 ( 501) 1.00000E+02 (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+0P                                                                                                                                   
+ ( 104) 9.00000E+01 ( 116) 3.40291E+02 ( 204) 1.47000E+01 ( 108) 8.93892E+01 ( 208) 1.46000E+01 ( 112) 3.41637E+02                   
+ ( 504) 1.47000E+01 ( 508) 1.44784E+01 ( 120) 9.00000E+01 (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+0T                                                                                                                                   
+ ( 104) 5.04224E+02 ( 116) 5.78908E+02 ( 204) 5.40000E+02 ( 108) 5.24139E+02 ( 208) 5.19085E+02 ( 112) 6.86180E+02                   
+ ( 504) 5.60000E+02 ( 508) 5.90146E+02 ( 120) 5.78908E+02 (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+0H                                                                                                                                   
+ ( 104) 4.30000E+01 ( 116) 4.56366E+01 ( 204) 0.0         ( 108) 1.12071E+02 ( 208) 0.0         ( 112) 1.34134E+02                   
+ ( 504) 0.0         ( 508) 0.0         ( 120) 4.56366E+01 (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+ MATRIX EV1    EV2         EV3         EV4         EV5         EV6         EV7         EV8         EV9         EV10                  
+ EQUATION FOR SV NUMBER   1   VALUES ARE:  DEL(EV(COLUMN))/DEL(SV(   1))                                                             
+                                                                                                                                     
+ -0.39275E+00-0.11369E+02 0.55743E+01-0.14604E+02                                                                                    
+ EQUATION FOR SV NUMBER   2   VALUES ARE:  DEL(EV(COLUMN))/DEL(SV(   2))                                                             
+                                                                                                                                     
+ -0.77788E+01 0.31783E+01-0.78042E-02 0.26366E+01                                                                                    
+ EQUATION FOR SV NUMBER   3   VALUES ARE:  DEL(EV(COLUMN))/DEL(SV(   3))                                                             
+                                                                                                                                     
+  0.0         0.10000E+01-0.20929E+01 0.0                                                                                            
+0ALTERS                                                                                                                              
+ (   1) 3.39440E-01 (   2) 1.66228E+00 (   3) 7.94231E-01                                                                            
+0PASS      2                                                                                                                         
+0ALTERS                                                                                                                              
+ (   1) 5.64796E-03 (   2)-5.72189E-03 (   3)-2.73395E-03                                                                            
+0PASS      7                                                                                                                         
+1*AECS*   DATA(FR22C)        HOME A/C MODEL   TOUT=55F        11/90                                         PAGE       11            
+     4  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+0S.V.                                                                                                                                
+ (   1) 8.37128E+00 (   2) 9.17519E+01 (   3) 4.38370E+01                                                                            
+0E.V.                                                                                                                                
+ (   1) 5.25379E-03 (   2) 3.35693E-04 (   3)-5.72205E-03                                                                            
+0W                                                                                                                                   
+ ( 101) 8.37128E+00 ( 201) 1.10000E+02 ( 501) 1.00000E+02 (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+0P                                                                                                                                   
+ ( 104) 9.17519E+01 ( 116) 3.47391E+02 ( 204) 1.47000E+01 ( 108) 9.11289E+01 ( 208) 1.46000E+01 ( 112) 3.48742E+02                   
+ ( 504) 1.47000E+01 ( 508) 1.44781E+01 ( 120) 9.17576E+01 (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+0T                                                                                                                                   
+ ( 104) 5.05353E+02 ( 116) 5.73196E+02 ( 204) 5.40000E+02 ( 108) 5.10067E+02 ( 208) 5.19208E+02 ( 112) 6.70927E+02                   
+ ( 504) 5.60000E+02 ( 508) 5.91574E+02 ( 120) 5.73196E+02 (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+0H                                                                                                                                   
+ ( 104) 4.38370E+01 ( 116) 4.38366E+01 ( 204) 0.0         ( 108) 1.09456E+02 ( 208) 0.0         ( 112) 1.30551E+02                   
+ ( 504) 0.0         ( 508) 0.0         ( 120) 4.38366E+01 (   0) 0.0         (   0) 0.0         (   0) 0.0                           
+1*AECS*   DATA(FR22C)        HOME A/C MODEL   TOUT=55F        11/90                                         PAGE       12            
+     4  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+0COMPONENT ATM                 TABLE     -2   -14 VALUE =  1.01040E+01 ARGUMENT(S)  1.00000E+04                                      
+0COMPONENT ATM                 TABLE     -2   -15 VALUE =  5.25436E+02 ARGUMENT(S)  1.00000E+04                                      
+0COMPONENT EVAP                TABLE    932     5 VALUE =  3.99900E-01 ARGUMENT(S)  5.00249E+00                                      
+0COMPONENT EVAP                TABLE      6     2 VALUE =  8.84077E-01 ARGUMENT(S)  5.00249E+00                                      
+0COMPONENT EVAP                                                                                                                      
+0     NL     101   NSI    104   NSO    108   FT       3   FN     -22                                                                 
+0     W     8.37   PI   91.75   PO   91.13   TI  505.35   TO  510.07   HI 43.8370   HO109.4556                                       
+0     NL     201   NSI    204   NSO    208   FT       2   FN      -1                                                                 
+0     W   110.00   PI   14.70   PO   14.60   TI  540.00   TO  519.21   HI  0.0      HO  0.0                                          
+0      BYPASS FACTOR 0.3999   Q   549.31                                                                                             
+0COMPONENT SHAFT                                                                                                                     
+0     SHAFT    1   N    3450.                                                                                                        
+0COMPONENT VCOMP               TABLE    921     4 VALUE =  3.82691E+00 ARGUMENT(S)  5.11564E+00                                      
+0COMPONENT VCOMP                                                                                                                     
+0     NL     101   NSI    108   NSO    112   FT       3   FN     -22                                                                 
+0     W     8.37   PI   91.13   PO  348.74   TI  510.07   TO  670.93   HI109.4556   HO130.5510                                       
+0     SHAFT    1   PR  3.8269   EFF 0.7000   HP   -4.25   HGI  0.108575E+03                                                          
+0COMPONENT COND                TABLE    922     5 VALUE =  8.11017E-01 ARGUMENT(S)  1.00000E+02 1.22034E+00                          
+0COMPONENT COND                TABLE    922     1 VALUE =  2.00000E-01 ARGUMENT(S)  1.00000E+02                                      
+0COMPONENT COND                                                                                                                      
+0     NL     101   NSI    112   NSO    116   FT       3   FN     -22                                                                 
+0     W     8.37   PI  348.74   PO  347.39   TI  670.93   TO  573.20   HI130.5510   HO 43.8366                                       
+0     NL     501   NSI    504   NSO    508   FT       2   FN      -1                                                                 
+0     W   100.00   PI   14.70   PO   14.48   TI  560.00   TO  591.57   HI  0.0      HO  0.0                                          
+0     EFF 0.7757   Q   725.91                                                                                                        
+0COMPONENT MISC                                                                                                                      
+0     VX   9.175191E+01   IVXT     2   IVXN   120   IOPR     0   IOPT     0                                                          
+      V1   9.175191E+01   IV1T    -1   IV1N    12                                                                                    
+0COMPONENT MISC                                                                                                                      
+1*AECS*   DATA(FR22C)        HOME A/C MODEL   TOUT=55F        11/90                                         PAGE       13            
+     4  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+0     VX   0.0            IVXT    -4   IVXN     3   IOPR     2   IOPT     1                                                          
+      V1   9.175191E+01   IV1T     2   IV1N   104                                                                                    
+      V2   9.175191E+01   IV2T    -1   IV2N    12                                                                                    
+0COMPONENT MISC                                                                                                                      
+0     VX   9.175191E+01   IVXT    -1   IVXN    12   IOPR     0   IOPT     0                                                          
+      V1   9.175191E+01   IV1T     2   IV1N   104                                                                                    
+0COEFFICIENT OF PERFORMANCE = 3.111                                                                                                  
+ EVAPORATOR STATIONS         104                                                                                                     
+ VAPOR COMPRESSOR STATIONS 108                                                                                                       
+1*AECS*   DATA(FR22C)        HOME A/C MODEL   TOUT=55F        11/90                                         PAGE       14            
+     4  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+ TIME E       5.00                                                                                                                   
+0FLOW RATE(S)-LB/MIN                                                                                                                 
+                                                                                                                                     
+ ( 101)    8.37 ( 201)  110.00 ( 501)  100.00 (   0)    0.0  (   0)    0.0  (   0)    0.0                                            
+0PRESSURE(S)-PSI                                                                                                                     
+                                                                                                                                     
+ ( 104)   91.75 ( 108)   91.13 ( 112)  348.74 ( 116)  347.39 ( 120)   91.75 ( 204)   14.70                                           
+ ( 208)   14.60 ( 504)   14.70 ( 508)   14.48 (   0)    0.0  (   0)    0.0  (   0)    0.0                                            
+0TEMPERATURE(S)-DEG R                                                                                                                
+                                                                                                                                     
+ ( 104)  505.35 ( 108)  510.07 ( 112)  670.93 ( 116)  573.20 ( 120)  573.20 ( 204)  540.00                                           
+ ( 208)  519.21 ( 504)  560.00 ( 508)  591.57 (   0)    0.0  (   0)    0.0  (   0)    0.0                                            
+0HUMIDITY(S)/ENTHALPY(S)-LBW/LBA / BTU/LB                                                                                            
+                                                                                                                                     
+ ( 104) 43.8370 ( 108)109.4556 ( 112)130.5510 ( 116) 43.8366 ( 120) 43.8366 ( 204)  0.0                                              
+ ( 208)  0.0    ( 504)  0.0    ( 508)  0.0    (   0)  0.0    (   0)  0.0    (   0)  0.0                                              
+0STATE VARIABLE TYPE(S)                                                                                                              
+ (   1)    1 (   2)    2 (   3)   10                                                                                                 
+0STATE VARIABLE(S)                                                                                                                   
+ (   1) 8.37128E+00 (   2) 9.17519E+01 (   3) 4.38370E+01                                                                            
+0ERROR VARIABLE TYPE(S)                                                                                                              
+ (   1)    3 (   2)    4 (   3)   10                                                                                                 
+0ERROR VARIABLE(S)                                                                                                                   
+ (   1) 5.25379E-03 (   2) 3.35693E-04 (   3) 0.0                                                                                    
+0SOLUTION CONVERGED IN      6 TRY(S)                                                                                                 
+0     0 ERROR(S) DETECTED                                                                                                            
+0CASE END                                                                                                                            
+1                                                                                                                                    
+1                                                                                                                                    
+0                                                                                                                                    
+0                                                                                                                                    
+0                    END OF JOB                                                                                                      

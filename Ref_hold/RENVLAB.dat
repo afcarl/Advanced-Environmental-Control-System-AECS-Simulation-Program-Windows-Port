@@ -1,0 +1,228 @@
+******  THIS IS 'TX58273.DATA(RENVLAB)'                                                                                              
+******COPIED FROM QQ042090.DATA(RENVLAB)        ON 4/30/90                                                                           
+******COPIED FROM FR22        ON 4/04/90                                                                                             
+******USES TX58273.FTBQ.LOAD(TEMPNAME)  AND AECSTAB.DATA                                                                             
+******   NEW                                                                                                                         
+******12X,215                                                                                                                        
+COMMON    CI   76   10                                                                                                               
+****** ORIG                                                                                                                          
+******COMMON  CI   76   10                                                                                                           
+DUMP          3                                                                                                                      
+PERFORM                                                                                                                              
+TITLE   RENVLAB.DATA   MODELS THE CASCADE R502-R13 SYSTEM      03/22/90                                                              
+TITLE                  IN THE ENVIRONMENTAL LAB                                                                                      
+CASEA           0000  15  31   0                                                                                                     
+CASEB     -2  -2   1  -1  -2                                                                                                         
+******CASEB              1  -1  -2                                                                                                   
+CASEC        10000.0              569.67                                                                                             
+CASED         0.5000                                                                                                                 
+PARAM   80                                                                                                                           
+****************************************************************                                                                     
+****** AIRCHAMB W   PRESS    TEMP       HUMD                                                                                         
+VALUES  01 60.      14.7      410.      0.0000                                                                                       
+****** R502 COND OUTPRESS    TEMP       ENTHALP                                                                                      
+VALUES  05 15.      230.      999.      20.                                                                                          
+******  COLD AIR OUT TEMP                                                                                                            
+VALUE   10 515.00                                                                                                                    
+****** R13 COND IN  PCONDIN   TIN       HIN       SHAFT SPEED                                                                        
+VALUES  11 08.      220.      999.      75.       23300.                                                                             
+****** R502  PR     VCOMP ME  DSH       COND FLOW A                                                                                  
+VALUES  16 15.      0.95      18.618    1.2000                                                                                       
+****** H2O FLOW     PI        TI        HI                                                                                           
+VALUES  21 140.00   75.       535.      0.                                                                                           
+******    R13 PR  R13XVPOUT  R502 XV POUT                                                                                            
+VALUES  31 020.00   25.       45.                                                                                                    
+******  502CVALMIN  CVALVE  R13CVMIN   R13CV GES                                                                                     
+VALUES  35 0.001    0.5       0.001     2.5                                                                                          
+******   ARFRGEVP13 SUPERHT13 STEPSIZ   STEPRATIO                                                                                    
+VALUES  45 2.2      5.        0.002     1.05                                                                                         
+******    BTU/MIN-KW                                                                                                                 
+VALUES  49 56.869                                                                                                                    
+******    SUPERHEAT                                                                                                                  
+VALUES  50 5.                                                                                                                        
+******     AFC      AFH       HTCL      HTC2      HTCV                                                                               
+VALUES  51 .1       .1        900.      375.      375.                                                                               
+******     AHTC     AHTH      X         X         X                                                                                  
+VALUES  56 1.       1.        9.        9.        9.                                                                                 
+******    PJK=START PRESS       DP= PRESS INCREMENT  N=NUMBR OF PSTEPS                                                               
+******    TJK=START TEMP        DT= TEMP INCREMENT   M=NUMBR OF TSTEPS                                                               
+******    HUM=FEED TO SHP       DSH=GOES NOWHERE                                                                                     
+******       LEG PJK  DP   N TJK  DT   M HUM DSH                                                                                     
+VALUES  61 15.      10.       25.       360.      10.                                                                                
+VALUES  66 20.      1.        1.                                                                                                     
+********************************************************************                                                                 
+******              START R502 LOOP                                                                                                  
+******     USE R-22 TEMPORARILY                                                                                                      
+LOOPS    030 501 504 501 520   3 -220101   5   6   7   8                                                                             
+CVALVE   075 501 504 508   0  35  36                                                                                                 
+SENSOR   106 501 508   2  33                                                                                                         
+******              START R13 LOOP                                                                                                   
+LOOPS    030 301 304 301 320   3 -130101  11  12  13  14                                                                             
+******   IDLP IS TYPE 61 COLD VS GA101 (CFM)  TYPE 62 IS HOT VS GA102                                                                
+******                             AFC AFH IDLP HTCL HTC2 HTCV AHC AHH                                                               
+******$L 020        R502 EVAPORATOR/R13 CONDENSER                                                                                    
+NRCLR    085 501 508 512 301 304 308  51  52 211  53  54  55  56  57                                                                 
+SHAFT    165   1   0  15                                                                                                             
+******         OLD VCOMPP SEEMS TO BE IN FTBQ.LOAD                                                                                   
+******                      0=FIX                                                                                                    
+******      NEW             1=SV                                                                                                     
+******      NEW             2=TBL                                                                                                    
+******      NEW        SHFT SVOP PR PRTB EFTB MECH COMPTYPE                                                                          
+******      OLD        SHFT SVOP  PR EFF  MCHEF                                                                                      
+******$D 020   1    R502 COMPRESSOR IN                                                                                               
+VCOMP    265 501 512 516   1   1  16 221  17                                                                                         
+******$D 021   1    WATER INTO R502 CONDENSER                                                                                        
+INLET    015 801 8040000  21  22  23  24   1  -2                                                                                     
+******$L 031   1    CONDENSER                                                                                                        
+******$F 032   1    FREON INTO 502 COND                                                                                              
+******$S 033   2    FREON OUT OF 502 COND                                                                                            
+****** OLD   S=SINK SIDE, R=REFRIG:0=DP SDLP SEFF                                                                                    
+COND     035 501 516 520 801 804 808   0 232 232                                                                                     
+****** NEW   S=SINK SIDE, R=REFRIG      TYP1 TYP5 TYP1  FT**2                                                                        
+****** NEW                         0=DP SDLP SEFF RDLP AREFRIG                                                                       
+******COND     035 501 516 520 801 804 808   0 232 232 233  19                                                                       
+LOOPE    345 501 504 501 5200101                                                                                                     
+******                                                                                                                               
+******         END OF R502 LOOP                                                                                                      
+******         PICK UP R13 LOOP AFTER NRCLR(R13 CONDENSER)                                                                           
+******                                                                                                                               
+CVALVE   075 301 308 312   0  37  38                                                                                                 
+SENSOR   106 301 312   2  32                                                                                                         
+******$D 021   1    CHAMBER AIR INTO R13 EVAP                                                                                        
+INLET    015 701 7040000   1   2   3   4   2  -1                                                                                     
+******$L 020        R13 EVAPORATOR                                                                                                   
+******  OLD  S=SOURCE R=REFRIG      0=DP SDP SEFF RSUPHEAT                                                                           
+EVAP     085 301 312 316 701 704 708   1 234 234  46                                                                                 
+******  NEW                        0=DP SDP SBYP SHT RDP ARF  SUPER ON=1                                                             
+******EVAP     085 301 312 316 701 704 708   1 234 235  46 236  45   0                                                               
+******SENSOR   105  51  16   5  50                                                                                                   
+******$D 020   1    R13 COMPRESSOR IN                                                                                                
+VCOMP    265 301 316 320   1   1  31 221  17                                                                                         
+LOOPE    345 301 304 301 3200101                                                                                                     
+******     #EVAP #CMP ESTA CSTA                                                                                                      
+COP      350   1   1  12  16                                                                                                         
+******      MRD# SVSCL EV STP SRTIO                                                                                                  
+SOLN     360   2   1   1  47  48                                                                                                     
+******    PJK=START PRESS       DP= PRESS INCREMENT    N=PRESSURE STEPS                                                              
+******    TJK=START TEMP        DT= TEMP INCREMENT     M=TEMP STEPS                                                                  
+******    HUM=FEED TO SHP       DSH=GOES NOWHERE                                                                                     
+******     LEG FLUTYP FL#                                                                                                            
+******       LEG PJK  DP   N TJK  DT   M HUM DSH                                                                                     
+FLUP     355 999  61  62  63  64  65  66  67   3 -13                                                                                 
+**************************END OF MODEL**********************************                                                             
+TABID    232   1   1                                                                                                                 
+TABT   DELTA PRESSURE COND SINK SIDE                                                                                                 
+TABV      5.                                                                                                                         
+TABID    232   5   2   0   0  410001   2                                                                                             
+TABT      EFFECTIVENESS FOR REFRIG COND SINK SIDE                                                                                    
+TABV      0.0       1.0        150.     0.8                                                                                          
+TABID    233   1   1                                                                                                                 
+TABT      REFRIG SIDE PRESS DROP FOR REFRIG COND. (CFM OF VAPOR)                                                                     
+TABV      1.0                                                                                                                        
+TABID    234   1   2   0   0  410001   2                                                                                             
+TABT      AIR SIDE PRESS DROP FOR R13 EVAP (LB/MIN)                                                                                  
+TABV      0.0       0.1        100.0    1.                                                                                           
+TABID    234   5   2   0   0  410001   2                                                                                             
+TABT      AIR SIDE EFFECTIVENESS                                                                                                     
+TABV      0.0       0.1        100.     0.8                                                                                          
+TABID   9236   2   2   0   0  420001   2                                                                                             
+TABT      REFRIG SIDE PRESS DROP FOR REFRIG EVAP (CFM OF VAPOR)                                                                      
+TABV      0.0       0.1       100.0     0.50                                                                                         
+TABID    236   2   1                                                                                                                 
+TABT      REFRIG SIDE PRESS DROP FOR REFRIG EVAP (CFM OF VAPOR)                                                                      
+TABV      1.0                                                                                                                        
+TABID    211  61   2   0   0 1020000   2                                                                                             
+TABT      NRCL PRESSURE DROP COLD SIDE                                                                                               
+TABV      0.0       0.1       50.0      1.00                                                                                         
+TABID    211  62   2   0   0 1010000   2                                                                                             
+TABT      NRCL PRESSURE DROP HOT SIDE                                                                                                
+TABV      0.0       0.1       50.0      1.00                                                                                         
+TABID    221   6   1                                                                                                                 
+TABT   COMP ADIABATIC EFF.                                                                                                           
+TABV      0.8                                                                                                                        
+TABID     22  99   2   0   0  280101  10                                                                                             
+TABT   COMP ADIABATIC EFF.                                                                                                           
+TABV      120.0     0.65      128.0     0.66                                                                                         
+TABV      133.5     0.67      140.0     0.68                                                                                         
+TABV      145.0     0.69      149.0     0.70                                                                                         
+TABV      152.0     0.71      157.0     0.71                                                                                         
+TABV      160.0     0.70      163.0     0.69                                                                                         
+TABID      1   8   2   3   0  590002  13                                                                                             
+TABT   COMP SPECIFIC DIAMETER DIA = F(NS)                                                                                            
+TABV      0.2       17.0      0.3       9.5                                                                                          
+TABV      0.4       7.0       0.5       5.5                                                                                          
+TABV      0.6       4.6       0.7       4.0                                                                                          
+TABV      0.8       3.7       0.9       3.3                                                                                          
+TABV      1.0       3.0       2.0       2.0                                                                                          
+TABV      10.0      1.0       20.0      0.62                                                                                         
+TABV      30.0      0.4                                                                                                              
+TABID      1   0   2   0   0   10000   8                                                                                             
+TABT  WEIGHING FACTOR - REAL SLOW                                       00000900                                                     
+TABV      1.0       0.01      16.0      0.1                             00001000                                                     
+TABV      21.0      0.3       25.0      0.5                             00001100                                                     
+TABV      38.0      0.7       43.0      0.8                             00001200                                                     
+TABV      48.0      0.9       53.0      1.0                             00001200                                                     
+TABID    999   0   2   0   0   10000   6                                                                                             
+TABT  WEIGHING FACTOR - SLOWER                                          00000900                                                     
+TABV      1.0       0.001     06.0      0.005                           00001000                                                     
+TABV      11.0      0.02      15.0      0.05                            00001100                                                     
+TABV      18.0      0.07      23.0      0.10                            00001200                                                     
+TABID    999   0   1                                                                                                                 
+TABT  WEIGHING FACTOR - RELATIVELY FREON FAST                           00000900                                                     
+TABV      1.0                                                           00001000                                                     
+TABID      1  50  -1   0   0   00000   4                                                                                             
+TABT  STATE VARIABLE SCALE                                              00000900                                                     
+TABV      30.         5.      0.1       20.                             00001000                                                     
+TABID      1  51  -1   0   0   00000   4                                                                                             
+TABT  ERROR VARIABLE SCALE                                              00000900                                                     
+TABV      0.5       1.        2.        1.                              00001000                                                     
+******PTAB       1   0  11   0                                                                                                       
+************************************************************************                                                             
+************************************************************************                                                             
+************************************************************************                                                             
+************************************************************************                                                             
+************************************************************************                                                             
+************************************************************************                                                             
+************************************************************************                                                             
+************************************************************************                                                             
+************************************************************************                                                             
+************************************************************************                                                             
+************************************************************************                                                             
+************************************************************************                                                             
+************************************************************************                                                             
+************************************************************************                                                             
+************************************************************************                                                             
+************************************************************************                                                             
+************************************************************************                                                             
+************************************************************************                                                             
+************************************************************************                                                             
+************************************************************************                                                             
+************************************************************************                                                             
+************************************************************************                                                             
+************************************************************************                                                             
+************************************************************************                                                             
+************************************************************************                                                             
+NOGO                                                                                                                                 
+ENDCASE                                                                                                                              
+PCHANGE                                                                                                                              
+TITLE   RENVLAB.DATA   MODELS THE CASCADE R502-R13 SYSTEM      03/22/90                                                              
+TITLE                  IN THE ENVIRONMENTAL LAB                                                                                      
+ENDCASE                                                                                                                              
+ENDJOB                                                                                                                               
+************************************************************************                                                             
+************************************************************************                                                             
+************************************************************************                                                             
+************************************************************************                                                             
+QCHANGE                                                                                                                              
+VALUE   21   080.00                                                                                                                  
+ENDCASE                                                                                                                              
+QCHANGE                                                                                                                              
+VALUE   85   47.500                                                                                                                  
+ENDCASE                                                                                                                              
+ENDJOB                                                                                                                               
+************************************************************************                                                             
+************************************************************************                                                             
+************************************************************************                                                             
+************************************************************************                                                             
+************************************************************************                                                             
+************************************************************************                                                             

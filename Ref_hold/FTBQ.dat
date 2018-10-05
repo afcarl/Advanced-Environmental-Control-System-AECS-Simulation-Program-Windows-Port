@@ -1,0 +1,1125 @@
+******  THIS IS 'TX58273.DATA(FTBQ)'                                                                                                 
+******RUN UPSTAIRS WITH DATA(AECSTAB) AND FTBQ.LOAD ON 6/XX/89                                                                       
+******RUN ON TSOAA WITH AECSTAB.DATA AND FTBQ.LOAD ON 3/27/90                                                                        
+******  (SEE OUTPUT AT BOTTOM... WAS THE SAME FOR BOTH, 41 ITERATIONS)                                                               
+******  (SEE 1990 JCL IN THE MIDDLE)                                                                                                 
+COMMON  CI   76   60                                                                                                                 
+******DUMP          3                                                                                                                
+PERFORM                                                                                                                              
+TITLE   FTB.DATA                                                                                                                     
+TITLE   EQCS AFTB MODEL - HOT DAY GROUND STATIC                                                                                      
+TITLE   COND FLOW FROM E-SYS DATA   T = 110F                                                                                         
+TITLE   29 SEP 86  TSENS = 57F                                                                                                       
+CASEA           1001  15  31   0                                                                                                     
+CASEB     -2  -2   1  -1  -2                                                                                                         
+CASEC        10000.0              569.67                                                                                             
+CASED         0.5000                                                                                                                 
+PARAM   88                                                                                                                           
+****************************************************************                                                                     
+****** INLET FLOW      PRESS    TEMP     HUMD      POUT                                                                              
+VALUES  01 0400.0     14.83    509.67    0.0001    14.35                                                                             
+****** ORIF TD       A RATIO    B1                                                                                                   
+VALUES  06 13.653    1.00      1.00                                                                                                  
+****** REFRIG M      PIN       TIN        HIN                                                                                        
+VALUES  11 040.00    092.700   641.11    098.0997    23300.                                                                          
+****** VCOMP PR    VCOMP ME    DSH       COND FLOW A                                                                                 
+VALUES  16 7.0000    0.85      18.618    0.2000                                                                                      
+******     AIR W      P          T        H          TEVAP IN                                                                        
+VALUES  21 070.0     14.7       594.67    0.000       494.67                                                                         
+******     T0         P0                                                                                                             
+VALUES  26 519.0     14.7                                                                                                            
+******     INDATA     PI        TI        HI                                                                                         
+VALUES  31 035.00    13.21      493.52    74.8907                                                                                    
+******     NRCL AFC   AFH       HTCL      HTC2        HTCV                                                                           
+VALUES  36 0.100     0.100      0900.0    375.0       375.0                                                                          
+******     AHTC       AHTH      CVALVE    CVALVE       EVAP                                                                          
+VALUES  41 01.00     01.00      0.0001    0.100       0.200                                                                          
+******     DSH      TSENS       PSET      TSET        SPLITR                                                                         
+VALUES  46 00.0      506.67     12.555    494.67      0.09                                                                           
+******     M MOTOR   HAX        QMULT     QMIN     QMAX                                                                              
+VALUES  51 06.0     01.00      0.95      0.001     3.0                                                                               
+******     TAMB          SUGRE     MIN 52.5   SKIP      SKIP                                                                         
+VALUES  56 524.67         0.00     54.78      1.0       0.0                                                                          
+******     PSURGE       TSUGRE    HSURGE      SPLIT     SKIP                                                                         
+VALUES  61   96.55     648.19     99.350      0.0       0.0                                                                          
+******     MINPR      MAXPR    DELTA H   AIR LEAK  % LEAK                                                                            
+VALUES  66  4.5        8.5        0.00               0.05                                                                            
+******    PIN       TIN       HIN        TREF      TSEN                                                                              
+VALUES  71 14.7     562.67   0.002       459.67     594.67                                                                           
+******    QX2       SIGX      RHO0       FLOW MULT                                                                                   
+VALUES  76  0.0     35.286    0.076474       2.000                                                                                   
+******    C-25 FLOW  PRESS    TEMP       HUMID      HSENC                                                                            
+VALUES  81     27.50     50.00    535.67     0.000   45.000                                                                          
+******      KFACTOR            BTUM/KW                                                                                               
+VALUES  86  394.5E-4     90.0     56.869                                                                                             
+********************************************************************                                                                 
+MISC     001  -1  80   0   1                                                                                                         
+MISC     005  -1   2   0   7                                                                                                         
+MISC     010  -1   3   0   8                                                                                                         
+INLET    015   2  210000   1   2   3   4   2  -1                                                                                     
+ORIF     020   2  21  22   0   1   6   7                                                                                             
+******$C            COMMENT                                                                                                          
+******$F 021   1    RAM INLET                                                                                                        
+******$S 022   2    CONDENSER FACE                                                                                                   
+LINE     025   2  22  23   1   0   1                                                                                                 
+LOOPS    030   1   9 103 103   3 -141101  11  12  13  14                                                                             
+****** RINLET   030   1   91000  11  12  13  14   3 -14                                                                              
+******$L 031   1    CONDENSER                                                                                                        
+******$F 032   1    FREON INTO COND                                                                                                  
+******$S 033   2    FREON OUT OF COND                                                                                                
+MISC     034  -1   9   3  23   2  -1  74                                                                                             
+COND     035   1   9  10   2  23  24   1   2   2   3  19                                                                             
+******  SENSOR CARD SETS H AS EV CHANGE INLET TO MAKE M SV                                                                           
+****** SENSOR   036   1  10   4  85                                                                                                  
+MISC     037   0 120   0  41                                                                                                         
+MISC     038   0 120   0  42                                                                                                         
+LINE     040   2  24  25   1   0   3                                                                                                 
+MISC     045  -1   5   0   5                                                                                                         
+OUTLET   050   2  250000       5                                                                                                     
+MISC     051   0 115   1   1   3   1   1   0                                                                                         
+MISC     052   0 116   0 115   3  -1  86   0                                                                                         
+MISC     053   0 116   0 116   4  -1  87   0                                                                                         
+MISC     054   2  10   2  10   2   0 116   0                                                                                         
+INDATA   055  12  14  31  32  33  34                                                                                                 
+****** MISC     056  -1  38  -2   1   3  -1  52                                                                                      
+****** MISC     057  -1  39  -2   2   3  -1  52                                                                                      
+****** MISC     058  -1  40  -2   2   3  -1  52                                                                                      
+NRCLR    060  12  14  15   1  10  11  36  37   1  38  39  40  41  42                                                                 
+MISC     065  -1  50  -1  51   4   1   1                                                                                             
+SPLIT    070   1  11  13  17  12  12   0  50                                                                                         
+****** CNNCT    071   1  11   1  12                                                                                                  
+CVALVE   075  12  12  13   0  43  44                                                                                                 
+****** MISC     076   2  13  -1  48                                                                                                  
+****** MISC     077   3  13  -1  49                                                                                                  
+LOOPS    080  30  31  32  37   2  -10010  21  22  23  24                                                                             
+****** INLET    080   3  310100  21  22  23  24   2  -1                                                                              
+******$L 020        EVAPORATOR                                                                                                       
+EVAP     085  12  13  14  30  31  32   0   4   5  46   6  45   1                                                                     
+****** CNNCT    086   1  14  11  16                                                                                                  
+MISC     090   3  17   3  15               0                                                                                         
+MISC     095   4  17   4  15               0                                                                                         
+MERGE    100  12  15  13  17  11  16   0                                                                                             
+SENSOR   105  30  32   3  47                                                                                                         
+****** MISC     107   1  30   1  30   3  -1  79                                                                                      
+****** INLET    108  50  510000  81  82  83  84   1  -5                                                                              
+LOOPS    108  50  51  50  53   1  -50010  81  82  83  84                                                                             
+HXA      110  50  51  52  30  32  33   2  51  52  51                                                                                 
+QLOAD    112  50  52  53   0  57   0   0   0   3  88                                                                                 
+LOOPE    115  50  51  50  530010                                                                                                     
+****** OUTLET   115  50  52                                                                                                          
+****** MISC     116   1  30   1  30   4  -1  79                                                                                      
+MISC     117  -3   0  -1  53   0   0   0   1                                                                                         
+MISC     118  -3   0  -3   0   6  -1  54  -1                                                                                         
+MISC     119  -3   0  -3   0   5  -1  55  -1                                                                                         
+MISC     120  -1  53  -3                                                                                                             
+QLOAD    130  30  33  34   0  56   0   0   0   1  53                                                                                 
+SENSOR   131  30  34   3  75                                                                                                         
+MISC     132  -1  76   2  34   4   3  34   0                                                                                         
+MISC     133  -1  76  -1  76   3  -1  77   0                                                                                         
+MISC     134   0 120   1  30   3  -1  76   0                                                                                         
+MISC     135   0 120   0 120   4  -1  78   0                                                                                         
+QLOAD    136  30  34  35   0  56   0   0   0   2  76                                                                                 
+MISC     137  -1  69   1  30   3  -1  70   0                                                                                         
+SPLIT    140  30  35  40  41  31  36   0  70                                                                                         
+OUTLET   145  40  410000                                                                                                             
+INLET    150  41  420000  69  71  72  73   2  -1                                                                                     
+MERGE    155  31  36  41  42  32  37   0                                                                                             
+LOOPE    160  30  31  32  370010                                                                                                     
+****** OUTLET   135   3  320010                                                                                                      
+SHAFT    165   1   0  15                                                                                                             
+MISC     170   0 105   3  16   4  -1  26   0                                                                                         
+MISC     175   0 105   0 105  -2           0                                                                                         
+MISC     180   0 105   0 105   3  -1  27   0                                                                                         
+MISC     185   0 105   0 105   4   2  16   0                                                                                         
+MISC     190   0 106   0 105   3   1  11   0                                                                                         
+MISC     195  -1  57  -1  58   2   0 106   0                                                                                         
+MISC     200  -1  57  -1  57   6  -1  60   0                                                                                         
+MISC     205  -1  57  -1  57   4   0 105   0                                                                                         
+LOOPS    210 100 100 105 105   3 -140101  57  61  62  63                                                                             
+MERGE    215  11  16 100 100 101 101   0                                                                                             
+MISC     220   0 107   3 101   4  -1  26   0                                                                                         
+MISC     225   0 107   0 107  -2           0                                                                                         
+MISC     230   0 107   0 107   3  -1  27   0                                                                                         
+MISC     235   0 107   0 107   4   2 101   0                                                                                         
+MISC     240   0 105   0 107   3   1 101   0                                                                                         
+****** MISC          -1  16  -2  21               0                                                                                  
+MISC     245  -3   0  -1  16   0   0   0   1                                                                                         
+MISC     250  -3   0  -3   0   6  -1  66  -1                                                                                         
+MISC     255  -3   0  -3   0   5  -1  67  -1                                                                                         
+MISC     260  -1  16  -3   0   0   0   0   0                                                                                         
+******                       IOPT                                                                                                    
+VCOMP    265 101 101 102   1   0  16  21  17           0   0                                                                         
+MISC     270   0 108   0  28               0                                                                                         
+MISC     275  -1  68   4 102   2   4 101   0                                                                                         
+MISC     280  -1  68  -1  68   3  -2  22   0                                                                                         
+MISC     285  -1  68  -1  68   2  -2  23   0                                                                                         
+MISC     290  -4   0  -1  68   0   0   0   1                                                                                         
+****** MISC           2  11   2  17               0                                                                                  
+****** MISC           3  11   3  17               0                                                                                  
+****** MISC           4  11   4  17               0                                                                                  
+MISC     295  -1  65   1 100   4   1 101   0                                                                                         
+SPLIT    300 101 102 105 105 103 103   0  65                                                                                         
+****** MISC     305   2 100   2 105               0                                                                                  
+****** MISC     315   3 100   3 105               0                                                                                  
+****** MISC     320   4 100   4 105               0                                                                                  
+LOOPE    325 100 100 105 1050101                                                                                                     
+****** MISC     330   2   9   2 103               0                                                                                  
+****** MISC     335   3   9   3 103               0                                                                                  
+****** MISC     340   4   9   4 103               0                                                                                  
+LOOPE    345   1   9 103 1030101                                                                                                     
+****** OUTLET   345 103 1030000                                                                                                      
+COP      350   2   1  14  13 101                                                                                                     
+****** COP      350   1   1  13 101                                                                                                  
+**************************END OF MODEL**********************************                                                             
+TABID      3   1   2   0   0  410000   2                                                                                             
+TABT   SIGMA DELTA PRESSURE FAN EXIT TO EXHAUST FLIGHT                                                                               
+****** LOG SDP VS MASS FLOW E2C JLD 22 JUN 84                                                                                        
+TABV      220.0     0.0036128 900.0     0.063224                                                                                     
+TABID     14   1   1                                                                                                                 
+TABT   SIGMA DELTA P                                                                                                                 
+TABV      0.50                                                                                                                       
+TABID     30   1   1                                                                                                                 
+TABT   EVAP SIGMA DELTA P                                                                                                            
+TABV      0.50                                                                                                                       
+TABID     56   1   1                                                                                                                 
+TABT   QLOAD PRESSURE DROP                                                                                                           
+TABV      0.50                                                                                                                       
+TABID     57   1   1                                                                                                                 
+TABT   QLOAD PRESSURE DROP                                                                                                           
+TABV      0.00                                                                                                                       
+TABID      1   1   2   0   0  410000   2                                                                                             
+TABT   SIGMA DELTA PRESSURE INLET TO CONDENSER  FLIGHT                                                                               
+****** LOG SDP VS MASS FLOW E2C JLD 22 JUN 84                                                                                        
+TABV      150.0     0.0036128 900.0     0.1119968                                                                                    
+TABID      2   1   2   0   0  410000   3                                                                                             
+TABT   SIGMA DELTA PRESSURE CONDENSER  FLIGHT                                                                                        
+****** LOG SDP VS MASS FLOW E2C JLD 22 JUN 84                                                                                        
+TABV      50.0      0.0099352 100.0     0.0220281                                                                                    
+TABV      600.0     0.36128                                                                                                          
+TABID     51   5   3   0   0  410102  05   0  420102   9                                                                             
+TABT  LCS HX EFF - LCS SIDE                                                                                                          
+TABV            7.36      14.7      22.1      29.5                                                                                   
+TABV            36.9                                                                                                                 
+TABV             0.0      20.0      40.0      60.0                                                                                   
+TABV            80.0     100.0     120.0     140.0                                                                                   
+TABV           160.0                                                                                                                 
+TABV             0.0       0.0       0.0       0.0                                                                                   
+TABV             0.0      0.82      0.57      0.41                                                                                   
+TABV            0.32      0.26      0.93      0.77                                                                                   
+TABV            0.62      0.52      0.44      0.96                                                                                   
+TABV            0.84      0.72     0.625      0.55                                                                                   
+TABV            0.97     0.875     0.775      0.69                                                                                   
+TABV            0.62     0.975      0.90      0.81                                                                                   
+TABV            0.73      0.66      0.98      0.92                                                                                   
+TABV            0.84      0.76      0.70     0.985                                                                                   
+TABV            0.93      0.85      0.79     0.725                                                                                   
+TABV            0.99      0.94      0.86      0.80                                                                                   
+TABV            0.74                                                                                                                 
+TABID    151   5   3   0   0  410102  06   0  420102   8                                                                             
+TABT  LCS HX EFF - LCS SIDE                                                                                                          
+TABV            44.2      51.6      59.0      66.4                                                                                   
+TABV            73.6      88.5                                                                                                       
+TABV             0.0      60.0      80.0     100.0                                                                                   
+TABV           120.0     140.0     160.0     180.0                                                                                   
+TABV             0.0       0.0       0.0       0.0                                                                                   
+TABV             0.0       0.0      0.48      0.44                                                                                   
+TABV            0.40      0.36      0.33      0.28                                                                                   
+TABV            0.55      0.50      0.46     0.425                                                                                   
+TABV            0.39      0.34      0.60     0.555                                                                                   
+TABV            0.51     0.475      0.44     0.388                                                                                   
+TABV            0.64     0.595      0.55      0.51                                                                                   
+TABV           0.475     0.425      0.67     0.625                                                                                   
+TABV            0.58      0.55      0.51     0.455                                                                                   
+TABV            0.69      0.65      0.60     0.575                                                                                   
+TABV           0.535      0.48      0.71     0.656                                                                                   
+TABV            0.64      0.60      0.55      0.50                                                                                   
+TABID     51   1   2   0   0  41 0 1   6                                                                                             
+TABT  LCS HX DP - C-25 SIDE                                                                                                          
+TABV            10.0      0.11      30.0      0.30                                                                                   
+TABV            50.0      0.65      60.0      0.84                                                                                   
+TABV            70.0      1.10     100.0      2.00                                                                                   
+TABID     52   1   2   0   0  42 0 1   4                                                                                             
+TABT  DMS HX SDP AIR SIDE                                                                                                            
+TABV           60.00      0.10    100.00      0.22                                                                                   
+TABV           150.0      0.42    200.00      0.70                                                                                   
+TABID      2   5   2   0   0  410001   2                                                                                             
+TABT      AIR SIDE EFFECTIVENESS FOR REFRIG COND. (LB/MIN)                                                                           
+****** BASED ON E2C DATA                                                                                                             
+TABV      0.0       1.0        322.0    0.865                                                                                        
+TABID      3   1   1                                                                                                                 
+TABT      REFRIG SIDE PRESS DROP FOR REFRIG COND. (CFM OF VAPOR)                                                                     
+TABV      0.0                                                                                                                        
+TABID      4   1   2   0   0  410001   4                                                                                             
+TABT      AIR SIDE PRESS DROP FOR REFRIG EVAP (LB/MIN)                                                                               
+TABV      0.0       0.0        400.0    0.005                                                                                        
+TABV      800.0     0.02       1600.0   0.08                                                                                         
+TABID      5   5   2   0   0  410001   2                                                                                             
+TABT      AIR SIDE BYPASS FACTOR FOR REFRIG EVAP (LB/MIN)                                                                            
+****** BASED ON E2C DATA                                                                                                             
+TABV      0.0       0.0        89.5     0.105                                                                                        
+TABID     66   2   2   0   0  420001   2                                                                                             
+TABT      REFRIG SIDE PRESS DROP FOR REFRIG EVAP (CFM OF VAPOR)                                                                      
+TABV      0.0       0.0       100.0     0.50                                                                                         
+TABID      6   2   1                                                                                                                 
+TABT      REFRIG SIDE PRESS DROP FOR REFRIG EVAP (CFM OF VAPOR)                                                                      
+TABV      0.0                                                                                                                        
+TABID      1  61   2   0   0 1020101   2                                                                                             
+TABT      NRCL PRESSURE DROP COLD SIDE                                                                                               
+TABV      0.0       0.0       300.0     1.00                                                                                         
+TABID      1  62   2   0   0 1010101   2                                                                                             
+TABT      NRCL PRESSURE DROP HOT SIDE                                                                                                
+TABV      0.0       0.0       300.0     1.00                                                                                         
+TABID      1  99   2   0   1   10101  10                                                                                             
+TABT      NRCL HOT SIDE NHA                                                                                                          
+TABV      2.0       1.75      3.0       2.58333                                                                                      
+TABV      5.0       3.58333   7.0       4.41667                                                                                      
+TABV      10.0      5.500     15.0      7.250                                                                                        
+TABV      20.0      8.83333   30.0      10.3333                                                                                      
+TABV      40.0      15.3333   43.0      16.6667                                                                                      
+TABID      2  99   2   0   1  110101  11                                                                                             
+TABT      NRCL COLD SIDE NHA                                                                                                         
+TABV      2.0       1.06667   3.0       1.300                                                                                        
+TABV      5.0       1.66667   7.0       2.08333                                                                                      
+TABV      10.0      2.41667   15.0      3.08333                                                                                      
+TABV      20.0      3.66667   25.0      4.2500                                                                                       
+TABV      33.0      5.00      40.0      5.66667                                                                                      
+TABV      50.0      6.16667                                                                                                          
+TABID      1   4   1                                                                                                                 
+TABT   ORIF COEFFICIENT                                                                                                              
+TABV      0.90                                                                                                                       
+TABID      1  13   1                                                                                                                 
+TABT   HEAT LOAD                                                                                                                     
+TABV      2000.00                                                                                                                    
+TABID      2  13   2   0   0 1200101   8                                                                                             
+TABT   FAN HEAT LOAD                                                                                                                 
+TABV      1500.0    597.8     1600.0    603.0                                                                                        
+TABV      1700.0    620.9     1800.0    634.6                                                                                        
+TABV      1900.0    645.1     2000.0    652.9                                                                                        
+TABV      2100.0    658.5     2200.0    662.3                                                                                        
+TABID     33  13   1                                                                                                                 
+TABT   LCS HEAT LOAD KW MAX                                                                                                          
+TABV       5.35                                                                                                                      
+TABID      3  13   1                                                                                                                 
+TABT   LCS HEAT LOAD KW SS                                                                                                           
+TABV       3.60                                                                                                                      
+TABID      1   6   1                                                                                                                 
+TABT   COMP ADIBATIC EFF                                                                                                             
+TABV      0.65                                                                                                                       
+TABID      1  44   1                                                                                                                 
+TABT   COMP ENTHALPY RISE                                                                                                            
+TABV      011.70                                                                                                                     
+TABID    121   6   2   0   0 1050101  10                                                                                             
+TABT   COMP ADIBATIC EFF.                                                                                                            
+TABV      52.50     0.65      56.60     0.66                                                                                         
+TABV      59.40     0.67      62.00     0.68                                                                                         
+TABV      64.20     0.69      65.80     0.70                                                                                         
+TABV      67.20     0.71      69.50     0.71                                                                                         
+TABV      70.80     0.70      72.20     0.69                                                                                         
+TABID    122  99   2   0   0 1050101  10                                                                                             
+TABT   COMP ADIBATIC EFF.                                                                                                            
+TABV      52.50     0.65      56.60     0.66                                                                                         
+TABV      59.40     0.67      62.00     0.68                                                                                         
+TABV      64.20     0.69      65.80     0.70                                                                                         
+TABV      67.20     0.71      69.50     0.71                                                                                         
+TABV      70.80     0.70      72.20     0.69                                                                                         
+TABID     21  44   2   0   0 1050101   6                                                                                             
+TABT   COMP ENTHALPY RISE                                                                                                            
+TABV      52.50     11.85     67.20     11.75                                                                                        
+TABV      69.50     11.70     70.80     11.60                                                                                        
+TABV      71.80     11.25     72.20     9.0                                                                                          
+TABID    123  99   2   0   0 1050101   6                                                                                             
+TABT   COMP ENTHALPY RISE                                                                                                            
+TABV      52.50     11.85     67.20     11.75                                                                                        
+TABV      69.50     11.70     70.80     11.60                                                                                        
+TABV      71.80     11.25     72.20     9.0                                                                                          
+TABID     21  99   2   0   0 1050101   5                                                                                             
+TABT   COMP PRESSURE RISE                                                                                                            
+TABV      52.50     6.75      64.20     6.65                                                                                         
+TABV      69.50     6.55      70.80     6.45                                                                                         
+TABV      72.20     5.70                                                                                                             
+TABID     22  44   2   0   0  280101   6                                                                                             
+TABT   COMP ENTHALPY RISE                                                                                                            
+TABV      120.0     11.85     155.0     11.75                                                                                        
+TABV      157.0     11.70     160.0     11.60                                                                                        
+TABV      162.5     11.25     163.0     9.0                                                                                          
+TABID     23  99   2   0   0  280101   6                                                                                             
+TABT   COMP ENTHALPY RISE                                                                                                            
+TABV      120.0     11.85     155.0     11.75                                                                                        
+TABV      157.0     11.70     160.0     11.60                                                                                        
+TABV      162.5     11.25     163.0     9.0                                                                                          
+TABID     21   6   2   0   0  280101  10                                                                                             
+TABT   COMP ADIBATIC EFF.                                                                                                            
+TABV      120.0     0.65      128.0     0.66                                                                                         
+TABV      133.5     0.67      140.0     0.68                                                                                         
+TABV      145.0     0.69      149.0     0.70                                                                                         
+TABV      152.0     0.71      157.0     0.71                                                                                         
+TABV      160.0     0.70      163.0     0.69                                                                                         
+TABID     22  99   2   0   0  280101  10                                                                                             
+TABT   COMP ADIBATIC EFF.                                                                                                            
+TABV      120.0     0.65      128.0     0.66                                                                                         
+TABV      133.5     0.67      140.0     0.68                                                                                         
+TABV      145.0     0.69      149.0     0.70                                                                                         
+TABV      152.0     0.71      157.0     0.71                                                                                         
+TABV      160.0     0.70      163.0     0.69                                                                                         
+TABID      1   8   2   3   0  590002  13                                                                                             
+TABT   COMP SPECIFIC DIAMETER DIA = F(NS)                                                                                            
+TABV      0.2       17.0      0.3       9.5                                                                                          
+TABV      0.4       7.0       0.5       5.5                                                                                          
+TABV      0.6       4.6       0.7       4.0                                                                                          
+TABV      0.8       3.7       0.9       3.3                                                                                          
+TABV      1.0       3.0       2.0       2.0                                                                                          
+TABV      10.0      1.0       20.0      0.62                                                                                         
+TABV      30.0      0.4                                                                                                              
+TABID      1   0   2   0   0   10000   8                                                                                             
+TABT  WEIGHING FACTOR - REAL SLOW                                       00000900                                                     
+TABV      1.0       0.01      16.0      0.1                             00001000                                                     
+TABV      21.0      0.3       25.0      0.5                             00001100                                                     
+TABV      38.0      0.7       43.0      0.8                             00001200                                                     
+TABV      48.0      0.9       53.0      1.0                             00001200                                                     
+TABID     11   0   2   0   0   10000   6                                                                                             
+TABT  WEIGHING FACTOR - SLOWER                                          00000900                                                     
+TABV      1.0       0.01      06.0      0.1                             00001000                                                     
+TABV      11.0      0.3       15.0      0.5                             00001100                                                     
+TABV      18.0      0.7       23.0      1.0                             00001200                                                     
+****** PTAB       1   0   2   0                                                                                                      
+NOGO                                                                                                                                 
+ENDCASE                                                                                                                              
+PCHANGE                                                                                                                              
+TITLE   FTB.DATA                                                                                                                     
+TITLE   EQCS AFTB MODEL                                                                                                              
+TITLE   TRAM = 070F                                                                                                                  
+TITLE   02/29/86                                                                                                                     
+****** COND AIR FLOW                                                                                                                 
+VALUE   01   400.00                                                                                                                  
+****** COND AIR TRAM                                                                                                                 
+VALUE   03   537.67                                                                                                                  
+****** REF COND FLOW                                                                                                                 
+****** VALUE   11    67.07                                                                                                           
+****** W AIR                                                                                                                         
+VALUE   21   100.00                                                                                                                  
+****** T SENS                                                                                                                        
+VALUE   47   514.67                                                                                                                  
+****** H SENS                                                                                                                        
+VALUE   85   49.000                                                                                                                  
+****** LOOPS  R 030   1   9 103 103   3 -140101  11  12  13  14                                                                      
+****** SENSOR D 036   1  10   4  85                                                                                                  
+MISC   D 010  -1   3   0   8                                                                                                         
+LOOPS  D 108  50  51  50  53   1  -50010  81  82  83  84                                                                             
+CNNCT  R 110  30  32  30  33                                                                                                         
+QLOAD  D 112  50  52  53   0  57   0   0   0   3  88                                                                                 
+LOOPE  D 115  50  51  50  530010                                                                                                     
+****** LOOPS  D 210 100 100 105 105   3 -140101  57  61  62  63                                                                      
+****** CNNCT  R 215  11  16 101 101                                                                                                  
+****** MISC   D 295  -1  65   1 100   4   1 101   0                                                                                  
+****** CNNCT  R 300 101 102 103 103                                                                                                  
+******LOOPE  D 325 100 100 105 1050101                                                                                               
+ENDCASE                                                                                                                              
+ENDJOB                                                                                                                               
+QCHANGE                                                                                                                              
+VALUE   21   080.00                                                                                                                  
+ENDCASE                                                                                                                              
+QCHANGE                                                                                                                              
+VALUE   85   47.500                                                                                                                  
+ENDCASE                                                                                                                              
+ENDJOB                                                                                                                               
+ENDJOB                                                                                                                               
+QCHANGE                                                                                                                              
+VALUE    3   549.67                                                                                                                  
+ENDCASE                                                                                                                              
+QCHANGE                                                                                                                              
+VALUE    3   559.67                                                                                                                  
+ENDCASE                                                                                                                              
+QCHANGE                                                                                                                              
+VALUE    3   569.67                                                                                                                  
+ENDCASE                                                                                                                              
+************************************************************************                                                             
+************************************************************************                                                             
+************************************************************************                                                             
+************************************************************************                                                             
+************************************************************************                                                             
+************************************************************************                                                             
+1                   J E S 2  J O B  L O G  --  S Y S T E M  S A A 1  --  N O D E  C O M P L E X G                                    
+0                                                                                                                                    
+ 15.15.10 JOB 9349  ICH70001I TX58273  LAST ACCESS AT 15:07:09 ON TUESDAY, MARCH 27, 1990                                            
+ 15.15.10 JOB 9349  $HASP373 QX58273A STARTED - INIT 17 - CLASS D - SYS SAA1                                                         
+ 15.15.10 JOB 9349  IEF403I QX58273A - STARTED - TIME=15.15.10                                                                       
+ 15.15.30 JOB 9349  IEFACTRT QX58273A STEP1     --  COND CODE 0000                                                                   
+ 15.25.08 JOB 9349  IEFACTRT QX58273A STEP2     --  COND CODE 0000                                                                   
+ 15.25.08 JOB 9349  IEF404I QX58273A - ENDED - TIME=15.25.08                                                                         
+ 15.25.08 JOB 9349  $HASP395 QX58273A ENDED                                                                                          
+0------ JES2 JOB STATISTICS ------                                                                                                   
+-    27 MAR 90 JOB EXECUTION DATE                                                                                                    
+-           62 CARDS READ                                                                                                            
+-          172 SYSOUT PRINT RECORDS                                                                                                  
+-            0 SYSOUT PUNCH RECORDS                                                                                                  
+-           11 SYSOUT SPOOL KBYTES                                                                                                   
+-         9.98 MINUTES EXECUTION TIME                                                                                                
+    1     //QX58273A JOB (GW9340WBO0369N$$$$),'STEVE WEST     23405',             JOB 9349                                           
+          //             NOTIFY=TX58273,                                                                                             
+          // MSGCLASS=Q,CLASS=D,TIME=0020,                                                                                           
+          // USER=TX58273,PASSWORD=                                                                                                  
+          ***                                                                                                                        
+          ***JOBPARM R=W934                                                                                                          
+          ***                                                                                                                        
+          ***JOBPARM LINECT=0,L=999                                                                                                  
+          ***JOBPARM S=(SYAH,SYSR),LINECT=0,L=999                                                                                    
+          ***                                                                                                                        
+          ***     JCL TO EXECUTE AECS PROGRAM FROM THERM.CLIST(AECS)                                                                 
+          ***                                                                                                                        
+          ***     INPUT DSN IS "FTBQ.DATA"                                                                                           
+          ***          BELOW IS LINE AFTER FT01                                                                                      
+          ***FT01F001  DD DSN=&&TABLES,UNIT=SYSDA,SPACE=(TRK,(1,1)),                                                                 
+          ***          DISP=(OLD,DELETE)                                                                                             
+          ***                                                                                                                        
+    2     //STEP1 EXEC PGM=TEMPNAME,REGION=2000K,TIME=3                                                                              
+    3     //STEPLIB   DD DSNAME=TX58273.FTBQ.LOAD,DISP=SHR                                                                           
+          ***FT01F001  DD DSN=TX58273.SST01.DATA,DISP=SHR                                                                            
+    4     //FT01F001  DD DSN=TX58273.SST01.DATA,UNIT=SYSDA,SPACE=(TRK,(10,1)),                                                       
+          //          DCB=(RECFM=FBA,LRECL=133,BLKSIZE=1330),                                                                        
+          //          DISP=(NEW,CATLG)                                                                                               
+    5     //FT06F001  DD DSN=&&FT06F,UNIT=SYSDA,SPACE=(TRK,(5,2)),                                                                   
+          //          DCB=(RECFM=FBA,LRECL=133,BLKSIZE=23408),                                                                       
+          //          DISP=(NEW,DELETE)                                                                                              
+    6     //FT08F001  DD DSN=&&FT08F,UNIT=SYSDA,SPACE=(TRK,(1,1)),                                                                   
+          //          DCB=(RECFM=VBS,LRECL=100,BLKSIZE=23400),                                                                       
+          //          DISP=(NEW,DELETE)                                                                                              
+    7     //FT09F001  DD DSN=&&FT09F,UNIT=SYSDA,SPACE=(TRK,(1,1)),                                                                   
+          //          DCB=(RECFM=VBS,LRECL=100,BLKSIZE=23400),                                                                       
+          //          DISP=(NEW,DELETE)                                                                                              
+    8     //FT10F001  DD DSN=&&FT10F,UNIT=SYSDA,SPACE=(TRK,(1,1)),                                                                   
+          //          DCB=(RECFM=VBS,LRECL=100,BLKSIZE=23400),                                                                       
+          //          DISP=(NEW,DELETE)                                                                                              
+    9     //FT11F001  DD DSN=&&FT11F,UNIT=SYSDA,SPACE=(TRK,(1,1)),                                                                   
+          //          DCB=(RECFM=VBS,LRECL=100,BLKSIZE=23400),                                                                       
+          //          DISP=(NEW,DELETE)                                                                                              
+   10     //FT05F001  DD DSN=TX58273.AECSTAB.DATA,DISP=SHR                                                                           
+   11     //STEP2 EXEC PGM=TEMPNAME,REGION=2000K                                                                                     
+   12     //STEPLIB   DD DSNAME=TX58273.FTBQ.LOAD,DISP=SHR                                                                           
+   13     //FT01F001  DD DSN=TX58273.SST01.DATA,DISP=SHR                                                                             
+          ***FT01F001  DD DSN=TX58273.SST01.DATA,UNIT=SYSDA,SPACE=(TRK,(1,1)),                                                       
+          ***          DISP=SHR                                                                                                      
+          ***FT06F001  DD DSN=TX58273.SST06A.DATA,DISP=(NEW,CATLG),                                                                  
+   14     //FT06F001  DD DSN=TX58273.SST06A.DATA,DISP=SHR                                                                            
+          ***          SPACE=(TRK,(25,1),RLSE),UNIT=SYSTS,                                                                           
+          ***          DCB=(RECFM=FBA,LRECL=133,BLKSIZE=23408)                                                                       
+   15     //FT08F001  DD DSN=&&FT08F,UNIT=SYSDA,SPACE=(TRK,(1,1)),                                                                   
+          //          DCB=(RECFM=VBS,LRECL=100,BLKSIZE=23400),                                                                       
+          //          DISP=(NEW,DELETE)                                                                                              
+   16     //FT09F001  DD DSN=&&FT09F,UNIT=SYSDA,SPACE=(TRK,(1,1)),                                                                   
+          //          DCB=(RECFM=VBS,LRECL=100,BLKSIZE=23400),                                                                       
+          //          DISP=(NEW,DELETE)                                                                                              
+   17     //FT10F001  DD DSN=&&FT10F,UNIT=SYSDA,SPACE=(TRK,(1,1)),                                                                   
+          //          DCB=(RECFM=VBS,LRECL=100,BLKSIZE=23400),                                                                       
+          //          DISP=(NEW,DELETE)                                                                                              
+   18     //FT11F001  DD DSN=&&FT11F,UNIT=SYSDA,SPACE=(TRK,(1,1)),                                                                   
+          //          DCB=(RECFM=VBS,LRECL=100,BLKSIZE=23400),                                                                       
+          //          DISP=(NEW,DELETE)                                                                                              
+   19     //FT05F001  DD DSN=TX58273.FTBQ.DATA,DISP=SHR                                                                              
+ ICH70001I TX58273  LAST ACCESS AT 15:07:09 ON TUESDAY, MARCH 27, 1990                                                               
+ IEF236I ALLOC. FOR QX58273A STEP1                                                                                                   
+ IEF237I 125  ALLOCATED TO STEPLIB                                                                                                   
+ IEF237I 103  ALLOCATED TO SYS00952                                                                                                  
+ IEF237I 136  ALLOCATED TO FT01F001                                                                                                  
+ IEF237I 112  ALLOCATED TO FT06F001                                                                                                  
+ IEF237I 110  ALLOCATED TO FT08F001                                                                                                  
+ IEF237I 112  ALLOCATED TO FT09F001                                                                                                  
+ IEF237I 112  ALLOCATED TO FT10F001                                                                                                  
+ IEF237I 110  ALLOCATED TO FT11F001                                                                                                  
+ IEF237I 125  ALLOCATED TO FT05F001                                                                                                  
+ IEF142I QX58273A STEP1 - STEP WAS EXECUTED - COND CODE 0000                                                                         
+ IEF285I   TX58273.FTBQ.LOAD                            KEPT                                                                         
+ IEF285I   VOL SER NOS= APUS12.                                                                                                      
+ IEF285I   CATALOG.VAPCM02                              KEPT                                                                         
+ IEF285I   VOL SER NOS= APCM02.                                                                                                      
+ IEF285I   TX58273.SST01.DATA                           CATALOGED                                                                    
+ IEF285I   VOL SER NOS= SCR001.                                                                                                      
+ IEF285I   SYS90086.T151509.RA000.QX58273A.FT06F        DELETED                                                                      
+ IEF285I   VOL SER NOS= APCK01.                                                                                                      
+ IEF285I   SYS90086.T151509.RA000.QX58273A.FT08F        DELETED                                                                      
+ IEF285I   VOL SER NOS= APSP01.                                                                                                      
+ IEF285I   SYS90086.T151509.RA000.QX58273A.FT09F        DELETED                                                                      
+ IEF285I   VOL SER NOS= APCK01.                                                                                                      
+ IEF285I   SYS90086.T151509.RA000.QX58273A.FT10F        DELETED                                                                      
+ IEF285I   VOL SER NOS= APCK01.                                                                                                      
+ IEF285I   SYS90086.T151509.RA000.QX58273A.FT11F        DELETED                                                                      
+ IEF285I   VOL SER NOS= APSP01.                                                                                                      
+ IEF285I   TX58273.AECSTAB.DATA                         KEPT                                                                         
+ IEF285I   VOL SER NOS= APUS12.                                                                                                      
+ ************************************************* RESOURCE USAGE STATISTICS ******************************************************  
+ *                      |                      CPU (IN SECONDS)                |        STORAGE          |       OPERATIONS       *  
+ *  STEP      PGM       |  STEP         STEP         STEP         STEP         |  USER        SYSTEM     |  SPECIFIC    NON-SPEC  *  
+ *  NAME      NAME      |  TCB          SRB          VECTOR       VECTOR AFF   |  AREA        AREA       |  TAPE MT     TAPE MT   *  
+ *  --------  --------  |  -----------  -----------  -----------  -----------  |  -------     -------    |  -------     -------   *  
+ *  STEP1     TEMPNAME  |       1.65         0.45         0.00         0.00    |     652K        252K    |       0           0    *  
+ *================================================== I / O  S E C T I O N ========================================================*  
+ *  DDNAME       COUNT  (BLKSZE) |  DDNAME       COUNT  (BLKSZE) |  DDNAME       COUNT  (BLKSZE) |  DDNAME       COUNT  (BLKSZE)  *  
+ *================================================================================================================================*  
+ * STEPLIB           95 ( 32760) | SYS00952           0 (     0) | FT01F001         352 (  1330) | FT06F001           9 ( 23408)  *  
+ *--------------------------------------------------------------------------------------------------------------------------------*  
+ * FT08F001           2 ( 23400) | FT09F001           0 (     0) | FT10F001           2 ( 23400) | FT11F001           0 (     0)  *  
+ *--------------------------------------------------------------------------------------------------------------------------------*  
+ * FT05F001          26 (  3120) | SYS00951           0 (     0) |                               |                                *  
+ **********************************************************************************************************************************  
+ IEF373I STEP /STEP1   / START 90086.1515                                                                                            
+ IEF374I STEP /STEP1   / STOP  90086.1515 CPU    0MIN 01.65SEC SRB    0MIN 00.45SEC VIRT   652K SYS   252K EXT       4K SYS    8844K 
+ IEF236I ALLOC. FOR QX58273A STEP2                                                                                                   
+ IEF237I 125  ALLOCATED TO STEPLIB                                                                                                   
+ IEF237I 103  ALLOCATED TO SYS00954                                                                                                  
+ IEF237I 136  ALLOCATED TO FT01F001                                                                                                  
+ IEF237I 126  ALLOCATED TO FT06F001                                                                                                  
+ IEF237I 112  ALLOCATED TO FT08F001                                                                                                  
+ IEF237I 110  ALLOCATED TO FT09F001                                                                                                  
+ IEF237I 110  ALLOCATED TO FT10F001                                                                                                  
+ IEF237I 112  ALLOCATED TO FT11F001                                                                                                  
+ IEF237I 125  ALLOCATED TO FT05F001                                                                                                  
+ IEF142I QX58273A STEP2 - STEP WAS EXECUTED - COND CODE 0000                                                                         
+ IEF285I   TX58273.FTBQ.LOAD                            KEPT                                                                         
+ IEF285I   VOL SER NOS= APUS12.                                                                                                      
+ IEF285I   CATALOG.VAPCM02                              KEPT                                                                         
+ IEF285I   VOL SER NOS= APCM02.                                                                                                      
+ IEF285I   TX58273.SST01.DATA                           KEPT                                                                         
+ IEF285I   VOL SER NOS= SCR001.                                                                                                      
+ IEF285I   TX58273.SST06A.DATA                          KEPT                                                                         
+ IEF285I   VOL SER NOS= APUS13.                                                                                                      
+ IEF285I   SYS90086.T151509.RA000.QX58273A.FT08F        DELETED                                                                      
+ IEF285I   VOL SER NOS= APCK01.                                                                                                      
+ IEF285I   SYS90086.T151509.RA000.QX58273A.FT09F        DELETED                                                                      
+ IEF285I   VOL SER NOS= APSP01.                                                                                                      
+ IEF285I   SYS90086.T151509.RA000.QX58273A.FT10F        DELETED                                                                      
+ IEF285I   VOL SER NOS= APSP01.                                                                                                      
+ IEF285I   SYS90086.T151509.RA000.QX58273A.FT11F        DELETED                                                                      
+ IEF285I   VOL SER NOS= APCK01.                                                                                                      
+ IEF285I   TX58273.FTBQ.DATA                            KEPT                                                                         
+ IEF285I   VOL SER NOS= APUS12.                                                                                                      
+ ************************************************* RESOURCE USAGE STATISTICS ******************************************************  
+ *                      |                      CPU (IN SECONDS)                |        STORAGE          |       OPERATIONS       *  
+ *  STEP      PGM       |  STEP         STEP         STEP         STEP         |  USER        SYSTEM     |  SPECIFIC    NON-SPEC  *  
+ *  NAME      NAME      |  TCB          SRB          VECTOR       VECTOR AFF   |  AREA        AREA       |  TAPE MT     TAPE MT   *  
+ *  --------  --------  |  -----------  -----------  -----------  -----------  |  -------     -------    |  -------     -------   *  
+ *  STEP2     TEMPNAME  |     274.77         0.30         0.00         0.00    |     752K        256K    |       0           0    *  
+ *================================================== I / O  S E C T I O N ========================================================*  
+ *  DDNAME       COUNT  (BLKSZE) |  DDNAME       COUNT  (BLKSZE) |  DDNAME       COUNT  (BLKSZE) |  DDNAME       COUNT  (BLKSZE)  *  
+ *================================================================================================================================*  
+ * STEPLIB           92 ( 32760) | SYS00954           0 (     0) | FT01F001         133 (  1330) | FT06F001           3 ( 23408)  *  
+ *--------------------------------------------------------------------------------------------------------------------------------*  
+ * FT08F001           7 ( 23400) | FT09F001           5 ( 23400) | FT10F001           5 ( 23400) | FT11F001           0 (     0)  *  
+ *--------------------------------------------------------------------------------------------------------------------------------*  
+ * FT05F001          43 (  1330) | SYS00953           0 (     0) |                               |                                *  
+ **********************************************************************************************************************************  
+ IEF373I STEP /STEP2   / START 90086.1515                                                                                            
+ IEF374I STEP /STEP2   / STOP  90086.1525 CPU    4MIN 34.77SEC SRB    0MIN 00.30SEC VIRT   752K SYS   256K EXT       4K SYS    8844K 
+ IEF375I  JOB /QX58273A/ START 90086.1515                                                                                            
+ IEF376I  JOB /QX58273A/ STOP  90086.1525 CPU    4MIN 36.42SEC SRB    0MIN 00.75SEC                                                  
+                                                                                                                                     
+************************************************************************                                                             
+************************************************************************                                                             
+************************************************************************                                                             
+************************************************************************                                                             
+************************************************************************                                                             
+************************************************************************                                                             
+                                                                                                                                     
+ CCN =   CI                                                                                                                          
+ V = COMMON    CI   76   90                                                                                                          
+ *COMMON  CI   76   90                                                            *                                                  
+ *DUMP          0                                                                 *                                                  
+ *AECS* GENERAL ECS PROGRAM                                                                                 PAGE        1            
+     1  CASE PERFOR                                                                                         DATE TODAY               
+                                                                                                                                     
+ TIME M       5.00 SEC.                                                                                                              
+ *** NO GO CASE ***                                                                                                                  
+                                                                                                                                     
+ *AECS* GENERAL ECS PROGRAM                                                                                 PAGE        1            
+     2  CASE PCHANG                                                                                         DATE TODAY               
+                                                                                                                                     
+ TIME M       5.00 SEC.                                                                                                              
+ CHANGE*PCHANGE                                                                         *                                            
+ CHANGE*TITLE   FTB.DATA                                                                *                                            
+ CHANGE*TITLE   EQCS AFTB MODEL                                                         *                                            
+ CHANGE*TITLE   TRAM = 070F                                                             *                                            
+ CHANGE*TITLE   02/29/86                                                                *                                            
+ CHANGE*TITEND                                                                          *                                            
+ CHANGE*CASEND                                                                          *                                            
+ CHANGE*VALUE   01   400.00                                                             *                                            
+ CHANGE*VALUE   03   537.67                                                             *                                            
+ CHANGE*VALUE   21   100.00                                                             *                                            
+ CHANGE*VALUE   47   514.67                                                             *                                            
+ CHANGE*VALUE   85   49.000                                                             *                                            
+ CHANGE*PAREND                                                                          *                                            
+ CHANGE*MISC   D 010  -1   3   0   8                                                    *                                            
+ CHANGE*LOOPS  D 108  50  51  50  53   1  -50010  81  82  83  84                        *                                            
+ CHANGE*CNNCT  R 110  30  32  30  33                                                    *                                            
+ CHANGE*QLOAD  D 112  50  52  53   0  57   0   0   0   3  88                            *                                            
+ CHANGE*LOOPE  D 115  50  51  50  530010                                                *                                            
+ CHANGE*COMEND                                                                          *                                            
+ CHANGE*ENDCASE                                                                         *                                            
+ *AECS*   FTB.DATA                                                                                          PAGE        2            
+     2  CASE PCHANG                                                                                         DATE TODAY               
+                                                                                                                                     
+ TIME Z       5.00                                                                                                                   
+        FTB.DATA                                                                                                                     
+        EQCS AFTB MODEL                                                                                                              
+        TRAM = 070F                                                                                                                  
+        02/29/86                                                                                                                     
+ *AECS*   FTB.DATA                                                                                          PAGE        3            
+     2  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+           CASE                     15 LEG(S)            31 STATION(S)                                                               
+ *AECS*   FTB.DATA                                                                                          PAGE        4            
+     2  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+ PARAMETER TABLE        88 VALUE(S)                                                                                                  
+                                                                                                                                     
+ (   1) 4.00000E+02 (   2) 1.48300E+01 (   3) 5.37670E+02 (   4) 1.00000E-04 (   5) 1.43500E+01 (   6) 1.36530E+01                   
+ (   7) 1.00000E+00 (   8) 1.00000E+00 (   9) 0.0         (  10) 0.0         (  11) 4.00000E+01 (  12) 9.27000E+01                   
+ (  13) 6.41110E+02 (  14) 9.80997E+01 (  15) 2.33000E+04 (  16) 7.00000E+00 (  17) 8.50000E-01 (  18) 1.86180E+01                   
+ (  19) 2.00000E-01 (  20) 0.0         (  21) 1.00000E+02 (  22) 1.47000E+01 (  23) 5.94670E+02 (  24) 0.0                           
+ (  25) 4.94670E+02 (  26) 5.19000E+02 (  27) 1.47000E+01 (  28) 0.0         (  29) 0.0         (  30) 0.0                           
+ (  31) 3.50000E+01 (  32) 1.32100E+01 (  33) 4.93520E+02 (  34) 7.48907E+01 (  35) 0.0         (  36) 1.00000E-01                   
+ (  37) 1.00000E-01 (  38) 9.00000E+02 (  39) 3.75000E+02 (  40) 3.75000E+02 (  41) 1.00000E+00 (  42) 1.00000E+00                   
+ (  43) 1.00000E-04 (  44) 1.00000E-01 (  45) 2.00000E-01 (  46) 0.0         (  47) 5.14670E+02 (  48) 1.25550E+01                   
+ (  49) 4.94670E+02 (  50) 9.00000E-02 (  51) 6.00000E+00 (  52) 1.00000E+00 (  53) 9.50000E-01 (  54) 1.00000E-03                   
+ (  55) 3.00000E+00 (  56) 5.24670E+02 (  57) 0.0         (  58) 5.47800E+01 (  59) 1.00000E+00 (  60) 0.0                           
+ (  61) 9.65500E+01 (  62) 6.48190E+02 (  63) 9.93500E+01 (  64) 0.0         (  65) 0.0         (  66) 4.50000E+00                   
+ (  67) 8.50000E+00 (  68) 0.0         (  69) 0.0         (  70) 5.00000E-02 (  71) 1.47000E+01 (  72) 5.62670E+02                   
+ (  73) 2.00000E-03 (  74) 4.59670E+02 (  75) 5.94670E+02 (  76) 0.0         (  77) 3.52860E+01 (  78) 7.64740E-02                   
+ (  79) 2.00000E+00 (  80) 0.0         (  81) 2.75000E+01 (  82) 5.00000E+01 (  83) 5.35670E+02 (  84) 0.0                           
+ (  85) 4.90000E+01 (  86) 3.94500E-02 (  87) 9.00000E+01 (  88) 5.68690E+01                                                         
+ *AECS*   FTB.DATA                                                                                          PAGE        5            
+     2  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+ COMPONENT(S)                                                                                                                        
+     1    6  8   12   16   20   24   28   32   36   40   44   48   52   56   60   64   68   72   76   80                             
+                                                                                                                                     
+     MISC         1   -1   80    0    1    0    0    0    0    0    0    0    0    0    0    0    0    0                             
+     MISC         5   -1    2    0    7    0    0    0    0    0    0    0    0    0    0    0    0    0                             
+     INLET       15    2   21    0    1    2    3    4    2   -1    0    0    0    0    0    0    0    0                             
+     ORIF        20    2   21   22    0    1    6    7    0    0    0    0    0    0    0    0    0    0                             
+     LINE        25    2   22   23    1    0    1    0    0    0    0    0    0    0    0    0    0    0                             
+     LOOPS       30    1    9  103  103    3  -14 1101   11   12   13   14    0    0    0    0    0    0                             
+                                                                                                        SV N   1  T   1              
+                                                                                                        SV N   2  T   2              
+                                                                                                        SV N   3  T  10              
+     MISC        34   -1    9    3   23    2   -1   74    0    0    0    0    0    0    0    0    0    0                             
+     COND        35    1    9   10    2   23   24    1    2    2    3   19    0    0    0    0    0    0                             
+     MISC        37    0  120    0   41    0    0    0    0    0    0    0    0    0    0    0    0    0                             
+     MISC        38    0  120    0   42    0    0    0    0    0    0    0    0    0    0    0    0    0                             
+     LINE        40    2   24   25    1    0    3    0    0    0    0    0    0    0    0    0    0    0                             
+     MISC        45   -1    5    0    5    0    0    0    0    0    0    0    0    0    0    0    0    0                             
+     OUTLET      50    2   25    0    0    5    0    0    0    0    0    0    0    0    0    0    0    0                             
+     MISC        51    0  115    1    1    3    1    1    0    0    0    0    0    0    0    0    0    0                             
+     MISC        52    0  116    0  115    3   -1   86    0    0    0    0    0    0    0    0    0    0                             
+     MISC        53    0  116    0  116    4   -1   87    0    0    0    0    0    0    0    0    0    0                             
+     MISC        54    2   10    2   10    2    0  116    0    0    0    0    0    0    0    0    0    0                             
+     INDATA      55   12   14   31   32   33   34    0    0    0    0    0    0    0    0    0    0    0                             
+     NRCLR       60   12   14   15    1   10   11   36   37    1   38   39   40   41   42    0    0    0                             
+     MISC        65   -1   50   -1   51    4    1    1    0    0    0    0    0    0    0    0    0    0                             
+     SPLIT       70    1   11   13   17   12   12    0   50    0    0    0    0    0    0    0    0    0                             
+     CVALVE      75   12   12   13    0   43   44    0    0    0    0    0    0    0    0    0    0    0                             
+                                                                                                        SV N   4  T   6              
+     LOOPS       80   30   31   32   37    2   -1   10   21   22   23   24    0    0    0    0    0    0                             
+                                                                                                        SV N   5  T   3              
+     EVAP        85   12   13   14   30   31   32    0    4    5   46    6   45    1    0    0    0    0                             
+                                                                                                        EV N   1  T   3              
+     MISC        90    3   17    3   15    0    0    0    0    0    0    0    0    0    0    0    0    0                             
+     MISC        95    4   17    4   15    0    0    0    0    0    0    0    0    0    0    0    0    0                             
+     MERGE      100   12   15   13   17   11   16    0    0    0    0    0    0    0    0    0    0    0                             
+     SENSOR     105   30   32    3   47    0    0    0    0    0    0    0    0    0    0    0    0    0                             
+                                                                                                        EV N   2  T   3              
+     CNNCT   R  110   30   32   30   33    0    0    0    0    0    0    0    0    0    0    0    0    0                             
+     MISC       117   -3    0   -1   53    0    0    0    1    0    0    0    0    0    0    0    0    0                             
+                                                                                                        SV N   6  T  10              
+     MISC       118   -3    0   -3    0    6   -1   54   -1    0    0    0    0    0    0    0    0    0                             
+     MISC       119   -3    0   -3    0    5   -1   55   -1    0    0    0    0    0    0    0    0    0                             
+     MISC       120   -1   53   -3    0    0    0    0    0    0    0    0    0    0    0    0    0    0                             
+     QLOAD      130   30   33   34    0   56    0    0    0    1   53    0    0    0    0    0    0    0                             
+     SENSOR     131   30   34    3   75    0    0    0    0    0    0    0    0    0    0    0    0    0                             
+                                                                                                        EV N   3  T   3              
+     MISC       132   -1   76    2   34    4    3   34    0    0    0    0    0    0    0    0    0    0                             
+     MISC       133   -1   76   -1   76    3   -1   77    0    0    0    0    0    0    0    0    0    0                             
+     MISC       134    0  120    1   30    3   -1   76    0    0    0    0    0    0    0    0    0    0                             
+     MISC       135    0  120    0  120    4   -1   78    0    0    0    0    0    0    0    0    0    0                             
+     QLOAD      136   30   34   35    0   56    0    0    0    2   76    0    0    0    0    0    0    0                             
+     MISC       137   -1   69    1   30    3   -1   70    0    0    0    0    0    0    0    0    0    0                             
+     SPLIT      140   30   35   40   41   31   36    0   70    0    0    0    0    0    0    0    0    0                             
+ *AECS*   FTB.DATA                                                                                          PAGE        6            
+     2  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+     OUTLET     145   40   41    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0                             
+     INLET      150   41   42    0   69   71   72   73    2   -1    0    0    0    0    0    0    0    0                             
+     MERGE      155   31   36   41   42   32   37    0    0    0    0    0    0    0    0    0    0    0                             
+     LOOPE      160   30   31   32   37   10    0    0    0    0    0    0    0    0    0    0    0    0                             
+                                                                                                        EV N   4  T   3              
+     SHAFT      165    1    0   15    0    0    0    0    0    0    0    0    0    0    0    0    0    0                             
+     MISC       170    0  105    3   16    4   -1   26    0    0    0    0    0    0    0    0    0    0                             
+     MISC       175    0  105    0  105   -2    0    0    0    0    0    0    0    0    0    0    0    0                             
+     MISC       180    0  105    0  105    3   -1   27    0    0    0    0    0    0    0    0    0    0                             
+     MISC       185    0  105    0  105    4    2   16    0    0    0    0    0    0    0    0    0    0                             
+     MISC       190    0  106    0  105    3    1   11    0    0    0    0    0    0    0    0    0    0                             
+     MISC       195   -1   57   -1   58    2    0  106    0    0    0    0    0    0    0    0    0    0                             
+     MISC       200   -1   57   -1   57    6   -1   60    0    0    0    0    0    0    0    0    0    0                             
+     MISC       205   -1   57   -1   57    4    0  105    0    0    0    0    0    0    0    0    0    0                             
+     LOOPS      210  100  100  105  105    3  -14  101   57   61   62   63    0    0    0    0    0    0                             
+                                                                                                        SV N   7  T   2              
+                                                                                                        SV N   8  T  10              
+     MERGE      215   11   16  100  100  101  101    0    0    0    0    0    0    0    0    0    0    0                             
+     MISC       220    0  107    3  101    4   -1   26    0    0    0    0    0    0    0    0    0    0                             
+     MISC       225    0  107    0  107   -2    0    0    0    0    0    0    0    0    0    0    0    0                             
+     MISC       230    0  107    0  107    3   -1   27    0    0    0    0    0    0    0    0    0    0                             
+     MISC       235    0  107    0  107    4    2  101    0    0    0    0    0    0    0    0    0    0                             
+     MISC       240    0  105    0  107    3    1  101    0    0    0    0    0    0    0    0    0    0                             
+     MISC       245   -3    0   -1   16    0    0    0    1    0    0    0    0    0    0    0    0    0                             
+                                                                                                        SV N   9  T  10              
+     MISC       250   -3    0   -3    0    6   -1   66   -1    0    0    0    0    0    0    0    0    0                             
+     MISC       255   -3    0   -3    0    5   -1   67   -1    0    0    0    0    0    0    0    0    0                             
+     MISC       260   -1   16   -3    0    0    0    0    0    0    0    0    0    0    0    0    0    0                             
+     VCOMP      265  101  101  102    1    0   16   21   17    0    0    0    0    0    0    0    0    0                             
+     MISC       270    0  108    0   28    0    0    0    0    0    0    0    0    0    0    0    0    0                             
+     MISC       275   -1   68    4  102    2    4  101    0    0    0    0    0    0    0    0    0    0                             
+     MISC       280   -1   68   -1   68    3   -2   22    0    0    0    0    0    0    0    0    0    0                             
+     MISC       285   -1   68   -1   68    2   -2   23    0    0    0    0    0    0    0    0    0    0                             
+     MISC       290   -4    0   -1   68    0    0    0    1    0    0    0    0    0    0    0    0    0                             
+                                                                                                        EV N   5  T  10              
+     MISC       295   -1   65    1  100    4    1  101    0    0    0    0    0    0    0    0    0    0                             
+     SPLIT      300  101  102  105  105  103  103    0   65    0    0    0    0    0    0    0    0    0                             
+     LOOPE      325  100  100  105  105  101    0    0    0    0    0    0    0    0    0    0    0    0                             
+                                                                                                        EV N   6  T   2              
+                                                                                                        EV N   7  T   4              
+     LOOPE      345    1    9  103  103  101    0    0    0    0    0    0    0    0    0    0    0    0                             
+                                                                                                        EV N   8  T   2              
+                                                                                                        EV N   9  T   4              
+     COP        350    2    1   14   13  101    0    0    0    0    0    0    0    0    0    0    0    0                             
+     STATE/ERROR VARIABLE(S)     9                                                                                                   
+ *AECS*   FTB.DATA                                                                                          PAGE        7            
+     2  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+ TABLES            21 REQUIRED                                                                                                       
+ *AECS*   FTB.DATA                                                                                          PAGE        8            
+     2  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+ TIME P       5.00                                                                                                                   
+ SVT                                                                                                                                 
+ (   1)    1 (   2)    2 (   3)   10 (   4)    6 (   5)    3 (   6)   10 (   7)    2 (   8)   10 (   9)   10                         
+ EVT                                                                                                                                 
+ (   1)    3 (   2)    3 (   3)    3 (   4)    3 (   5)   10 (   6)    2 (   7)    4 (   8)    2 (   9)    4                         
+ PASS      1                                                                                                                         
+ S.V.                                                                                                                                
+ (   1) 4.00000E+01 (   2) 9.27000E+01 (   3) 9.80997E+01 (   4) 7.16241E-02 (   5) 5.94670E+02 (   6) 9.50000E-01                   
+ (   7) 9.65500E+01 (   8) 9.93500E+01 (   9) 7.00000E+00                                                                            
+ E.V.                                                                                                                                
+ (   1) 1.24867E+02 (   2)-1.37219E+01 (   3)-1.46155E+01 (   4)-4.89282E+00 (   5) 4.31523E-01 (   6) 4.81961E+00                   
+ (   7)-2.44009E+00 (   8) 9.69604E-01 (   9)-3.69040E+00                                                                            
+ W                                                                                                                                   
+ (   2) 4.00000E+02 (   1) 4.00000E+01 ( 103) 4.00000E+01 (  12) 3.40000E+01 (  13) 6.00000E+00 (  30) 1.00000E+02                   
+ (  32) 1.00000E+02 (  11) 4.00000E+01 (  40) 5.00000E+00 (  31) 9.50000E+01 (  41) 5.00000E+00 ( 100) 8.73575E+00                   
+ ( 105) 8.73575E+00 ( 101) 4.87357E+01 (   0) 0.0                                                                                    
+ P                                                                                                                                   
+ (  21) 1.19850E+01 (  22) 1.07865E+01 (  23) 1.07814E+01 (   9) 9.27000E+01 ( 103) 9.17304E+01 (  10) 9.19973E+01                   
+ (  24) 1.07495E+01 (  25) 1.07441E+01 (  14) 9.19479E+00 (  15) 1.31043E+01 (  11) 9.19972E+01 (  17) 9.19972E+01                   
+ (  12) 9.19972E+01 (  13) 9.19975E+00 (  31) 1.47000E+01 (  37) 1.36987E+01 (  32) 1.46987E+01 (  16) 1.31043E+01                   
+ (  33) 1.46987E+01 (  34) 1.41987E+01 (  35) 1.36987E+01 (  41) 1.36987E+01 (  36) 1.36987E+01 (  42) 1.47000E+01                   
+ ( 100) 9.65500E+01 ( 105) 9.17304E+01 ( 101) 1.31043E+01 ( 102) 9.17304E+01 (   0) 0.0         (   0) 0.0                           
+ (   0) 0.0                                                                                                                          
+ T                                                                                                                                   
+ (  21) 5.37670E+02 (  22) 5.37670E+02 (  23) 5.37670E+02 (   9) 6.41114E+02 ( 103) 6.59785E+02 (  10) 5.50946E+02                   
+ (  24) 5.66132E+02 (  25) 5.66132E+02 (  14) 5.95060E+02 (  15) 5.21118E+02 (  11) 5.35818E+02 (  17) 5.21118E+02                   
+ (  12) 5.35818E+02 (  13) 4.77484E+02 (  31) 5.94670E+02 (  37) 5.99563E+02 (  32) 5.00948E+02 (  16) 5.21090E+02                   
+ (  33) 5.00948E+02 (  34) 5.80054E+02 (  35) 6.01503E+02 (  41) 6.01503E+02 (  36) 6.01503E+02 (  42) 5.62670E+02                   
+ ( 100) 6.48209E+02 ( 105) 6.59785E+02 ( 101) 5.42140E+02 ( 102) 6.59785E+02 (   0) 0.0         (   0) 0.0                           
+ (   0) 0.0                                                                                                                          
+ H                                                                                                                                   
+ (  21) 1.00000E-04 (  22) 1.00000E-04 (  23) 1.00000E-04 (   9) 9.80997E+01 ( 103) 1.01790E+02 (  10) 2.97381E+01                   
+ (  24) 1.00000E-04 (  25) 1.00000E-04 (  14) 9.24224E+01 (  15) 7.94559E+01 (  11) 2.60487E+01 (  17) 7.94559E+01                   
+ (  12) 2.60487E+01 (  13) 2.60487E+01 (  31) 0.0         (  37) 9.98103E-05 (  32) 0.0         (  16) 7.94559E+01                   
+ (  33) 0.0         (  34) 0.0         (  35) 0.0         (  41) 0.0         (  36) 0.0         (  42) 2.00000E-03                   
+ ( 100) 9.93500E+01 ( 105) 1.01790E+02 ( 101) 8.30219E+01 ( 102) 1.01790E+02 (   0) 0.0         (   0) 0.0                           
+ (   0) 0.0                                                                                                                          
+ COMPONENT MISC                                                                                                                      
+      VX   4.100000E+01   IVXT    -1   IVXN    80   IOPR     0   IOPT     0                                                          
+      V1   4.100000E+01   IV1T     0   IV1N     1                                                                                    
+ COMPONENT MISC                                                                                                                      
+      VX   1.198502E+01   IVXT    -1   IVXN     2   IOPR     0   IOPT     0                                                          
+      V1   1.198502E+01   IV1T     0   IV1N     7                                                                                    
+ *AECS*   FTB.DATA                                                                                          PAGE        9            
+     2  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+ COMPONENT ORIF                                                                                                                      
+      NL       2   NSI     21   NSO     22   FT       2   FN      -1                                                                 
+      W   400.00   PI   11.99   PO   10.79   TI  537.67   TO  537.67   HI  0.0001   HO  0.0001                                       
+      PR  0.9000                                                                                                                     
+ COMPONENT LINE                                                                                                                      
+      NL       2   NSI     22   NSO     23   FT       2   FN      -1                                                                 
+      W   400.00   PI   10.79   PO   10.78   TI  537.67   TO  537.67   HI  0.0001   HO  0.0001                                       
+      QT    0.0    SHR 1.0000                                                                                                        
+ COMPONENT MISC                                                                                                                      
+      VX   7.800000E+01   IVXT    -1   IVXN     9   IOPR     2   IOPT     0                                                          
+      V1   5.376699E+02   IV1T     3   IV1N    23                                                                                    
+      V2   4.596699E+02   IV2T    -1   IV2N    74                                                                                    
+ COMPONENT COND   EXTRAPOLATED TABLE      2     5 VALUE =  8.32297E-01 ARGUMENT(S)  4.00000E+02                                      
+ COMPONENT COND                                                                                                                      
+      NL       1   NSI      9   NSO     10   FT       3   FN     -14                                                                 
+      W    54.28   PI  111.87   PO  111.86   TI  647.79   TO  550.22   HI 98.7019   HO 29.5979                                       
+ *-* SATURATED REFRIGERANT LIQUID OUTLET ENTHALPY =  47.7150                                                                         
+      NL       2   NSI     23   NSO     24   FT       2   FN      -1                                                                 
+      W   400.00   PI   10.78   PO   10.75   TI  537.67   TO  576.72   HI  0.0001   HO  0.0001                                       
+      EFF 0.4672   Q  3751.15                                                                                                        
+ COMPONENT MISC                                                                                                                      
+      VX   4.000000E+02   IVXT     0   IVXN   120   IOPR     0   IOPT     0                                                          
+      V1   4.000000E+02   IV1T     0   IV1N    41                                                                                    
+ COMPONENT MISC                                                                                                                      
+      VX   1.560027E+01   IVXT     0   IVXN   120   IOPR     0   IOPT     0                                                          
+      V1   1.560027E+01   IV1T     0   IV1N    42                                                                                    
+ COMPONENT LINE                                                                                                                      
+      NL       2   NSI     24   NSO     25   FT       2   FN      -1                                                                 
+      W   400.00   PI   10.75   PO   10.74   TI  576.72   TO  576.72   HI  0.0001   HO  0.0001                                       
+      QT    0.0    SHR 1.0000                                                                                                        
+ COMPONENT MISC                                                                                                                      
+      VX   1.010400E+01   IVXT    -1   IVXN     5   IOPR     0   IOPT     0                                                          
+      V1   1.010400E+01   IV1T     0   IV1N     5                                                                                    
+ *AECS*   FTB.DATA                                                                                          PAGE       10            
+     2  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+ COMPONENT MISC                                                                                                                      
+      VX   2.946615E+03   IVXT     0   IVXN   115   IOPR     3   IOPT     0                                                          
+      V1   5.428273E+01   IV1T     1   IV1N     1                                                                                    
+      V2   5.428273E+01   IV2T     1   IV2N     1                                                                                    
+ COMPONENT MISC                                                                                                                      
+      VX   1.162439E+02   IVXT     0   IVXN   116   IOPR     3   IOPT     0                                                          
+      V1   2.946615E+03   IV1T     0   IV1N   115                                                                                    
+      V2   3.945000E-02   IV2T    -1   IV2N    86                                                                                    
+ COMPONENT MISC                                                                                                                      
+      VX   1.291599E+00   IVXT     0   IVXN   116   IOPR     4   IOPT     0                                                          
+      V1   1.162439E+02   IV1T     0   IV1N   116                                                                                    
+      V2   9.000000E+01   IV2T    -1   IV2N    87                                                                                    
+ COMPONENT MISC                                                                                                                      
+      VX   1.105734E+02   IVXT     2   IVXN    10   IOPR     2   IOPT     0                                                          
+      V1   1.118650E+02   IV1T     2   IV1N    10                                                                                    
+      V2   1.291599E+00   IV2T     0   IV2N   116                                                                                    
+ COMPONENT NRCLR                                                                                                                     
+      NL      12   NSI     14   NSO     15   FT       3   FN     -14                                                                 
+      W    48.28   PI   15.69   PO   15.59   TI  501.61   TO  520.36   HI 76.0941   HO 79.2172                                       
+      NL       1   NSI     10   NSO     11   FT       3   FN     -14                                                                 
+      W    54.28   PI  110.57   PO  110.57   TI  550.22   TO  539.77   HI 29.5979   HO 27.0434                                       
+     INTERCOOLER HEAT TRANSFER =     0.1386688E+03BTU/MIN                                                                            
+ COMPONENT MISC                                                                                                                      
+      VX   1.105323E-01   IVXT    -1   IVXN    50   IOPR     4   IOPT     0                                                          
+      V1   6.000000E+00   IV1T    -1   IV1N    51                                                                                    
+      V2   5.428273E+01   IV2T     1   IV2N     1                                                                                    
+ COMPONENT CVALVE                                                                                                                    
+      NL      12   NSI     12   NSO     13   FT       3   FN     -14                                                                 
+      W    48.28   PI  110.57   PO   15.70   TI  539.77   TO  501.61   HI 27.0434   HO 27.0434                                       
+      K   4.069722E-02                                                                                                               
+ COMPONENT EVAP   EXTRAPOLATED TABLE      5     5 VALUE =  1.17318E-01 ARGUMENT(S)  1.00000E+02                                      
+ COMPONENT EVAP                                                                                                                      
+      NL      12   NSI     13   NSO     14   FT       3   FN     -14                                                                 
+ *AECS*   FTB.DATA                                                                                          PAGE       11            
+     2  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+      W    48.28   PI   15.70   PO   15.69   TI  501.61   TO  501.62   HI 27.0434   HO 76.0970                                       
+      NL      30   NSI     31   NSO     32   FT       2   FN      -1                                                                 
+      W   100.00   PI   14.70   PO   14.70   TI  612.93   TO  514.67   HI  0.0      HO  0.0                                          
+       BYPASS FACTOR 0.1173   Q  2368.44                                                                                             
+ COMPONENT MISC                                                                                                                      
+      VX   5.203557E+02   IVXT     3   IVXN    17   IOPR     0   IOPT     0                                                          
+      V1   5.203557E+02   IV1T     3   IV1N    15                                                                                    
+ COMPONENT MISC                                                                                                                      
+      VX   7.921718E+01   IVXT     4   IVXN    17   IOPR     0   IOPT     0                                                          
+      V1   7.921718E+01   IV1T     4   IV1N    15                                                                                    
+ COMPONENT MISC                                                                                                                      
+      VX   9.613039E-01   IVXT    -3   IVXN     6   IOPR     6   IOPT    -1                                                          
+      V1   9.613039E-01   IV1T    -3   IV1N     6                                                                                    
+      V2   9.999999E-04   IV2T    -1   IV2N    54                                                                                    
+ COMPONENT MISC                                                                                                                      
+      VX   9.613039E-01   IVXT    -3   IVXN     6   IOPR     5   IOPT    -1                                                          
+      V1   9.613039E-01   IV1T    -3   IV1N     6                                                                                    
+      V2   3.000000E+00   IV2T    -1   IV2N    55                                                                                    
+ COMPONENT MISC                                                                                                                      
+      VX   9.613039E-01   IVXT    -1   IVXN    53   IOPR     0   IOPT     0                                                          
+      V1   9.613039E-01   IV1T    -3   IV1N     6                                                                                    
+ COMPONENT QLOAD                                                                                                                     
+      NL      30   NSI     33   NSO     34   FT       2   FN      -1                                                                 
+      W   100.00   PI   14.70   PO   14.20   TI  514.67   TO  594.67   HI  0.0      HO  0.0                                          
+      QT 1922.61   SHR 1.0000                                                                                                        
+ COMPONENT MISC                                                                                                                      
+      VX   2.387670E-02   IVXT    -1   IVXN    76   IOPR     4   IOPT     0                                                          
+      V1   1.419875E+01   IV1T     2   IV1N    34                                                                                    
+      V2   5.946697E+02   IV2T     3   IV2N    34                                                                                    
+ COMPONENT MISC                                                                                                                      
+      VX   8.425130E-01   IVXT    -1   IVXN    76   IOPR     3   IOPT     0                                                          
+      V1   2.387670E-02   IV1T    -1   IV1N    76                                                                                    
+      V2   3.528600E+01   IV2T    -1   IV2N    77                                                                                    
+ COMPONENT MISC                                                                                                                      
+ *AECS*   FTB.DATA                                                                                          PAGE       12            
+     2  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+      VX   8.425128E+01   IVXT     0   IVXN   120   IOPR     3   IOPT     0                                                          
+      V1   1.000000E+02   IV1T     1   IV1N    30                                                                                    
+      V2   8.425130E-01   IV2T    -1   IV2N    76                                                                                    
+ COMPONENT MISC                                                                                                                      
+      VX   1.101698E+03   IVXT     0   IVXN   120   IOPR     4   IOPT     0                                                          
+      V1   8.425128E+01   IV1T     0   IV1N   120                                                                                    
+      V2   7.647401E-02   IV2T    -1   IV2N    78                                                                                    
+ COMPONENT QLOAD  EXTRAPOLATED TABLE      2    13 VALUE =  5.97800E+02 ARGUMENT(S)  1.10170E+03                                      
+ COMPONENT QLOAD                                                                                                                     
+      NL      30   NSI     34   NSO     35   FT       2   FN      -1                                                                 
+      W   100.00   PI   14.20   PO   13.70   TI  594.67   TO  615.57   HI  0.0      HO  0.0                                          
+      QT  503.65   SHR 1.0000                                                                                                        
+ COMPONENT MISC                                                                                                                      
+      VX   5.000000E+00   IVXT    -1   IVXN    69   IOPR     3   IOPT     0                                                          
+      V1   1.000000E+02   IV1T     1   IV1N    30                                                                                    
+      V2   5.000000E-02   IV2T    -1   IV2N    70                                                                                    
+ COMPONENT SHAFT                                                                                                                     
+      SHAFT    1   N   23300.                                                                                                        
+ COMPONENT MISC                                                                                                                      
+      VX   1.002559E+00   IVXT     0   IVXN   105   IOPR     4   IOPT     0                                                          
+      V1   5.203281E+02   IV1T     3   IV1N    16                                                                                    
+      V2   5.190000E+02   IV2T    -1   IV2N    26                                                                                    
+ COMPONENT MISC                                                                                                                      
+      VX   1.001279E+00   IVXT     0   IVXN   105   IOPR    -2   IOPT     0                                                          
+      V1   1.002559E+00   IV1T     0   IV1N   105                                                                                    
+ COMPONENT MISC                                                                                                                      
+      VX   1.471880E+01   IVXT     0   IVXN   105   IOPR     3   IOPT     0                                                          
+      V1   1.001279E+00   IV1T     0   IV1N   105                                                                                    
+      V2   1.470000E+01   IV2T    -1   IV2N    27                                                                                    
+ COMPONENT MISC                                                                                                                      
+      VX   9.440076E-01   IVXT     0   IVXN   105   IOPR     4   IOPT     0                                                          
+      V1   1.471880E+01   IV1T     0   IV1N   105                                                                                    
+      V2   1.559182E+01   IV2T     2   IV2N    16                                                                                    
+ COMPONENT MISC                                                                                                                      
+      VX   5.124329E+01   IVXT     0   IVXN   106   IOPR     3   IOPT     0                                                          
+      V1   9.440076E-01   IV1T     0   IV1N   105                                                                                    
+ *AECS*   FTB.DATA                                                                                          PAGE       13            
+     2  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+      V2   5.428271E+01   IV2T     1   IV2N    11                                                                                    
+ COMPONENT MISC                                                                                                                      
+      VX   3.536713E+00   IVXT    -1   IVXN    57   IOPR     2   IOPT     0                                                          
+      V1   5.478000E+01   IV1T    -1   IV1N    58                                                                                    
+      V2   5.124329E+01   IV2T     0   IV2N   106                                                                                    
+ COMPONENT MISC                                                                                                                      
+      VX   3.536713E+00   IVXT    -1   IVXN    57   IOPR     6   IOPT     0                                                          
+      V1   3.536713E+00   IV1T    -1   IV1N    57                                                                                    
+      V2   0.0            IV2T    -1   IV2N    60                                                                                    
+ COMPONENT MISC                                                                                                                      
+      VX   3.746487E+00   IVXT    -1   IVXN    57   IOPR     4   IOPT     0                                                          
+      V1   3.536713E+00   IV1T    -1   IV1N    57                                                                                    
+      V2   9.440076E-01   IV2T     0   IV2N   105                                                                                    
+ COMPONENT MISC                                                                                                                      
+      VX   1.016934E+00   IVXT     0   IVXN   107   IOPR     4   IOPT     0                                                          
+      V1   5.277891E+02   IV1T     3   IV1N   101                                                                                    
+      V2   5.190000E+02   IV2T    -1   IV2N    26                                                                                    
+ COMPONENT MISC                                                                                                                      
+      VX   1.008431E+00   IVXT     0   IVXN   107   IOPR    -2   IOPT     0                                                          
+      V1   1.016934E+00   IV1T     0   IV1N   107                                                                                    
+ COMPONENT MISC                                                                                                                      
+      VX   1.482394E+01   IVXT     0   IVXN   107   IOPR     3   IOPT     0                                                          
+      V1   1.008431E+00   IV1T     0   IV1N   107                                                                                    
+      V2   1.470000E+01   IV2T    -1   IV2N    27                                                                                    
+ COMPONENT MISC                                                                                                                      
+      VX   9.507511E-01   IVXT     0   IVXN   107   IOPR     4   IOPT     0                                                          
+      V1   1.482394E+01   IV1T     0   IV1N   107                                                                                    
+      V2   1.559182E+01   IV2T     2   IV2N   101                                                                                    
+ COMPONENT MISC                                                                                                                      
+      VX   5.517131E+01   IVXT     0   IVXN   105   IOPR     3   IOPT     0                                                          
+      V1   9.507511E-01   IV1T     0   IV1N   107                                                                                    
+      V2   5.802919E+01   IV2T     1   IV2N   101                                                                                    
+ COMPONENT MISC                                                                                                                      
+      VX   7.175377E+00   IVXT    -3   IVXN     9   IOPR     6   IOPT    -1                                                          
+      V1   7.175377E+00   IV1T    -3   IV1N     9                                                                                    
+      V2   4.500000E+00   IV2T    -1   IV2N    66                                                                                    
+ COMPONENT MISC                                                                                                                      
+ *AECS*   FTB.DATA                                                                                          PAGE       14            
+     2  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+      VX   7.175377E+00   IVXT    -3   IVXN     9   IOPR     5   IOPT    -1                                                          
+      V1   7.175377E+00   IV1T    -3   IV1N     9                                                                                    
+      V2   8.500000E+00   IV2T    -1   IV2N    67                                                                                    
+ COMPONENT MISC                                                                                                                      
+      VX   7.175377E+00   IVXT    -1   IVXN    16   IOPR     0   IOPT     0                                                          
+      V1   7.175377E+00   IV1T    -3   IV1N     9                                                                                    
+ COMPONENT VCOMP  EXTRAPOLATED TABLE     21     6 VALUE =  6.50000E-01 ARGUMENT(S)  1.18940E+02                                      
+ COMPONENT VCOMP                                                                                                                     
+      NL     101   NSI    101   NSO    102   FT       3   FN     -14                                                                 
+      W    58.03   PI   15.59   PO  111.88   TI  527.79   TO  647.81   HI 80.4751   HO 98.7067                                       
+      SHAFT    1   PR  7.1754   EFF 0.6500   HP  -24.93   HGI  76.05   QUALIN 1.08                                                   
+      TS  621.26   VG 0.30910   SG 0.16519   HFG  45.707   XS  0.976   XR  1.116                                                     
+ COMPONENT MISC                                                                                                                      
+      VX   1.189396E+02   IVXT     0   IVXN   108   IOPR     0   IOPT     0                                                          
+      V1   1.189396E+02   IV1T     0   IV1N    28                                                                                    
+ COMPONENT MISC                                                                                                                      
+      VX   1.823169E+01   IVXT    -1   IVXN    68   IOPR     2   IOPT     0                                                          
+      V1   9.870674E+01   IV1T     4   IV1N   102                                                                                    
+      V2   8.047505E+01   IV2T     4   IV2N   101                                                                                    
+ COMPONENT MISC   EXTRAPOLATED TABLE     22    99 VALUE =  6.50000E-01 ARGUMENT(S)  1.18940E+02                                      
+ COMPONENT MISC                                                                                                                      
+      VX   1.185060E+01   IVXT    -1   IVXN    68   IOPR     3   IOPT     0                                                          
+      V1   1.823169E+01   IV1T    -1   IV1N    68                                                                                    
+      V2   6.500000E-01   IV2T    -2   IV2N    22                                                                                    
+ COMPONENT MISC   EXTRAPOLATED TABLE     23    99 VALUE =  1.18500E+01 ARGUMENT(S)  1.18940E+02                                      
+ COMPONENT MISC                                                                                                                      
+      VX   5.979538E-04   IVXT    -1   IVXN    68   IOPR     2   IOPT     0                                                          
+      V1   1.185060E+01   IV1T    -1   IV1N    68                                                                                    
+      V2   1.185000E+01   IV2T    -2   IV2N    23                                                                                    
+ COMPONENT MISC                                                                                                                      
+      VX   5.979538E-04   IVXT    -4   IVXN     5   IOPR     0   IOPT     1                                                          
+      V1   5.979538E-04   IV1T    -1   IV1N    68                                                                                    
+ COMPONENT MISC                                                                                                                      
+      VX   6.456208E-02   IVXT    -1   IVXN    65   IOPR     4   IOPT     0                                                          
+      V1   3.746487E+00   IV1T     1   IV1N   100                                                                                    
+ *AECS*   FTB.DATA                                                                                          PAGE       15            
+     2  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+      V2   5.802919E+01   IV2T     1   IV2N   101                                                                                    
+ COEFFICIENT OF PERFORMANCE = 2.381                                                                                                  
+ EVAPORATOR STATIONS          14  13                                                                                                 
+ VAPOR COMPRESSOR STATIONS 101                                                                                                       
+ *AECS*   FTB.DATA                                                                                          PAGE       16            
+     2  CASE                                                                                                DATE TODAY               
+                                                                                                                                     
+ TIME E       5.00                                                                                                                   
+ FLOW RATE(S)-LB/MIN                                                                                                                 
+                                                                                                                                     
+ (   1)   54.28 (   2)  400.00 (  11)   54.28 (  12)   48.28 (  13)    6.00 (  30)  100.00                                           
+ (  31)   95.00 (  32)  100.00 (  40)    5.00 (  41)    5.00 ( 100)    3.75 ( 101)   58.03                                           
+ ( 103)   54.28 ( 105)    3.75 (   0)    0.0                                                                                         
+ PRESSURE(S)-PSI                                                                                                                     
+                                                                                                                                     
+ (   9)  111.87 (  10)  110.57 (  11)  110.57 (  12)  110.57 (  13)   15.70 (  14)   15.69                                           
+ (  15)   15.59 (  16)   15.59 (  17)  110.57 (  21)   11.99 (  22)   10.79 (  23)   10.78                                           
+ (  24)   10.75 (  25)   10.74 (  31)   14.70 (  32)   14.70 (  33)   14.70 (  34)   14.20                                           
+ (  35)   13.70 (  36)   13.70 (  37)   13.70 (  41)   13.70 (  42)   14.70 ( 100)  111.87                                           
+ ( 101)   15.59 ( 102)  111.88 ( 103)  111.88 ( 105)  111.88 (   0)    0.0  (   0)    0.0                                            
+ (   0)    0.0                                                                                                                       
+ TEMPERATURE(S)-DEG R                                                                                                                
+                                                                                                                                     
+ (   9)  647.79 (  10)  550.22 (  11)  539.77 (  12)  539.77 (  13)  501.61 (  14)  501.62                                           
+ (  15)  520.36 (  16)  520.33 (  17)  520.36 (  21)  537.67 (  22)  537.67 (  23)  537.67                                           
+ (  24)  576.72 (  25)  576.72 (  31)  612.93 (  32)  514.67 (  33)  514.67 (  34)  594.67                                           
+ (  35)  615.57 (  36)  615.57 (  37)  612.93 (  41)  615.57 (  42)  562.67 ( 100)  647.79                                           
+ ( 101)  527.79 ( 102)  647.81 ( 103)  647.81 ( 105)  647.81 (   0)    0.0  (   0)    0.0                                            
+ (   0)    0.0                                                                                                                       
+ HUMIDITY(S)/ENTHALPY(S)-LBW/LBA / BTU/LB                                                                                            
+                                                                                                                                     
+ (   9) 98.7019 (  10) 29.5979 (  11) 27.0434 (  12) 27.0434 (  13) 27.0434 (  14) 76.0970                                           
+ (  15) 79.2172 (  16) 79.2171 (  17) 79.2172 (  21)  0.0001 (  22)  0.0001 (  23)  0.0001                                           
+ (  24)  0.0001 (  25)  0.0001 (  31)  0.0    (  32)  0.0    (  33)  0.0    (  34)  0.0                                              
+ (  35)  0.0    (  36)  0.0    (  37)  0.0001 (  41)  0.0    (  42)  0.0020 ( 100) 98.7019                                           
+ ( 101) 80.4751 ( 102) 98.7067 ( 103) 98.7067 ( 105) 98.7067 (   0)  0.0    (   0)  0.0                                              
+ (   0)  0.0                                                                                                                         
+ STATE VARIABLE TYPE(S)                                                                                                              
+ (   1)    1 (   2)    2 (   3)   10 (   4)    6 (   5)    3 (   6)   10 (   7)    2 (   8)   10 (   9)   10                         
+ STATE VARIABLE(S)                                                                                                                   
+ (   1) 5.42827E+01 (   2) 1.11866E+02 (   3) 9.87019E+01 (   4) 4.06972E-02 (   5) 6.12935E+02 (   6) 9.61304E-01                   
+ (   7) 1.11866E+02 (   8) 9.87019E+01 (   9) 7.17538E+00                                                                            
+ ERROR VARIABLE TYPE(S)                                                                                                              
+ (   1)    3 (   2)    3 (   3)    3 (   4)    3 (   5)   10 (   6)    2 (   7)    4 (   8)    2 (   9)    4                         
+ ERROR VARIABLE(S)                                                                                                                   
+ (   1) 8.87902E-03 (   2)-2.44141E-04 (   3)-2.44141E-04 (   4) 0.0         (   5) 5.97954E-04 (   6)-1.12610E-02                   
+ (   7)-4.85229E-03 (   8)-1.12610E-02 (   9)-4.85229E-03                                                                            
+ SOLUTION CONVERGED IN     41 TRY(S)                                                                                                 
+      0 ERROR(S) DETECTED                                                                                                            
+ CASE END                                                                                                                            
+                                                                                                                                     
+                                                                                                                                     
+                                                                                                                                     
+                                                                                                                                     
+                     END OF JOB                                                                                                      
